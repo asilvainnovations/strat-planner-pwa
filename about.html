@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Professional strategic planning application">
+    <title>Strategic Planner Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .glass-panel { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(226,232,240,0.8); }
+        .swot-s { background-color: #dcfce7; border-color: #22c55e; }
+        .swot-w { background-color: #fee2e2; border-color: #ef4444; }
+        .swot-o { background-color: #dbeafe; border-color: #3b82f6; }
+        .swot-t { background-color: #fef3c7; border-color: #f59e0b; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .spinner { border: 3px solid rgba(0,0,0,0.1); width: 24px; height: 24px; border-radius: 50%; border-left-color: #2563eb; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        .notification { position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
+        @media print { .no-print { display: none !important; } body { background: white; } }
+        .loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="bg-white rounded-2xl p-8 flex flex-col items-center">
+            <div class="spinner mb-4"></div>
+            <p class="text-slate-600 font-medium">Loading...</p>
+        </div>
+    </div>
+    <div id="notification-container"></div>
+
+    <div id="app">
+        <!-- AUTH CONTAINER -->
+        <div id="auth-container" class="hidden min-h-screen flex items-center justify-center p-4">
+            <div id="login-form" class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl fade-in">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                        <i data-lucide="target" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-blue-600 mb-2">Strategic Planner</h1>
+                    <p class="text-gray-500">Sign in to manage your strategy</p>
+                </div>
+                <div id="login-error" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4"></div>
+                <form id="login-form-el" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="login-email" required autocomplete="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required autocomplete="current-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <button type="button" class="absolute right-3 top-2.5 text-gray-400 toggle-password">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center text-sm"><input type="checkbox" id="remember-me" class="mr-2"> Remember me</label>
+                        <button type="button" onclick="showAuthScreen('reset')" class="text-sm text-blue-600 hover:underline">Forgot password?</button>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg">Sign In</button>
+                    <p class="text-center text-sm text-gray-600">Don't have an account? <button type="button" onclick="showAuthScreen('register')" class="text-blue-600 hover:underline font-semibold">Register</button></p>
+                </form>
+            </div>
+
+            <div id="register-form" class="hidden w-full max-w-md bg-white p-8 rounded-2xl shadow-xl fade-in">
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold text-blue-600">Create Account</h1>
+                    <p class="text-gray-500">Begin your strategic journey</p>
+                </div>
+                <div id="register-error" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4"></div>
+                <div id="register-success" class="hidden bg-green-50 text-green-600 p-3 rounded-lg text-sm mb-4"></div>
+                <form id="reg-form-el" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required minlength="2" autocomplete="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="reg-email" required autocomplete="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-password" required autocomplete="new-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <button type="button" class="absolute right-3 top-2.5 text-gray-400 toggle-password"><i data-lucide="eye" class="w-5 h-5"></i></button>
+                        </div>
+                        <div class="mt-2 space-y-1">
+                            <div id="pw-len" class="text-xs text-gray-400 flex items-center"><i data-lucide="circle" class="w-3 h-3 mr-1"></i> At least 8 characters</div>
+                            <div id="pw-upper" class="text-xs text-gray-400 flex items-center"><i data-lucide="circle" class="w-3 h-3 mr-1"></i> One uppercase letter</div>
+                            <div id="pw-num" class="text-xs text-gray-400 flex items-center"><i data-lucide="circle" class="w-3 h-3 mr-1"></i> One number</div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" id="reg-confirm" required autocomplete="new-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <div id="pw-match" class="text-xs text-red-500 mt-1 hidden">Passwords do not match</div>
+                    </div>
+                    <button type="submit" id="reg-submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg">Create Account</button>
+                    <button type="button" onclick="showAuthScreen('login')" class="w-full text-center text-sm text-gray-600 hover:underline">Back to Login</button>
+                </form>
+            </div>
+
+            <div id="reset-form" class="hidden w-full max-w-md bg-white p-8 rounded-2xl shadow-xl fade-in">
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold text-blue-600">Reset Password</h1>
+                    <p class="text-gray-500">Enter your email to receive reset instructions</p>
+                </div>
+                <div id="reset-success" class="hidden bg-green-50 text-green-600 p-4 rounded-lg text-sm mb-4"></div>
+                <div id="reset-error" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4"></div>
+                <form id="reset-form-el" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="reset-email" required autocomplete="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg">Send Reset Link</button>
+                    <button type="button" onclick="showAuthScreen('login')" class="w-full text-center text-sm text-gray-600 hover:underline">Back to Login</button>
+                </form>
+            </div>
+
+            <div id="verify-email-screen" class="hidden w-full max-w-md bg-white p-8 rounded-2xl shadow-xl fade-in">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-lucide="mail" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-slate-900 mb-2">Check Your Email</h1>
+                    <p class="text-gray-600 mb-6">We've sent a verification link to <strong id="verify-email-address"></strong></p>
+                    <p class="text-sm text-gray-500 mb-6">Please check your email and click the verification link to activate your account.</p>
+                    <button onclick="showAuthScreen('login')" class="text-blue-600 hover:underline font-semibold">Back to Login</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD CONTAINER -->
+        <div id="dashboard-container" class="hidden flex min-h-screen">
+            <aside class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 no-print flex flex-col">
+                <div class="p-6 flex-grow">
+                    <h2 class="text-xl font-bold text-white mb-8 flex items-center"><i data-lucide="target" class="mr-2 text-blue-500"></i> StratPlan</h2>
+                    <nav class="space-y-1">
+                        <button onclick="navigate('dashboard')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-slate-800 transition"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</button>
+                        <button onclick="navigate('swot')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-slate-800 transition"><i data-lucide="activity" class="w-5 h-5 mr-3"></i> SWOT Analysis</button>
+                        <button onclick="navigate('bsc')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-slate-800 transition"><i data-lucide="layers" class="w-5 h-5 mr-3"></i> Balanced Scorecard</button>
+                        <button onclick="navigate('initiatives')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-slate-800 transition"><i data-lucide="briefcase" class="w-5 h-5 mr-3"></i> Initiatives</button>
+                        <button onclick="navigate('collaboration')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-slate-800 transition"><i data-lucide="users" class="w-5 h-5 mr-3"></i> Team Hub</button>
+                        <button onclick="navigate('plan')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-slate-800 transition"><i data-lucide="file-text" class="w-5 h-5 mr-3"></i> Plan Generator</button>
+                    </nav>
+                </div>
+                <div class="p-6 border-t border-slate-800">
+                    <div class="flex items-center mb-4">
+                        <div id="user-avatar" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-3">JD</div>
+                        <div class="flex-grow overflow-hidden">
+                            <p id="user-display-name" class="text-sm font-medium text-white truncate">John Doe</p>
+                            <p class="text-xs text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button onclick="exportData()" class="w-full flex items-center p-2 mb-2 rounded-lg text-slate-300 hover:bg-slate-800 transition text-sm"><i data-lucide="download" class="w-4 h-4 mr-3"></i> Export Data</button>
+                    <button onclick="handleLogout()" class="w-full flex items-center p-2 rounded-lg text-red-400 hover:bg-red-900/20 transition text-sm"><i data-lucide="log-out" class="w-4 h-4 mr-3"></i> Logout</button>
+                </div>
+            </aside>
+
+            <main class="flex-grow overflow-y-auto custom-scrollbar p-8">
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="page">
+                    <header class="mb-8 flex justify-between items-end">
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
+                            <p class="text-slate-500">Strategic overview for <span id="org-name-display" class="font-medium text-slate-700">Your Organization</span></p>
+                        </div>
+                        <div class="text-right text-xs text-slate-400">Last Updated: <span id="last-updated">Just now</span></div>
+                    </header>
+                    <div class="glass-panel p-6 rounded-2xl mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-slate-800 flex items-center"><i data-lucide="info" class="w-4 h-4 mr-2 text-blue-600"></i> Organizational Mandate</h3>
+                            <button onclick="editMandate()" class="text-blue-600 hover:underline text-sm">Edit</button>
+                        </div>
+                        <div id="mandate-content" class="text-slate-600 leading-relaxed italic">"Loading mandate..."</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <div class="flex items-center justify-between mb-2 text-blue-600">
+                                <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Financial</span>
+                            </div>
+                            <h4 id="financial-count" class="text-2xl font-bold text-slate-900">0</h4>
+                            <p class="text-sm text-slate-500">Active Strategies</p>
+                            <div class="mt-4 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div id="financial-progress" class="bg-blue-600 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <div class="flex items-center justify-between mb-2 text-green-600">
+                                <i data-lucide="users" class="w-6 h-6"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Customer</span>
+                            </div>
+                            <h4 id="customer-count" class="text-2xl font-bold text-slate-900">0</h4>
+                            <p class="text-sm text-slate-500">Active Strategies</p>
+                            <div class="mt-4 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div id="customer-progress" class="bg-green-600 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <div class="flex items-center justify-between mb-2 text-orange-600">
+                                <i data-lucide="settings" class="w-6 h-6"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Processes</span>
+                            </div>
+                            <h4 id="process-count" class="text-2xl font-bold text-slate-900">0</h4>
+                            <p class="text-sm text-slate-500">Active Strategies</p>
+                            <div class="mt-4 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div id="process-progress" class="bg-orange-600 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <div class="flex items-center justify-between mb-2 text-purple-600">
+                                <i data-lucide="trending-up" class="w-6 h-6"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">L&G</span>
+                            </div>
+                            <h4 id="lg-count" class="text-2xl font-bold text-slate-900">0</h4>
+                            <p class="text-sm text-slate-500">Active Strategies</p>
+                            <div class="mt-4 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div id="lg-progress" class="bg-purple-600 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-2xl overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                            <h3 class="font-bold text-slate-800">Top Priority KPIs</h3>
+                            <button onclick="navigate('bsc')" class="text-xs text-blue-600 font-semibold uppercase tracking-wider">View All</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
+                                    <tr>
+                                        <th class="px-6 py-4">Strategy</th>
+                                        <th class="px-6 py-4">KPI Metric</th>
+                                        <th class="px-6 py-4">Current / Target</th>
+                                        <th class="px-6 py-4">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-kpi-rows" class="divide-y divide-slate-100">
+                                    <tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">No KPIs defined yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SWOT Page -->
+                <div id="page-swot" class="hidden page">
+                    <header class="mb-8">
+                        <h1 class="text-3xl font-bold text-slate-900">SWOT Analysis</h1>
+                        <p class="text-slate-500">Map internal capabilities and external environment</p>
+                    </header>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="swot-s border-2 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4 text-green-700">
+                                <h3 class="font-bold text-xl">Strengths</h3>
+                                <button onclick="addSwotItem('S')" class="hover:scale-110 transition"><i data-lucide="plus-circle" class="w-6 h-6"></i></button>
+                            </div>
+                            <div id="swot-S-list" class="space-y-3"></div>
+                        </div>
+                        <div class="swot-w border-2 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4 text-red-700">
+                                <h3 class="font-bold text-xl">Weaknesses</h3>
+                                <button onclick="addSwotItem('W')" class="hover:scale-110 transition"><i data-lucide="plus-circle" class="w-6 h-6"></i></button>
+                            </div>
+                            <div id="swot-W-list" class="space-y-3"></div>
+                        </div>
+                        <div class="swot-o border-2 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4 text-blue-700">
+                                <h3 class="font-bold text-xl">Opportunities</h3>
+                                <button onclick="addSwotItem('O')" class="hover:scale-110 transition"><i data-lucide="plus-circle" class="w-6 h-6"></i></button>
+                            </div>
+                            <div id="swot-O-list" class="space-y-3"></div>
+                        </div>
+                        <div class="swot-t border-2 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4 text-amber-700">
+                                <h3 class="font-bold text-xl">Threats</h3>
+                                <button onclick="addSwotItem('T')" class="hover:scale-110 transition"><i data-lucide="plus-circle" class="w-6 h-6"></i></button>
+                            </div>
+                            <div id="swot-T-list" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BSC Page -->
+                <div id="page-bsc" class="hidden page">
+                    <header class="mb-8 flex justify-between items-start">
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-900">Balanced Scorecard</h1>
+                            <p class="text-slate-500">Define strategies and track performance</p>
+                        </div>
+                        <button onclick="openStrategyModal()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center shadow-lg"><i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add Strategy</button>
+                    </header>
+                    <div class="space-y-8">
+                        <section>
+                            <div class="bg-blue-600 text-white px-6 py-3 rounded-t-xl font-bold flex items-center"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i> Financial Perspective</div>
+                            <div class="glass-panel rounded-b-xl overflow-hidden"><div id="bsc-financial-list" class="divide-y divide-slate-100 min-h-[100px] flex items-center justify-center text-slate-400">No strategies defined</div></div>
+                        </section>
+                        <section>
+                            <div class="bg-green-600 text-white px-6 py-3 rounded-t-xl font-bold flex items-center"><i data-lucide="smile" class="w-5 h-5 mr-3"></i> Customer Perspective</div>
+                            <div class="glass-panel rounded-b-xl overflow-hidden"><div id="bsc-customer-list" class="divide-y divide-slate-100 min-h-[100px] flex items-center justify-center text-slate-400">No strategies defined</div></div>
+                        </section>
+                        <section>
+                            <div class="bg-orange-600 text-white px-6 py-3 rounded-t-xl font-bold flex items-center"><i data-lucide="cpu" class="w-5 h-5 mr-3"></i> Internal Processes</div>
+                            <div class="glass-panel rounded-b-xl overflow-hidden"><div id="bsc-process-list" class="divide-y divide-slate-100 min-h-[100px] flex items-center justify-center text-slate-400">No strategies defined</div></div>
+                        </section>
+                        <section>
+                            <div class="bg-purple-600 text-white px-6 py-3 rounded-t-xl font-bold flex items-center"><i data-lucide="book-open" class="w-5 h-5 mr-3"></i> Learning & Growth</div>
+                            <div class="glass-panel rounded-b-xl overflow-hidden"><div id="bsc-lg-list" class="divide-y divide-slate-100 min-h-[100px] flex items-center justify-center text-slate-400">No strategies defined</div></div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Initiatives Page -->
+                <div id="page-initiatives" class="hidden page">
+                    <header class="mb-8 flex justify-between items-start">
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-900">Initiatives & Projects</h1>
+                            <p class="text-slate-500">Track implementation of strategic goals</p>
+                        </div>
+                        <button onclick="openInitiativeModal()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Add Initiative</button>
+                    </header>
+                    <div class="grid grid-cols-1 gap-4" id="initiatives-container"></div>
+                </div>
+
+                <!-- Collaboration Page -->
+                <div id="page-collaboration" class="hidden page">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-160px)]">
+                        <div class="glass-panel rounded-2xl flex flex-col overflow-hidden">
+                            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                                <h3 class="font-bold text-slate-800">Team Members</h3>
+                                <button onclick="addTeamMember()" class="p-1 bg-white border rounded text-blue-600 hover:bg-blue-50"><i data-lucide="user-plus" class="w-4 h-4"></i></button>
+                            </div>
+                            <div id="team-list" class="flex-grow overflow-y-auto custom-scrollbar p-4 space-y-4">
+                                <!-- Members -->
+                            </div>
+                        </div>
+
+                        <!-- Chat Column -->
+                        <div class="lg:col-span-2 glass-panel rounded-2xl flex flex-col overflow-hidden">
+                            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                                    <h3 class="font-bold text-slate-800">Strategy War Room</h3>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="p-2 text-slate-400 hover:text-blue-600 transition"><i data-lucide="paperclip" class="w-4 h-4"></i></button>
+                                    <button class="p-2 text-slate-400 hover:text-blue-600 transition"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                            <div id="chat-box" class="flex-grow overflow-y-auto custom-scrollbar p-6 space-y-4">
+                                <!-- Messages -->
+                            </div>
+                            <div class="p-4 bg-slate-50 border-t border-slate-100">
+                                <form id="chat-form" class="flex gap-4">
+                                    <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow px-4 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <button type="submit" class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700 transition">
+                                        <i data-lucide="send" class="w-5 h-5"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Generator Page -->
+                <div id="page-plan" class="hidden page">
+                    <header class="mb-8 flex justify-between items-center no-print">
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-900">Strategic Plan Document</h1>
+                            <p class="text-slate-500">Full executive report for the current cycle</p>
+                        </div>
+                        <button onclick="window.print()" class="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg hover:bg-slate-800 transition flex items-center">
+                            <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Print to PDF
+                        </button>
+                    </header>
+
+                    <div id="printable-plan" class="bg-white rounded-2xl border shadow-sm p-12 max-w-5xl mx-auto text-slate-800">
+                        <!-- Document Metadata -->
+                        <div class="flex justify-between items-start border-b-2 border-slate-900 pb-8 mb-12">
+                            <div>
+                                <div class="bg-slate-900 text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">Official Strategic Plan</div>
+                                <h1 id="plan-org-name" class="text-4xl font-black text-slate-900 mb-2">GLOBAL TECH CORP</h1>
+                                <p class="text-slate-500">2024 - 2026 Strategy Cycle</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-slate-400 font-bold uppercase mb-1">Generated On</p>
+                                <p id="plan-date" class="font-medium">October 24, 2023</p>
+                                <p class="text-xs text-slate-400 font-bold uppercase mt-4 mb-1">Version</p>
+                                <p class="font-medium">1.0.0-PRO</p>
+                            </div>
+                        </div>
+
+                        <!-- 1. Executive Summary -->
+                        <section class="mb-12">
+                            <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                                <span class="bg-slate-900 text-white w-7 h-7 flex items-center justify-center rounded-full text-xs mr-3">01</span>
+                                Executive Summary
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-6 rounded-xl border">
+                                <div>
+                                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Vision & Mission</h4>
+                                    <p id="plan-mandate" class="italic text-slate-600 leading-relaxed"></p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Strategic Intent</h4>
+                                    <p class="text-slate-600 leading-relaxed">The organization is committed to digital transformation and sustainable growth by leveraging core internal strengths to capture emerging market opportunities while mitigating environmental threats.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 2. Situational Analysis -->
+                        <section class="mb-12">
+                            <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                                <span class="bg-slate-900 text-white w-7 h-7 flex items-center justify-center rounded-full text-xs mr-3">02</span>
+                                Situational Analysis (SWOT)
+                            </h2>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-green-50 p-5 rounded-lg border-l-4 border-green-600">
+                                    <h4 class="font-bold text-green-800 text-sm uppercase mb-3">Strengths</h4>
+                                    <ul id="plan-swot-s" class="text-sm space-y-2 text-green-900"></ul>
+                                </div>
+                                <div class="bg-red-50 p-5 rounded-lg border-l-4 border-red-600">
+                                    <h4 class="font-bold text-red-800 text-sm uppercase mb-3">Weaknesses</h4>
+                                    <ul id="plan-swot-w" class="text-sm space-y-2 text-red-900"></ul>
+                                </div>
+                                <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-600">
+                                    <h4 class="font-bold text-blue-800 text-sm uppercase mb-3">Opportunities</h4>
+                                    <ul id="plan-swot-o" class="text-sm space-y-2 text-blue-900"></ul>
+                                </div>
+                                <div class="bg-amber-50 p-5 rounded-lg border-l-4 border-amber-600">
+                                    <h4 class="font-bold text-amber-800 text-sm uppercase mb-3">Threats</h4>
+                                    <ul id="plan-swot-t" class="text-sm space-y-2 text-amber-900"></ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 3. Balanced Scorecard -->
+                        <section class="mb-12">
+                            <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                                <span class="bg-slate-900 text-white w-7 h-7 flex items-center justify-center rounded-full text-xs mr-3">03</span>
+                                Balanced Scorecard Framework
+                            </h2>
+                            <div class="overflow-hidden border-2 border-slate-100 rounded-xl">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-slate-900 text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">Perspective</th>
+                                            <th class="px-4 py-3 text-left">Strategic Objective</th>
+                                            <th class="px-4 py-3 text-left">KPI & Target</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="plan-bsc-body" class="divide-y divide-slate-200">
+                                        <!-- Table generated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- 4. Strategic Initiatives -->
+                        <section class="mb-12 page-break">
+                            <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                                <span class="bg-slate-900 text-white w-7 h-7 flex items-center justify-center rounded-full text-xs mr-3">04</span>
+                                Implementation Roadmap
+                            </h2>
+                            <div id="plan-initiatives-list" class="space-y-4">
+                                <!-- Cards -->
+                            </div>
+                        </section>
+
+                        <!-- 5. M&E Framework -->
+                        <section>
+                            <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                                <span class="bg-slate-900 text-white w-7 h-7 flex items-center justify-center rounded-full text-xs mr-3">05</span>
+                                Monitoring & Evaluation
+                            </h2>
+                            <div class="bg-slate-50 p-6 rounded-xl border text-sm leading-relaxed text-slate-600">
+                                <p class="mb-4">This strategic plan will be reviewed quarterly by the executive steering committee. Progress will be measured against established baseline data with a tolerance threshold of ±5% for performance variance.</p>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div class="p-3 bg-white rounded border text-center">
+                                        <div class="font-bold text-slate-900">Monthly</div>
+                                        <div class="text-[10px] uppercase text-slate-400">Tactical Review</div>
+                                    </div>
+                                    <div class="p-3 bg-white rounded border text-center">
+                                        <div class="font-bold text-slate-900">Quarterly</div>
+                                        <div class="text-[10px] uppercase text-slate-400">Strategic Audit</div>
+                                    </div>
+                                    <div class="p-3 bg-white rounded border text-center">
+                                        <div class="font-bold text-slate-900">Annual</div>
+                                        <div class="text-[10px] uppercase text-slate-400">Impact Assessment</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <!-- Generic Form Modal -->
+        <div id="modal-content" class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <!-- Content Injected -->
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STATE ---
+        let currentUser = null;
+        let appState = {
+            mandate: "To empower every person and every organization on the planet through strategic innovation.",
+            orgName: "Global Tech Corp",
+            swot: { S: [], W: [], O: [], T: [] },
+            bsc: [],
+            initiatives: [],
+            team: [
+                { id: 1, name: "John Doe", role: "Administrator", email: "admin@example.com", status: "online" },
+                { id: 2, name: "Sarah Smith", role: "Strategy Lead", email: "sarah@example.com", status: "away" }
+            ],
+            messages: [
+                { id: 1, sender: "Sarah Smith", text: "I've updated the Q3 targets for the Financial perspective.", time: "10:30 AM" },
+                { id: 2, sender: "John Doe", text: "Great. I'll review them for the board meeting.", time: "10:45 AM" }
+            ]
+        };
+
+        // Helper to safely call Lucide icon rendering
+        function updateIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // --- AUTH LOGIC ---
+        function showAuthScreen(screen) {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+            document.getElementById('reset-form').classList.add('hidden');
+            
+            if (screen === 'login') document.getElementById('login-form').classList.remove('hidden');
+            if (screen === 'register') document.getElementById('register-form').classList.remove('hidden');
+            if (screen === 'reset') document.getElementById('reset-form').classList.remove('hidden');
+            updateIcons();
+        }
+
+        function handleLogin(e) {
+            if(e) e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            
+            const users = JSON.parse(localStorage.getItem('sp_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === pass);
+            
+            if (user || (email === "demo@strat.com" && pass === "Password123")) {
+                const userData = user || { name: "Demo User", email: "demo@strat.com" };
+                const token = {
+                    user: userData,
+                    expiry: Date.now() + (24 * 60 * 60 * 1000)
+                };
+                localStorage.setItem('sp_session', JSON.stringify(token));
+                initApp(userData);
+            } else {
+                const err = document.getElementById('auth-error');
+                err.innerText = "Invalid credentials. Please try again.";
+                err.classList.remove('hidden');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+
+            if (password !== confirm) return;
+
+            const users = JSON.parse(localStorage.getItem('sp_users') || '[]');
+            users.push({ name, email, password });
+            localStorage.setItem('sp_users', JSON.stringify(users));
+            
+            showAuthScreen('login');
+            const err = document.getElementById('auth-error');
+            err.innerText = "Registration successful! Please login.";
+            err.classList.remove('hidden');
+            err.className = "bg-green-50 text-green-600 p-3 rounded-lg text-sm mb-4";
+        }
+
+        function checkSession() {
+            const sessionRaw = localStorage.getItem('sp_session');
+            if (sessionRaw) {
+                try {
+                    const session = JSON.parse(sessionRaw);
+                    if (Date.now() < session.expiry) {
+                        initApp(session.user);
+                        return;
+                    }
+                } catch(e) {
+                    console.error("Session error", e);
+                }
+            }
+            document.getElementById('auth-container').classList.remove('hidden');
+            showAuthScreen('login');
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('sp_session');
+            location.reload();
+        }
+
+        // --- NAVIGATION & UI ---
+        function navigate(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            const targetPage = document.getElementById(`page-${page}`);
+            if (targetPage) targetPage.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-800', 'text-white'));
+            const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.innerText.toLowerCase().includes(page === 'collaboration' ? 'team' : page));
+            if (activeBtn) activeBtn.classList.add('bg-slate-800', 'text-white');
+            
+            if (page === 'plan') renderPlan();
+            if (page === 'dashboard') renderDashboard();
+            if (page === 'swot') renderSwot();
+            if (page === 'bsc') renderBsc();
+            if (page === 'initiatives') renderInitiatives();
+            if (page === 'collaboration') {
+                renderTeam();
+                renderChat();
+            }
+            updateIcons();
+        }
+
+        function initApp(user) {
+            currentUser = user;
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('dashboard-container').classList.remove('hidden');
+            document.getElementById('user-display-name').innerText = user.name;
+            document.getElementById('user-avatar').innerText = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            // Load app data
+            const savedData = localStorage.getItem(`sp_data_${user.email}`);
+            if (savedData) appState = JSON.parse(savedData);
+            
+            navigate('dashboard');
+        }
+
+        function saveData() {
+            if (currentUser) {
+                localStorage.setItem(`sp_data_${currentUser.email}`, JSON.stringify(appState));
+            }
+        }
+
+        // --- SWOT LOGIC ---
+        function addSwotItem(type) {
+            const val = prompt(`Add a new ${type === 'S' ? 'Strength' : type === 'W' ? 'Weakness' : type === 'O' ? 'Opportunity' : 'Threat'}:`);
+            if (val) {
+                appState.swot[type].push(val);
+                saveData();
+                renderSwot();
+            }
+        }
+
+        function removeSwotItem(type, index) {
+            appState.swot[type].splice(index, 1);
+            saveData();
+            renderSwot();
+        }
+
+        function renderSwot() {
+            ['S', 'W', 'O', 'T'].forEach(type => {
+                const container = document.getElementById(`swot-${type}-list`);
+                if (!container) return;
+                container.innerHTML = appState.swot[type].map((item, i) => `
+                    <div class="flex items-start justify-between bg-white/50 p-3 rounded-lg border border-white/20">
+                        <span class="text-sm font-medium text-slate-800">${item}</span>
+                        <button onclick="removeSwotItem('${type}', ${i})" class="text-slate-400 hover:text-red-500 ml-2">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('');
+            });
+            updateIcons();
+        }
+
+        async function generateAIStrategies() {
+            const btn = document.getElementById('ai-gen-btn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = `<div class="spinner mr-2"></div> Analysing Data...`;
+            btn.disabled = true;
+
+            await new Promise(r => setTimeout(r, 1500));
+
+            const recommendations = [
+                { objective: "Develop Cloud Infrastructure", perspective: "Internal Processes", kpi: "Server Uptime", target: "99.99%", current: "98.5%" },
+                { objective: "Improve Customer NPS", perspective: "Customer", kpi: "NPS Score", target: "75", current: "62" },
+                { objective: "Upskill Engineering Team", perspective: "Learning & Growth", kpi: "Certification Count", target: "50", current: "12" }
+            ];
+
+            appState.bsc.push(...recommendations);
+            saveData();
+            
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+            
+            const notify = document.createElement('div');
+            notify.className = "fixed top-4 right-4 bg-green-600 text-white p-4 rounded-xl shadow-2xl z-[100] animate-bounce";
+            notify.innerHTML = "AI Analysis Complete! 3 New strategies added to BSC.";
+            document.body.appendChild(notify);
+            setTimeout(() => notify.remove(), 4000);
+            
+            navigate('bsc');
+        }
+
+        // --- BSC LOGIC ---
+        function renderBsc() {
+            const groups = {
+                "Financial": document.getElementById('bsc-financial-list'),
+                "Customer": document.getElementById('bsc-customer-list'),
+                "Internal Processes": document.getElementById('bsc-process-list'),
+                "Learning & Growth": document.getElementById('bsc-lg-list')
+            };
+
+            Object.values(groups).forEach(g => { if(g) g.innerHTML = ''; });
+
+            appState.bsc.forEach((item, index) => {
+                const container = groups[item.perspective];
+                if (!container) return;
+                
+                const progress = (parseFloat(item.current) / parseFloat(item.target)) * 100 || 0;
+                
+                container.innerHTML += `
+                    <div class="p-6 hover:bg-slate-50 transition">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-slate-900">${item.objective}</h4>
+                                <div class="flex items-center gap-4 mt-1 text-sm text-slate-500">
+                                    <span class="flex items-center"><i data-lucide="activity" class="w-3 h-3 mr-1"></i> ${item.kpi}</span>
+                                    <span class="flex items-center"><i data-lucide="target" class="w-3 h-3 mr-1"></i> Target: ${item.target}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="text-right">
+                                    <div class="text-xs font-bold text-slate-400 uppercase">Current</div>
+                                    <div class="text-lg font-bold text-slate-800">${item.current}</div>
+                                </div>
+                                <div class="w-16 h-16 relative">
+                                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                                        <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="${progress >= 100 ? 'text-green-500' : 'text-blue-600'}" stroke-width="3" stroke-dasharray="${progress}, 100" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">${Math.round(progress)}%</div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="editStrategy(${index})" class="p-2 text-slate-400 hover:text-blue-600"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                    <button onclick="deleteStrategy(${index})" class="p-2 text-slate-400 hover:text-red-600"><i data-lucide="trash" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            updateIcons();
+        }
+
+        function openStrategyModal(index = -1) {
+            const item = index > -1 ? appState.bsc[index] : { objective: '', perspective: 'Financial', kpi: '', target: '', current: '' };
+            const modal = document.getElementById('modal-content');
+            modal.innerHTML = `
+                <div class="p-6 border-b flex justify-between items-center">
+                    <h3 class="text-xl font-bold">${index > -1 ? 'Edit' : 'Add'} Strategic Objective</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
+                </div>
+                <form id="strategy-form" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Perspective</label>
+                        <select id="s-perspective" class="w-full border rounded-lg px-3 py-2 outline-none">
+                            <option ${item.perspective === 'Financial' ? 'selected' : ''}>Financial</option>
+                            <option ${item.perspective === 'Customer' ? 'selected' : ''}>Customer</option>
+                            <option ${item.perspective === 'Internal Processes' ? 'selected' : ''}>Internal Processes</option>
+                            <option ${item.perspective === 'Learning & Growth' ? 'selected' : ''}>Learning & Growth</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Strategic Objective</label>
+                        <input type="text" id="s-obj" value="${item.objective}" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">KPI Metric</label>
+                        <input type="text" id="s-kpi" value="${item.kpi}" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Target Value</label>
+                            <input type="text" id="s-target" value="${item.target}" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Current Value</label>
+                            <input type="text" id="s-current" value="${item.current}" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">${index > -1 ? 'Update' : 'Save'} Strategy</button>
+                    </div>
+                </form>
+            `;
+            
+            document.getElementById('strategy-form').onsubmit = (e) => {
+                e.preventDefault();
+                const updated = {
+                    objective: document.getElementById('s-obj').value,
+                    perspective: document.getElementById('s-perspective').value,
+                    kpi: document.getElementById('s-kpi').value,
+                    target: document.getElementById('s-target').value,
+                    current: document.getElementById('s-current').value
+                };
+                if (index > -1) appState.bsc[index] = updated;
+                else appState.bsc.push(updated);
+                saveData();
+                closeModal();
+                renderBsc();
+            };
+            
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            updateIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+
+        function deleteStrategy(i) {
+            if(confirm('Are you sure you want to delete this strategy?')) {
+                appState.bsc.splice(i, 1);
+                saveData();
+                renderBsc();
+            }
+        }
+
+        function editStrategy(i) {
+            openStrategyModal(i);
+        }
+
+        // --- DASHBOARD LOGIC ---
+        function renderDashboard() {
+            const counts = {
+                'Financial': 0,
+                'Customer': 0,
+                'Internal Processes': 0,
+                'Learning & Growth': 0
+            };
+            
+            appState.bsc.forEach(s => counts[s.perspective]++);
+            
+            const finCount = document.getElementById('financial-count');
+            if(finCount) finCount.innerText = counts['Financial'];
+            const custCount = document.getElementById('customer-count');
+            if(custCount) custCount.innerText = counts['Customer'];
+            const procCount = document.getElementById('process-count');
+            if(procCount) procCount.innerText = counts['Internal Processes'];
+            const lgCountEl = document.getElementById('lg-count');
+            if(lgCountEl) lgCountEl.innerText = counts['Learning & Growth'];
+            
+            const finProg = document.getElementById('financial-progress');
+            if(finProg) finProg.style.width = Math.min((counts['Financial']/5)*100, 100) + '%';
+            const custProg = document.getElementById('customer-progress');
+            if(custProg) custProg.style.width = Math.min((counts['Customer']/5)*100, 100) + '%';
+            const procProg = document.getElementById('process-progress');
+            if(procProg) procProg.style.width = Math.min((counts['Internal Processes']/5)*100, 100) + '%';
+            const lgProg = document.getElementById('lg-progress');
+            if(lgProg) lgProg.style.width = Math.min((counts['Learning & Growth']/5)*100, 100) + '%';
+            
+            const tbody = document.getElementById('dashboard-kpi-rows');
+            if(tbody) {
+                tbody.innerHTML = appState.bsc.slice(0, 5).map(item => {
+                    const prog = (parseFloat(item.current) / parseFloat(item.target)) * 100 || 0;
+                    return `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="px-6 py-4 font-medium text-slate-800">${item.objective}</td>
+                            <td class="px-6 py-4 text-slate-600">${item.kpi}</td>
+                            <td class="px-6 py-4 font-bold text-slate-900">${item.current} / ${item.target}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                        <div class="h-full ${prog >= 100 ? 'bg-green-500' : 'bg-blue-600'}" style="width: ${Math.min(prog, 100)}%"></div>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-500">${Math.round(prog)}%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            const orgNameEl = document.getElementById('org-name-display');
+            if(orgNameEl) orgNameEl.innerText = appState.orgName;
+            const mandateEl = document.getElementById('mandate-content');
+            if(mandateEl) mandateEl.innerText = `"${appState.mandate}"`;
+        }
+
+        function editMandate() {
+            const n = prompt("Enter Organizational Name:", appState.orgName);
+            const m = prompt("Enter Organizational Mandate / Vision:", appState.mandate);
+            if(n) appState.orgName = n;
+            if(m) appState.mandate = m;
+            saveData();
+            renderDashboard();
+        }
+
+        // --- INITIATIVES ---
+        function renderInitiatives() {
+            const container = document.getElementById('initiatives-container');
+            if(!container) return;
+            if(appState.initiatives.length === 0) {
+                container.innerHTML = `<div class="p-12 text-center text-slate-400 italic">No initiatives recorded yet. Add one to get started.</div>`;
+                return;
+            }
+            container.innerHTML = appState.initiatives.map((item, i) => `
+                <div class="glass-panel p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.status === 'Completed' ? 'bg-green-100 text-green-700' : item.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}">${item.status}</span>
+                            <h3 class="font-bold text-slate-900 text-lg">${item.title}</h3>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-slate-500">
+                            <div><span class="block font-bold text-slate-400 uppercase">Lead</span> ${item.owner}</div>
+                            <div><span class="block font-bold text-slate-400 uppercase">Due Date</span> ${item.due}</div>
+                            <div><span class="block font-bold text-slate-400 uppercase">Resources</span> ${item.resources}</div>
+                            <div><span class="block font-bold text-slate-400 uppercase">Output</span> ${item.output}</div>
+                        </div>
+                    </div>
+                    <button onclick="deleteInitiative(${i})" class="mt-4 md:mt-0 text-red-500 hover:bg-red-50 p-2 rounded"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                </div>
+            `).join('');
+            updateIcons();
+        }
+
+        function openInitiativeModal() {
+            const modal = document.getElementById('modal-content');
+            modal.innerHTML = `
+                <div class="p-6 border-b flex justify-between items-center">
+                    <h3 class="text-xl font-bold">New Initiative</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
+                </div>
+                <form id="init-form" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Project/Activity Title</label>
+                        <input type="text" id="i-title" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select id="i-status" class="w-full border rounded-lg px-3 py-2 outline-none">
+                                <option>Planning</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                                <option>On Hold</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Responsible Person</label>
+                            <input type="text" id="i-owner" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Due Date</label>
+                            <input type="date" id="i-due" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Expected Output</label>
+                            <input type="text" id="i-output" required class="w-full border rounded-lg px-3 py-2 outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Resources Needed</label>
+                        <input type="text" id="i-resources" placeholder="e.g. $5k Budget, 2 Engineers" class="w-full border rounded-lg px-3 py-2 outline-none">
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Add Initiative</button>
+                    </div>
+                </form>
+            `;
+            
+            document.getElementById('init-form').onsubmit = (e) => {
+                e.preventDefault();
+                appState.initiatives.push({
+                    title: document.getElementById('i-title').value,
+                    status: document.getElementById('i-status').value,
+                    owner: document.getElementById('i-owner').value,
+                    due: document.getElementById('i-due').value,
+                    output: document.getElementById('i-output').value,
+                    resources: document.getElementById('i-resources').value
+                });
+                saveData();
+                closeModal();
+                renderInitiatives();
+            };
+            
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            updateIcons();
+        }
+
+        function deleteInitiative(i) {
+            appState.initiatives.splice(i, 1);
+            saveData();
+            renderInitiatives();
+        }
+
+        // --- COLLABORATION ---
+        function renderTeam() {
+            const list = document.getElementById('team-list');
+            if(!list) return;
+            list.innerHTML = appState.team.map(m => `
+                <div class="flex items-center p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-100">
+                    <div class="relative">
+                        <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-600">${m.name[0]}</div>
+                        <div class="absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${m.status === 'online' ? 'bg-green-500' : 'bg-slate-300'}"></div>
+                    </div>
+                    <div class="ml-3 overflow-hidden">
+                        <p class="text-sm font-bold text-slate-800 truncate">${m.name}</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest">${m.role}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderChat() {
+            const box = document.getElementById('chat-box');
+            if(!box) return;
+            box.innerHTML = appState.messages.map(m => `
+                <div class="flex flex-col ${m.sender === currentUser.name ? 'items-end' : 'items-start'}">
+                    <div class="max-w-[80%] ${m.sender === currentUser.name ? 'bg-blue-600 text-white rounded-l-xl rounded-tr-xl' : 'bg-slate-100 text-slate-800 rounded-r-xl rounded-tl-xl'} p-3 shadow-sm">
+                        <p class="text-xs font-bold opacity-70 mb-1">${m.sender}</p>
+                        <p class="text-sm">${m.text}</p>
+                    </div>
+                    <span class="text-[10px] text-slate-400 mt-1">${m.time}</span>
+                </div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        const chatForm = document.getElementById('chat-form');
+        if(chatForm) {
+            chatForm.onsubmit = (e) => {
+                e.preventDefault();
+                const input = document.getElementById('chat-input');
+                if(!input.value.trim()) return;
+                
+                appState.messages.push({
+                    id: Date.now(),
+                    sender: currentUser.name,
+                    text: input.value,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+                input.value = '';
+                renderChat();
+                saveData();
+            };
+        }
+
+        function addTeamMember() {
+            const n = prompt("Member Name:");
+            const r = prompt("Role:");
+            if(n && r) {
+                appState.team.push({ id: Date.now(), name: n, role: r, status: 'away', email: '' });
+                saveData();
+                renderTeam();
+            }
+        }
+
+        // --- PLAN GENERATOR ---
+        function renderPlan() {
+            const orgNameEl = document.getElementById('plan-org-name');
+            if(orgNameEl) orgNameEl.innerText = appState.orgName.toUpperCase();
+            const mandateEl = document.getElementById('plan-mandate');
+            if(mandateEl) mandateEl.innerText = `"${appState.mandate}"`;
+            const dateEl = document.getElementById('plan-date');
+            if(dateEl) dateEl.innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            ['s', 'w', 'o', 't'].forEach(t => {
+                const upper = t.toUpperCase();
+                const listEl = document.getElementById(`plan-swot-${t}`);
+                if(listEl) {
+                    listEl.innerHTML = appState.swot[upper].length ? 
+                        appState.swot[upper].map(i => `<li>• ${i}</li>`).join('') : `<li class="italic opacity-50">None defined</li>`;
+                }
+            });
+
+            const tbody = document.getElementById('plan-bsc-body');
+            if(tbody) {
+                tbody.innerHTML = appState.bsc.length ? appState.bsc.map(item => `
+                    <tr>
+                        <td class="px-4 py-3 font-bold text-slate-400 text-xs uppercase">${item.perspective}</td>
+                        <td class="px-4 py-3 font-medium text-slate-800">${item.objective}</td>
+                        <td class="px-4 py-3">
+                            <div class="font-bold">${item.kpi}</div>
+                            <div class="text-xs text-slate-500">Target: ${item.target} (Current: ${item.current})</div>
+                        </td>
+                    </tr>
+                `).join('') : `<tr><td colspan="3" class="p-8 text-center text-slate-400">No BSC data available.</td></tr>`;
+            }
+
+            const roadmap = document.getElementById('plan-initiatives-list');
+            if(roadmap) {
+                roadmap.innerHTML = appState.initiatives.length ? appState.initiatives.map(item => `
+                    <div class="bg-slate-50 p-4 rounded border flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-slate-900">${item.title}</h4>
+                            <p class="text-xs text-slate-500">Lead: ${item.owner} | Output: ${item.output}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[10px] font-bold uppercase ${item.status === 'Completed' ? 'text-green-600' : 'text-blue-600'}">${item.status}</div>
+                            <div class="text-xs font-medium">Due: ${item.due}</div>
+                        </div>
+                    </div>
+                `).join('') : `<div class="p-8 text-center text-slate-400 bg-slate-50 rounded">No initiatives defined.</div>`;
+            }
+        }
+
+        // --- FORM HELPERS & INIT ---
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.previousElementSibling;
+                input.type = input.type === 'password' ? 'text' : 'password';
+            });
+        });
+
+        const pwInput = document.getElementById('reg-password');
+        if(pwInput) {
+            pwInput.addEventListener('input', (e) => {
+                const v = e.target.value;
+                const len = document.getElementById('pw-len');
+                if(len) len.className = v.length >= 8 ? 'text-xs text-green-500 flex items-center' : 'text-xs text-gray-400 flex items-center';
+                const upper = document.getElementById('pw-upper');
+                if(upper) upper.className = /[A-Z]/.test(v) ? 'text-xs text-green-500 flex items-center' : 'text-xs text-gray-400 flex items-center';
+                const num = document.getElementById('pw-num');
+                if(num) num.className = /[0-9]/.test(v) ? 'text-xs text-green-500 flex items-center' : 'text-xs text-gray-400 flex items-center';
+            });
+        }
+
+        const loginEl = document.getElementById('login-form-el');
+        if(loginEl) loginEl.onsubmit = handleLogin;
+        const regEl = document.getElementById('reg-form-el');
+        if(regEl) regEl.onsubmit = handleRegister;
+        const resetEl = document.getElementById('reset-form-el');
+        if(resetEl) {
+            resetEl.onsubmit = (e) => {
+                e.preventDefault();
+                document.getElementById('reset-success').classList.remove('hidden');
+                document.getElementById('reset-email').value = '';
+            };
+        }
+
+        window.onload = () => {
+            // Initial render attempts check session after a small delay to ensure Lucide is loaded
+            setTimeout(() => {
+                checkSession();
+                updateIcons();
+            }, 100);
+        };
+    </script>
+</body>
+</html>
