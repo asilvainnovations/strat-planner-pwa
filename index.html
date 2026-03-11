@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -4105,42 +4105,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => showToast('Welcome back, Maria!', 'success'), 500);
   setTimeout(() => showToast('2 new notifications', 'info'), 1500);
 });
-
-   <!-- Scripts -->
-  <script src="auth.js"></script>
-  <script src="database.js"></script>
-  <script src="email.js"></script>
-  <script src="ws.js"></script>
-  <script src="routes.js"></script>
-  <script src="server.js"></script>
-
-  <!-- Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(registration => {
-            console.log('Service Worker registered with scope:', registration.scope);
-          })
-          .catch(error => {
-            console.error('Service Worker registration failed:', error);
-          });
-      });
-    }
-  </script>
-
-  <!-- Initialization Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      initNotifications();
-      initDashboard();
-      simulateSync();
-
-      // Show welcome toast
-      setTimeout(() => showToast('Welcome back, Maria!', 'success'), 500);
-      setTimeout(() => showToast('2 new notifications', 'info'), 1500);
-    });
-  </script>
 </script>
 </body>
 </html>
