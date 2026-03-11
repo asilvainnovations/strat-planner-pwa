@@ -1,0 +1,37 @@
+{
+  "name": "Strat Planner Pro",
+  "short_name": "StratPro",
+  "description": "Strategic Planning Platform for Leaders Who Demand Precision and Results",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A1628",
+  "theme_color": "#0A1628",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/#dashboard",
+      "description": "Go to Dashboard"
+    },
+    {
+      "name": "SWOT Analysis",
+      "url": "/#swot",
+      "description": "Open SWOT Analysis"
+    }
+  ]
+}
