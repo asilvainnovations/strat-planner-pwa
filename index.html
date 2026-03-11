@@ -1,46 +1,4112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0A1628">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Strat Planner Pro">
-  <meta name="description" content="Strategic Planning Platform for Leaders Who Demand Precision and Results">
-  <title>Strat Planner Pro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Strat Planner Pro">
+<meta name="description" content="Strategic Planning Platform for Leaders Who Demand Precision and Results">
+<title>Strat Planner Pro</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png">
 
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Condensed:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Icons -->
-  <link rel="apple-touch-icon" href="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png">
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Condensed:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ==============================
+   CSS VARIABLES & DESIGN TOKENS
+   ============================== */
+:root {
+  /* Blue Palette */
+  --blue-950: #030712;
+  --blue-900: #0A1628;
+  --blue-850: #0D1F3C;
+  --blue-800: #0F2952;
+  --blue-700: #1A3A6B;
+  --blue-600: #1E4D9B;
+  --blue-500: #2563EB;
+  --blue-400: #3B82F6;
+  --blue-300: #60A5FA;
+  --blue-200: #93C5FD;
+  --blue-100: #BFDBFE;
+  --blue-50: #EFF6FF;
+  
+  /* Accent Blues */
+  --cyan-500: #06B6D4;
+  --cyan-400: #22D3EE;
+  --sky-500: #0EA5E9;
+  --indigo-500: #6366F1;
+  --indigo-400: #818CF8;
+  
+  /* Liquid Glass */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --glass-bg-active: rgba(255, 255, 255, 0.16);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-border-strong: rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --glass-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.2), 0 1px 4px rgba(0, 0, 0, 0.15);
+  --glass-inset: inset 0 1px 0 rgba(255,255,255,0.15);
+  
+  /* Typography */
+  --font-display: 'Poppins', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --font-data: 'Roboto Condensed', sans-serif;
+  
+  /* Spacing */
+  --sidebar-width: 280px;
+  --header-height: 64px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* Colors */
+  --text-primary: rgba(255,255,255,0.95);
+  --text-secondary: rgba(255,255,255,0.65);
+  --text-tertiary: rgba(255,255,255,0.4);
+  --text-accent: var(--blue-300);
+  
+  /* Status */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: var(--blue-400);
+}
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
+/* ==============================
+   RESET & BASE
+   ============================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { 
+  scroll-behavior: smooth; 
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body {
+  font-family: var(--font-ui);
+  background: var(--blue-900);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
 
-  <!-- Chart.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+/* ==============================
+   ANIMATED BACKGROUND
+   ============================== */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: orb-drift 20s ease-in-out infinite;
+}
+.bg-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #1E4D9B, transparent);
+  top: -200px; left: -200px;
+  animation-delay: 0s;
+}
+.bg-orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #06B6D4, transparent);
+  top: 30%; right: -150px;
+  animation-delay: -7s;
+}
+.bg-orb-3 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #6366F1, transparent);
+  bottom: -100px; left: 30%;
+  animation-delay: -14s;
+}
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+/* ==============================
+   APP LAYOUT
+   ============================== */
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==============================
+   LIQUID GLASS COMPONENTS
+   ============================== */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+}
+.glass-sm {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm), var(--glass-inset);
+}
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), var(--glass-inset);
+}
+.glass-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.glass-btn:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.glass-btn:active {
+  transform: translateY(0);
+  background: var(--glass-bg-active);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-full);
+  color: white;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4), var(--glass-inset);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--blue-400), var(--blue-500));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5), var(--glass-inset);
+}
+.btn-accent {
+  background: linear-gradient(135deg, var(--cyan-500), var(--sky-500));
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-full);
+  color: white;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4), var(--glass-inset);
+}
+.btn-accent:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+}
+
+/* ==============================
+   HEADER / TOP BAR
+   ============================== */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-height);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  background: rgba(10, 22, 40, 0.85);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-img {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.2), 0 4px 12px rgba(0,0,0,0.3);
+  object-fit: cover;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  background: linear-gradient(135deg, #fff 0%, var(--blue-200) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.3px;
+}
+.logo-badge {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--blue-500);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.header-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.plan-selector {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.header-btn {
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.header-btn:hover { background: var(--glass-bg-hover); }
+.badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  border: 2px solid var(--blue-900);
+}
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-500), var(--cyan-500));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+.sync-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: var(--font-data);
+  color: var(--text-secondary);
+}
+.sync-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ==============================
+   MAIN LAYOUT
+   ============================== */
+.main-layout {
+  display: flex;
+  padding-top: var(--header-height);
+  min-height: 100vh;
+}
+
+/* ==============================
+   SIDEBAR
+   ============================== */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: var(--header-height);
+  bottom: 0;
+  width: var(--sidebar-width);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(10, 22, 40, 0.75);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border-right: 1px solid var(--glass-border);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar-header {
+  padding: 20px 16px 12px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-tertiary);
+}
+.nav-group { margin-bottom: 8px; }
+.nav-group-label {
+  padding: 8px 16px 4px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-tertiary);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  margin: 2px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  position: relative;
+  text-decoration: none;
+  user-select: none;
+}
+.nav-item:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(37,99,235,0.25), rgba(6,182,212,0.1));
+  color: white;
+  border: 1px solid rgba(37,99,235,0.3);
+  box-shadow: 0 2px 12px rgba(37,99,235,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.nav-item.active .nav-icon { color: var(--blue-300); }
+.nav-icon {
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.nav-label { flex: 1; }
+.nav-badge {
+  background: var(--blue-600);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-data);
+}
+.nav-badge.new { background: var(--success); }
+.nav-badge.ai {
+  background: linear-gradient(135deg, var(--indigo-500), var(--cyan-500));
+  animation: shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--glass-border);
+}
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.user-card:hover { background: var(--glass-bg); }
+.user-info { flex: 1; min-width: 0; }
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-role {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-data);
+}
+
+/* ==============================
+   CONTENT AREA
+   ============================== */
+.content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 28px;
+  min-height: calc(100vh - var(--header-height));
+}
+.page { display: none; }
+.page.active { display: block; }
+.page-header {
+  margin-bottom: 28px;
+}
+.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, white, var(--blue-200));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.page-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+}
+.page-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.page-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+/* ==============================
+   GRID LAYOUTS
+   ============================== */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+/* ==============================
+   CARDS
+   ============================== */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+}
+.card-sm {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-family: var(--font-data);
+  margin-top: 2px;
+}
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.stat-card:hover { 
+  transform: translateY(-3px);
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), var(--glass-inset);
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent, linear-gradient(90deg, var(--blue-500), var(--cyan-500)));
+}
+.stat-label {
+  font-size: 11px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-delta {
+  font-size: 12px;
+  font-family: var(--font-data);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.delta-up { color: var(--success); }
+.delta-down { color: var(--danger); }
+.stat-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 36px;
+  opacity: 0.1;
+}
+
+/* ==============================
+   PROGRESS BARS
+   ============================== */
+.progress-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--blue-500), var(--cyan-500));
+  transition: width 1s ease;
+  position: relative;
+}
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 20px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+  animation: progress-shine 2s ease-in-out infinite;
+}
+@keyframes progress-shine {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* ==============================
+   SWOT GRID
+   ============================== */
+.swot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100vh - 280px);
+  min-height: 500px;
+}
+.swot-quadrant {
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  transition: all 0.3s ease;
+}
+.swot-quadrant:hover { border-color: var(--glass-border-strong); }
+.swot-s {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.05));
+  --swot-color: #10B981;
+}
+.swot-w {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 101, 101, 0.05));
+  --swot-color: #EF4444;
+}
+.swot-o {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.05));
+  --swot-color: #3B82F6;
+}
+.swot-t {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.05));
+  --swot-color: #F59E0B;
+}
+.swot-quadrant::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--swot-color);
+}
+.swot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.swot-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--swot-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.swot-badge {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-data);
+}
+.swot-items { flex: 1; overflow-y: auto; }
+.swot-item {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.swot-item:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+.swot-item-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.swot-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-ui);
+}
+.swot-add-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.3);
+  color: var(--text-primary);
+}
+
+/* ==============================
+   FORMS & INPUTS
+   ============================== */
+.form-group { margin-bottom: 20px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--blue-400);
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-tertiary); }
+.form-select { cursor: pointer; }
+.form-select option { background: var(--blue-850); color: var(--text-primary); }
+.form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+/* ==============================
+   TABS
+   ============================== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  width: fit-content;
+  margin-bottom: 24px;
+}
+.tab {
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-family: var(--font-ui);
+}
+.tab.active {
+  background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
+  color: white;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.4);
+}
+.tab:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+
+/* ==============================
+   STRATEGY MATRIX
+   ============================== */
+.strategy-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.strategy-cell {
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.strategy-cell:hover { border-color: var(--glass-border-strong); }
+.strategy-so { background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.06)); }
+.strategy-st { background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(245,158,11,0.06)); }
+.strategy-wo { background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(6,182,212,0.06)); }
+.strategy-wt { background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(245,158,11,0.06)); }
+.strategy-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.strategy-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  font-family: var(--font-ui);
+}
+.strategy-item {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ==============================
+   SCORECARD
+   ============================== */
+.scorecard-perspective {
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.perspective-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.perspective-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.kpi-table { width: 100%; border-collapse: collapse; }
+.kpi-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.kpi-table td {
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: middle;
+}
+.kpi-table tr:last-child td { border-bottom: none; }
+.kpi-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-on-track { background: rgba(16,185,129,0.15); color: #34D399; }
+.status-at-risk { background: rgba(245,158,11,0.15); color: #FBBF24; }
+.status-behind { background: rgba(239,68,68,0.15); color: #FC8181; }
+.status-complete { background: rgba(37,99,235,0.15); color: #93C5FD; }
+
+/* ==============================
+   INITIATIVE MANAGEMENT
+   ============================== */
+.initiative-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.04);
+  transition: all 0.2s ease;
+}
+.initiative-row:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+.initiative-type {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.type-program { background: var(--blue-400); }
+.type-activity { background: var(--cyan-400); }
+.type-project { background: var(--indigo-400); }
+.initiative-name { flex: 1; font-size: 14px; font-weight: 500; }
+.initiative-owner { font-size: 12px; color: var(--text-secondary); }
+.initiative-budget { font-family: var(--font-data); font-size: 14px; font-weight: 600; color: var(--blue-300); }
+.initiative-progress { width: 100px; }
+
+/* ==============================
+   CLD / SYSTEMS THINKING
+   ============================== */
+.cld-canvas {
+  width: 100%;
+  height: 500px;
+  background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+  cursor: crosshair;
+}
+.cld-node {
+  position: absolute;
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-data);
+  cursor: move;
+  user-select: none;
+  border: 2px solid;
+  transition: all 0.2s ease;
+  text-align: center;
+  padding: 4px 8px;
+  line-height: 1.2;
+}
+.cld-node:hover { transform: scale(1.05); z-index: 10; }
+.node-s { background: rgba(16,185,129,0.2); border-color: #10B981; color: #34D399; }
+.node-w { background: rgba(239,68,68,0.2); border-color: #EF4444; color: #FC8181; }
+.node-o { background: rgba(37,99,235,0.2); border-color: #3B82F6; color: #93C5FD; }
+.node-t { background: rgba(245,158,11,0.2); border-color: #F59E0B; color: #FBBF24; }
+
+/* ==============================
+   COLLABORATION / COMMENTS
+   ============================== */
+.comment-thread {
+  border-left: 3px solid var(--blue-500);
+  padding-left: 16px;
+  margin-bottom: 16px;
+}
+.comment {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 8px;
+}
+.comment-author {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.comment-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-data);
+}
+.comment-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-top: 6px; }
+.presence-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--blue-900);
+  margin-left: -8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.presence-list { display: flex; align-items: center; }
+.presence-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid var(--blue-900);
+  position: absolute;
+  bottom: 0; right: 0;
+}
+
+/* ==============================
+   ACTIVITY LOG
+   ============================== */
+.activity-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.activity-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.activity-content { flex: 1; }
+.activity-desc { font-size: 13px; color: var(--text-secondary); }
+.activity-desc strong { color: var(--text-primary); font-weight: 600; }
+.activity-time { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-data); margin-top: 2px; }
+
+/* ==============================
+   AI PANEL
+   ============================== */
+.ai-panel {
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(6,182,212,0.05));
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.ai-panel::before {
+  content: '✦';
+  position: absolute;
+  right: 20px;
+  top: 16px;
+  font-size: 40px;
+  opacity: 0.05;
+}
+.ai-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--indigo-400);
+  margin-bottom: 12px;
+}
+.ai-label::before {
+  content: '✦';
+  animation: spin 4s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.ai-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.ai-output {
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  min-height: 80px;
+}
+.ai-typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 14px;
+}
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--indigo-400);
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ==============================
+   TEMPLATE LIBRARY
+   ============================== */
+.template-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.template-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.template-industry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.template-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.template-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.template-stats {
+  display: flex;
+  gap: 12px;
+}
+.template-stat {
+  font-size: 11px;
+  font-family: var(--font-data);
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ==============================
+   MODAL
+   ============================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: rgba(13, 31, 60, 0.95);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-overlay.visible .modal {
+  transform: translateY(0) scale(1);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.modal-close {
+  width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 18px;
+  transition: all 0.2s ease;
+  border: none;
+  background: rgba(255,255,255,0.05);
+}
+.modal-close:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+/* ==============================
+   NOTIFICATIONS
+   ============================== */
+.notification-panel {
+  position: fixed;
+  top: calc(var(--header-height) + 12px);
+  right: 16px;
+  width: 360px;
+  z-index: 9999;
+  display: none;
+}
+.notification-panel.visible { display: block; }
+.notification-card {
+  background: rgba(13,31,60,0.95);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+.notif-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.notif-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+}
+.notif-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+.notif-item:hover { background: rgba(255,255,255,0.04); }
+.notif-item:last-child { border-bottom: none; }
+.notif-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.notif-text { flex: 1; }
+.notif-msg { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.notif-msg strong { color: var(--text-primary); }
+.notif-time { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-data); margin-top: 3px; }
+.notif-unread { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-400); flex-shrink: 0; margin-top: 6px; }
+
+/* ==============================
+   ADMIN BADGE
+   ============================== */
+.admin-crown {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 14px;
+}
+
+/* ==============================
+   REPORT GENERATOR
+   ============================== */
+.report-preview {
+  background: white;
+  color: #1a1a2e;
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  font-family: var(--font-ui);
+}
+.report-preview h1 { color: #0F2952; font-family: var(--font-display); }
+.report-preview h2 { color: #1E4D9B; font-size: 16px; margin: 20px 0 10px; font-family: var(--font-display); }
+.report-preview p { font-size: 13px; color: #444; line-height: 1.7; margin-bottom: 10px; }
+.report-preview table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.report-preview th { background: #0F2952; color: white; padding: 8px 12px; font-size: 12px; text-align: left; }
+.report-preview td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+.report-preview tr:nth-child(even) td { background: #f8fafc; }
+
+/* ==============================
+   ONLINE/OFFLINE INDICATOR
+   ============================== */
+.offline-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(239,68,68,0.9);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 4px 24px rgba(239,68,68,0.4);
+}
+body.offline .offline-banner { display: block; }
+
+/* ==============================
+   SCROLLBAR
+   ============================== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+/* ==============================
+   TOAST
+   ============================== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: rgba(13,31,60,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: toast-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.toast.removing { animation: toast-out 0.3s ease forwards; }
+.toast-icon { font-size: 18px; flex-shrink: 0; }
+.toast-msg { font-size: 13px; color: var(--text-primary); flex: 1; }
+.toast-success { border-left: 3px solid var(--success); }
+.toast-error { border-left: 3px solid var(--danger); }
+.toast-info { border-left: 3px solid var(--blue-400); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* ==============================
+   EMPTY STATE
+   ============================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+.empty-icon { font-size: 48px; opacity: 0.3; margin-bottom: 16px; }
+.empty-title { font-family: var(--font-display); font-weight: 600; margin-bottom: 8px; }
+.empty-desc { font-size: 13px; color: var(--text-secondary); }
+
+/* ==============================
+   CHART CONTAINER
+   ============================== */
+.chart-wrapper { position: relative; height: 200px; }
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+@media (max-width: 768px) {
+  :root { --sidebar-width: 0px; }
+  .sidebar { transform: translateX(-280px); width: 280px; }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .content { margin-left: 0; padding: 16px; }
+  .swot-grid { height: auto; grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .strategy-matrix { grid-template-columns: 1fr; }
+  .logo-text { display: none; }
+}
+
+/* ==============================
+   LOADING SKELETON
+   ============================== */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Utility */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-secondary { color: var(--text-secondary); }
+.text-accent { color: var(--blue-300); }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.font-mono { font-family: var(--font-data); }
+.rounded-full { border-radius: var(--radius-full); }
+.p-sm { padding: 8px 14px; }
+.p-md { padding: 11px 20px; }
+.p-lg { padding: 14px 24px; }
+.w-full { width: 100%; }
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-  <div id="app">
-    <!-- App Content -->
-    <main>
-      <div class="sidebar">
-        <!-- Sidebar Content -->
-      </div>
-      <div class="content">
-        <!-- Main Content -->
-      </div>
-    </main>
-  </div>
 
-  <!-- Scripts -->
+<!-- Animated Background -->
+<div class="app-bg">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- Offline Banner -->
+<div class="offline-banner">⚠ You're offline — changes saved locally</div>
+
+<!-- Notification Panel -->
+<div class="notification-panel" id="notifPanel">
+  <div class="notification-card">
+    <div class="notif-header">
+      <span class="notif-title">Notifications</span>
+      <span class="text-xs text-secondary" style="cursor:pointer" onclick="clearNotifs()">Mark all read</span>
+    </div>
+    <div id="notifList"></div>
+  </div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ====== TOP BAR ====== -->
+<header class="top-bar">
+  <a class="logo" href="#" onclick="navigate('dashboard')">
+    <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" class="logo-img" alt="Strat Planner Pro">
+    <div>
+      <div class="logo-text">Strat Planner Pro</div>
+    </div>
+    <span class="logo-badge">PRO</span>
+  </a>
+  
+  <div class="header-center">
+    <div class="glass-btn p-sm" onclick="openPlanSelector()" style="min-width:200px; justify-content:space-between;">
+      <span id="activePlanName" style="font-size:13px;">Q2 2025 – Corporate Strategy</span>
+      <span style="opacity:0.5;">▾</span>
+    </div>
+  </div>
+  
+  <div class="header-right">
+    <div class="sync-indicator glass-btn p-sm">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncStatus">Synced</span>
+    </div>
+    
+    <!-- Presence -->
+    <div class="presence-list" id="presenceList">
+      <div class="presence-avatar" style="background:linear-gradient(135deg,#3B82F6,#06B6D4); position:relative; z-index:3;" title="Maria Santos (you)">MS</div>
+      <div class="presence-avatar" style="background:linear-gradient(135deg,#10B981,#3B82F6); position:relative; z-index:2;" title="Juan Cruz (editing)">JC</div>
+      <div class="presence-avatar" style="background:linear-gradient(135deg,#6366F1,#EF4444); position:relative; z-index:1;" title="Ana Reyes (viewing)">AR</div>
+    </div>
+    
+    <div class="header-btn" onclick="toggleNotifications()">
+      🔔
+      <div class="badge" id="notifBadge"></div>
+    </div>
+    <div class="header-btn">⚙️</div>
+    <div class="avatar" onclick="openUserMenu()" id="userAvatar">MS</div>
+  </div>
+</header>
+
+<!-- ====== MAIN LAYOUT ====== -->
+<div class="main-layout">
+  
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">Navigation</div>
+    
+    <div class="nav-group">
+      <div class="nav-item active" onclick="navigate('dashboard')" data-page="dashboard">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </div>
+    </div>
+    
+    <div class="nav-group">
+      <div class="nav-group-label">Diagnostics</div>
+      <div class="nav-item" onclick="navigate('swot')" data-page="swot">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">SWOT Analysis</span>
+      </div>
+      <div class="nav-item" onclick="navigate('swot-ai')" data-page="swot-ai">
+        <span class="nav-icon">✦</span>
+        <span class="nav-label">AI SWOT Generator</span>
+        <span class="nav-badge ai">AI</span>
+      </div>
+    </div>
+    
+    <div class="nav-group">
+      <div class="nav-group-label">Systems Thinking</div>
+      <div class="nav-item" onclick="navigate('cld')" data-page="cld">
+        <span class="nav-icon">🔄</span>
+        <span class="nav-label">Causal Loop Diagrams</span>
+      </div>
+      <div class="nav-item" onclick="navigate('archetypes')" data-page="archetypes">
+        <span class="nav-icon">🏛</span>
+        <span class="nav-label">Systems Archetypes</span>
+      </div>
+    </div>
+    
+    <div class="nav-group">
+      <div class="nav-group-label">Strategy</div>
+      <div class="nav-item" onclick="navigate('strategy-matrix')" data-page="strategy-matrix">
+        <span class="nav-icon">⚡</span>
+        <span class="nav-label">Strategy Matrix</span>
+      </div>
+      <div class="nav-item" onclick="navigate('strategy-ai')" data-page="strategy-ai">
+        <span class="nav-icon">✦</span>
+        <span class="nav-label">AI Strategy Generator</span>
+        <span class="nav-badge ai">AI</span>
+      </div>
+      <div class="nav-item" onclick="navigate('scorecard')" data-page="scorecard">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Balanced Scorecard</span>
+      </div>
+    </div>
+    
+    <div class="nav-group">
+      <div class="nav-group-label">Execution</div>
+      <div class="nav-item" onclick="navigate('initiatives')" data-page="initiatives">
+        <span class="nav-icon">🚀</span>
+        <span class="nav-label">Initiatives</span>
+        <span class="nav-badge">12</span>
+      </div>
+    </div>
+    
+    <div class="nav-group">
+      <div class="nav-group-label">Outputs</div>
+      <div class="nav-item" onclick="navigate('reports')" data-page="reports">
+        <span class="nav-icon">📄</span>
+        <span class="nav-label">Plan Generator</span>
+      </div>
+      <div class="nav-item" onclick="navigate('templates')" data-page="templates">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Template Library</span>
+        <span class="nav-badge new">NEW</span>
+      </div>
+    </div>
+    
+    <div class="nav-group">
+      <div class="nav-group-label">Collaboration</div>
+      <div class="nav-item" onclick="navigate('team')" data-page="team">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Team & Orgs</span>
+      </div>
+      <div class="nav-item" onclick="navigate('activity')" data-page="activity">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Activity Log</span>
+      </div>
+    </div>
+    
+    <div class="nav-group" id="adminNav">
+      <div class="nav-group-label">Admin <span class="admin-crown">👑</span></div>
+      <div class="nav-item" onclick="navigate('admin')" data-page="admin">
+        <span class="nav-icon">🔐</span>
+        <span class="nav-label">Admin Dashboard</span>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar" style="width:36px;height:36px;font-size:14px;">MS</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarUserName">Maria Santos</div>
+          <div class="user-role" id="sidebarUserRole">Strategy Lead</div>
+        </div>
+        <span style="font-size:16px;opacity:0.4;">⋮</span>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- ====== CONTENT ====== -->
+  <main class="content" id="mainContent">
+    
+    <!-- ==================== DASHBOARD ==================== -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Strategic Dashboard</div>
+          <div class="page-subtitle">Monitor, evaluate, and learn in one place</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="refreshDashboard()">🔄 Refresh</button>
+          <button class="btn-primary p-md" onclick="navigate('reports')">📄 Generate Report</button>
+        </div>
+      </div>
+      
+      <!-- KPI Stats Row -->
+      <div class="grid-4 mb-6">
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #10B981, #3B82F6)">
+          <div class="stat-label">Overall Progress</div>
+          <div class="stat-value" id="dash-progress">67%</div>
+          <div class="stat-delta delta-up">▲ 8% this quarter</div>
+          <div class="stat-icon">📈</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #3B82F6, #6366F1)">
+          <div class="stat-label">Active Initiatives</div>
+          <div class="stat-value" id="dash-initiatives">12</div>
+          <div class="stat-delta delta-up">▲ 3 added</div>
+          <div class="stat-icon">🚀</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #F59E0B, #EF4444)">
+          <div class="stat-label">KPIs On Track</div>
+          <div class="stat-value" id="dash-kpis">18/24</div>
+          <div class="stat-delta delta-down">▼ 2 at risk</div>
+          <div class="stat-icon">🎯</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #06B6D4, #3B82F6)">
+          <div class="stat-label">Total Budget</div>
+          <div class="stat-value" id="dash-budget">₱48.2M</div>
+          <div class="stat-delta">72% utilized</div>
+          <div class="stat-icon">💰</div>
+        </div>
+      </div>
+      
+      <!-- Charts Row -->
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Strategy Execution Progress</div>
+              <div class="card-subtitle">By perspective · Q2 2025</div>
+            </div>
+            <button class="glass-btn p-sm text-xs" onclick="aiSuggest('dashboard')">✦ AI Suggest</button>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="progressChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">SWOT Balance Score</div>
+              <div class="card-subtitle">Internal vs External factors</div>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="swotRadarChart"></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Row -->
+      <div class="grid-2">
+        <!-- Plan Milestones -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Key Milestones</div>
+            <span class="glass-btn p-sm text-xs" onclick="navigate('initiatives')">View All</span>
+          </div>
+          <div id="milestonesContainer"></div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Activity</div>
+            <span class="glass-btn p-sm text-xs" onclick="navigate('activity')">View All</span>
+          </div>
+          <div id="recentActivityContainer"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ==================== SWOT ANALYSIS ==================== -->
+    <div class="page" id="page-swot">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">SWOT Analysis</div>
+          <div class="page-subtitle">Structured diagnostics for complete, consistent analysis</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="openSwotGuide()">📖 Guided Form</button>
+          <button class="glass-btn p-sm" onclick="navigate('swot-ai')">✦ AI Generate</button>
+          <button class="btn-primary p-md" onclick="addSwotItem()">+ Add Item</button>
+        </div>
+      </div>
+      
+      <!-- Collaboration Presence -->
+      <div class="flex items-center gap-3 mb-4" style="padding: 10px 16px; background: rgba(37,99,235,0.1); border-radius: var(--radius-lg); border: 1px solid rgba(37,99,235,0.2);">
+        <span style="font-size:12px; color:var(--text-secondary);">Currently viewing:</span>
+        <div class="presence-list">
+          <div class="presence-avatar" style="background:linear-gradient(135deg,#3B82F6,#06B6D4);" title="You">MS</div>
+          <div class="presence-avatar" style="background:linear-gradient(135deg,#10B981,#3B82F6);" title="Juan Cruz">JC</div>
+        </div>
+        <span style="font-size:12px; color:var(--text-secondary);">· 2 team members here</span>
+        <span style="margin-left:auto;" class="glass-btn p-sm text-xs" onclick="aiSuggest('swot')">✦ AI Suggest</span>
+      </div>
+      
+      <div class="swot-grid" id="swotGrid"></div>
+    </div>
+    
+    <!-- ==================== AI SWOT GENERATOR ==================== -->
+    <div class="page" id="page-swot-ai">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">AI SWOT Generator</div>
+          <div class="page-subtitle">Transform raw inputs into clear, actionable SWOT statements</div>
+        </div>
+      </div>
+      
+      <div class="grid-2">
+        <div>
+          <div class="card mb-4">
+            <div class="card-header">
+              <div class="card-title">Organization Context</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Organization Name</label>
+              <input type="text" class="form-input" id="ai-org-name" placeholder="e.g. Department of Health, Manila">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Industry / Sector</label>
+              <select class="form-select" id="ai-industry">
+                <option value="">Select industry...</option>
+                <option value="government">Government / Public Sector</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="technology">Technology</option>
+                <option value="education">Education</option>
+                <option value="finance">Finance & Banking</option>
+                <option value="retail">Retail & E-commerce</option>
+                <option value="manufacturing">Manufacturing</option>
+                <option value="ngos">NGOs / Non-profit</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Strategic Context / Focus Area</label>
+              <textarea class="form-textarea" id="ai-context" placeholder="Describe your current situation, challenges, and strategic goals..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">OpenAI API Key</label>
+              <input type="password" class="form-input" id="ai-api-key" placeholder="sk-...">
+              <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">Your key is stored locally and never sent to our servers.</div>
+            </div>
+            <button class="btn-primary p-md w-full" onclick="generateSwotAI()">✦ Generate SWOT Analysis</button>
+          </div>
+        </div>
+        
+        <div>
+          <div class="ai-panel" id="aiSwotOutput">
+            <div class="ai-label">AI SWOT Generator</div>
+            <div style="font-size:13px; color:var(--text-secondary); line-height:1.7;">
+              Fill in your organization context and click "Generate SWOT Analysis" to transform your raw inputs into clear, actionable, bias-aware SWOT statements using GPT-4.
+            </div>
+          </div>
+          
+          <div class="card" id="aiSwotResults" style="display:none;">
+            <div class="card-header">
+              <div class="card-title">Generated SWOT</div>
+              <button class="btn-primary p-sm text-xs" onclick="applyAISwot()">Apply to Plan</button>
+            </div>
+            <div id="aiSwotContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ==================== CLD ==================== -->
+    <div class="page" id="page-cld">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Causal Loop Diagram Builder</div>
+          <div class="page-subtitle">Visualize non-linear relationships across SWOT variables</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="addCLDNode()">+ Add Variable</button>
+          <button class="glass-btn p-sm" onclick="clearCLD()">🗑 Clear</button>
+          <button class="btn-primary p-md" onclick="autoLayoutCLD()">⚡ Auto Layout</button>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="flex gap-3 mb-4" style="flex-wrap:wrap;">
+          <span style="font-size:12px; color:var(--text-secondary);">Node Types:</span>
+          <span class="cld-node node-s" style="position:relative; width:auto; height:auto; padding:4px 12px; font-size:11px;">Strength</span>
+          <span class="cld-node node-w" style="position:relative; width:auto; height:auto; padding:4px 12px; font-size:11px;">Weakness</span>
+          <span class="cld-node node-o" style="position:relative; width:auto; height:auto; padding:4px 12px; font-size:11px;">Opportunity</span>
+          <span class="cld-node node-t" style="position:relative; width:auto; height:auto; padding:4px 12px; font-size:11px;">Threat</span>
+          <span style="font-size:12px; color:var(--text-secondary); margin-left:auto;">→ + causal link (reinforcing) &nbsp;&nbsp; ⊖ − causal link (balancing)</span>
+        </div>
+        <canvas class="cld-canvas" id="cldCanvas" width="900" height="500"></canvas>
+      </div>
+      
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Loop Analysis</div></div>
+          <div id="cldLoopAnalysis" style="font-size:13px; color:var(--text-secondary); line-height:1.8;">
+            <div style="margin-bottom:8px;">
+              <span style="background:rgba(16,185,129,0.15); color:#34D399; padding:3px 8px; border-radius:4px; font-size:11px;">R1 Reinforcing</span>
+              <span style="margin-left:8px;">Innovation → Competitive Advantage → Market Share → R&D Budget → Innovation</span>
+            </div>
+            <div>
+              <span style="background:rgba(37,99,235,0.15); color:#93C5FD; padding:3px 8px; border-radius:4px; font-size:11px;">B1 Balancing</span>
+              <span style="margin-left:8px;">Customer Demand → Capacity → Costs → Prices → Customer Demand</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Leverage Points</div></div>
+          <div id="cldLeveragePoints" style="font-size:13px; color:var(--text-secondary); line-height:2;">
+            <div>🎯 <strong style="color:white;">Innovation Investment</strong> — High leverage: drives 3 reinforcing loops</div>
+            <div>🎯 <strong style="color:white;">Digital Capability</strong> — Medium leverage: unlocks 2 opportunities</div>
+            <div>⚠️ <strong style="color:white;">Regulatory Compliance</strong> — Constraint: blocks 1 strategic option</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ==================== ARCHETYPES ==================== -->
+    <div class="page" id="page-archetypes">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Systems Archetypes</div>
+          <div class="page-subtitle">Recognize dynamic patterns in your strategic context</div>
+        </div>
+      </div>
+      
+      <div class="tabs">
+        <div class="tab active" onclick="switchArchetype(this,'limits')">Limits to Growth</div>
+        <div class="tab" onclick="switchArchetype(this,'shifting')">Shifting the Burden</div>
+        <div class="tab" onclick="switchArchetype(this,'escalation')">Escalation</div>
+        <div class="tab" onclick="switchArchetype(this,'fixes')">Fixes that Fail</div>
+        <div class="tab" onclick="switchArchetype(this,'tragedy')">Tragedy of Commons</div>
+      </div>
+      
+      <div id="archetypeContent"></div>
+    </div>
+    
+    <!-- ==================== STRATEGY MATRIX ==================== -->
+    <div class="page" id="page-strategy-matrix">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Strategy Matrix</div>
+          <div class="page-subtitle">SO, ST, WO, WT strategic options aligned to your context</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="aiSuggest('strategy')">✦ AI Suggest</button>
+          <button class="btn-primary p-md" onclick="addStrategyItem()">+ Add Strategy</button>
+        </div>
+      </div>
+      
+      <div class="strategy-matrix" id="strategyMatrix"></div>
+    </div>
+    
+    <!-- ==================== STRATEGY AI ==================== -->
+    <div class="page" id="page-strategy-ai">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">AI Strategy Generator</div>
+          <div class="page-subtitle">Auto-derive strategic options using AI</div>
+        </div>
+      </div>
+      
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Strategy Generation Settings</div></div>
+          <div class="form-group">
+            <label class="form-label">Strategic Focus</label>
+            <select class="form-select" id="strategy-focus">
+              <option>Growth & Expansion</option>
+              <option>Cost Optimization</option>
+              <option>Digital Transformation</option>
+              <option>Service Excellence</option>
+              <option>Risk Mitigation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time Horizon</label>
+            <select class="form-select" id="strategy-horizon">
+              <option>Short-term (1 year)</option>
+              <option>Medium-term (3 years)</option>
+              <option>Long-term (5+ years)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional Context</label>
+            <textarea class="form-textarea" id="strategy-context" placeholder="Any additional context, constraints, or priorities..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">OpenAI API Key</label>
+            <input type="password" class="form-input" id="strategy-api-key" placeholder="sk-...">
+          </div>
+          <button class="btn-primary p-md w-full" onclick="generateStrategyAI()">✦ Generate Strategies</button>
+        </div>
+        
+        <div>
+          <div class="ai-panel">
+            <div class="ai-label">AI Strategy Engine</div>
+            <div id="strategyAiOutput" style="font-size:13px; color:var(--text-secondary); line-height:1.7;">
+              Configure your settings and generate AI-powered SO, ST, WO, and WT strategies based on your SWOT analysis.
+            </div>
+          </div>
+          <div class="card" id="strategyAiResults" style="display:none; margin-top:16px;">
+            <div class="card-header">
+              <div class="card-title">Generated Strategies</div>
+              <button class="btn-primary p-sm text-xs" onclick="applyAIStrategies()">Apply All</button>
+            </div>
+            <div id="strategyAiContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ==================== BALANCED SCORECARD ==================== -->
+    <div class="page" id="page-scorecard">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Balanced Scorecard</div>
+          <div class="page-subtitle">Smart KPI categorization across four perspectives</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="aiSuggest('scorecard')">✦ AI Suggest KPIs</button>
+          <button class="btn-primary p-md" onclick="addKPI()">+ Add KPI</button>
+        </div>
+      </div>
+      
+      <div id="scorecardContainer"></div>
+    </div>
+    
+    <!-- ==================== INITIATIVES ==================== -->
+    <div class="page" id="page-initiatives">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Initiative Management</div>
+          <div class="page-subtitle">Track Programs, Activities, and Projects</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="filterInitiatives()">🔽 Filter</button>
+          <button class="btn-primary p-md" onclick="addInitiative()">+ Add Initiative</button>
+        </div>
+      </div>
+      
+      <!-- Budget Summary -->
+      <div class="grid-3 mb-6">
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #3B82F6, #06B6D4)">
+          <div class="stat-label">Total Budget</div>
+          <div class="stat-value" id="totalBudget">₱0</div>
+          <div class="stat-delta">All initiatives</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #10B981, #3B82F6)">
+          <div class="stat-label">Utilized</div>
+          <div class="stat-value" id="utilizedBudget">₱0</div>
+          <div class="stat-delta delta-up">On track</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #6366F1, #3B82F6)">
+          <div class="stat-label">Remaining</div>
+          <div class="stat-value" id="remainingBudget">₱0</div>
+          <div class="stat-delta">Available</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="tabs">
+          <div class="tab active" onclick="filterInitiativeType(this,'all')">All</div>
+          <div class="tab" onclick="filterInitiativeType(this,'program')">Programs</div>
+          <div class="tab" onclick="filterInitiativeType(this,'activity')">Activities</div>
+          <div class="tab" onclick="filterInitiativeType(this,'project')">Projects</div>
+        </div>
+        <div id="initiativesContainer"></div>
+      </div>
+    </div>
+    
+    <!-- ==================== REPORTS ==================== -->
+    <div class="page" id="page-reports">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Plan Generator</div>
+          <div class="page-subtitle">Produce print-ready, professional strategic planning reports</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="saveAsTemplate()">💾 Save as Template</button>
+          <button class="btn-primary p-md" onclick="printReport()">🖨️ Print / Export PDF</button>
+        </div>
+      </div>
+      
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Report Settings</div></div>
+          <div class="form-group">
+            <label class="form-label">Plan Title</label>
+            <input type="text" class="form-input" id="report-title" value="Q2 2025 Strategic Plan" placeholder="Enter plan title">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Organization</label>
+            <input type="text" class="form-input" id="report-org" value="ASSILVA Innovations, Inc." placeholder="Organization name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reporting Period</label>
+            <input type="text" class="form-input" id="report-period" value="January – June 2025">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sections to Include</label>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+              <label style="display:flex; align-items:center; gap:10px; font-size:13px; cursor:pointer;">
+                <input type="checkbox" checked id="incl-executive"> Executive Summary
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-size:13px; cursor:pointer;">
+                <input type="checkbox" checked id="incl-swot"> SWOT Analysis
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-size:13px; cursor:pointer;">
+                <input type="checkbox" checked id="incl-strategy"> Strategy Matrix
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-size:13px; cursor:pointer;">
+                <input type="checkbox" checked id="incl-scorecard"> Balanced Scorecard
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-size:13px; cursor:pointer;">
+                <input type="checkbox" checked id="incl-initiatives"> Initiative Plan
+              </label>
+            </div>
+          </div>
+          <button class="btn-primary p-md w-full" onclick="generateReportPreview()">Generate Preview</button>
+        </div>
+        
+        <div>
+          <div class="card" id="reportPreviewContainer">
+            <div class="card-header"><div class="card-title">Preview</div></div>
+            <div class="empty-state">
+              <div class="empty-icon">📄</div>
+              <div class="empty-title">No preview yet</div>
+              <div class="empty-desc">Configure and click "Generate Preview"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ==================== TEMPLATES ==================== -->
+    <div class="page" id="page-templates">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Template Library</div>
+          <div class="page-subtitle">Pre-built plans for common industries · Save and share templates</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm">🔍 Search Templates</button>
+          <button class="btn-primary p-md" onclick="saveAsTemplate()">+ Save Current Plan</button>
+        </div>
+      </div>
+      
+      <div class="tabs">
+        <div class="tab active" onclick="filterTemplates(this,'all')">All Templates</div>
+        <div class="tab" onclick="filterTemplates(this,'government')">Government</div>
+        <div class="tab" onclick="filterTemplates(this,'healthcare')">Healthcare</div>
+        <div class="tab" onclick="filterTemplates(this,'technology')">Technology</div>
+        <div class="tab" onclick="filterTemplates(this,'education')">Education</div>
+        <div class="tab" onclick="filterTemplates(this,'my')">My Templates</div>
+      </div>
+      
+      <div class="grid-auto" id="templatesContainer"></div>
+    </div>
+    
+    <!-- ==================== TEAM ==================== -->
+    <div class="page" id="page-team">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Team & Organizations</div>
+          <div class="page-subtitle">Collaborate, share plans, and manage permissions</div>
+        </div>
+        <div class="page-actions">
+          <button class="glass-btn p-sm" onclick="inviteTeamMember()">📧 Invite Member</button>
+          <button class="btn-primary p-md" onclick="createOrganization()">+ New Organization</button>
+        </div>
+      </div>
+      
+      <div class="grid-2 mb-6">
+        <!-- Current Org -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">ASSILVA Innovations, Inc.</div>
+              <div class="card-subtitle">Your organization</div>
+            </div>
+            <span class="kpi-status status-on-track">Active</span>
+          </div>
+          <div id="teamMembersList"></div>
+        </div>
+        
+        <!-- Shared Plans -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Shared Plans</div>
+            <button class="glass-btn p-sm text-xs" onclick="sharePlan()">Share Plan</button>
+          </div>
+          <div id="sharedPlansList"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ==================== ACTIVITY ==================== -->
+    <div class="page" id="page-activity">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Activity Log</div>
+          <div class="page-subtitle">Recent changes by team members</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div id="activityLogContainer"></div>
+      </div>
+    </div>
+    
+    <!-- ==================== ADMIN ==================== -->
+    <div class="page" id="page-admin">
+      <div class="page-top">
+        <div class="page-header">
+          <div class="page-title">Admin Dashboard <span class="admin-crown">👑</span></div>
+          <div class="page-subtitle">admin@asilvainnovations.com · Full system access</div>
+        </div>
+      </div>
+      
+      <div class="grid-4 mb-6">
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #FFD700, #FFA500)">
+          <div class="stat-label">Total Users</div>
+          <div class="stat-value">247</div>
+          <div class="stat-delta delta-up">▲ 12 this week</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #3B82F6, #6366F1)">
+          <div class="stat-label">Active Plans</div>
+          <div class="stat-value">89</div>
+          <div class="stat-delta delta-up">▲ 7 new</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #10B981, #06B6D4)">
+          <div class="stat-label">Organizations</div>
+          <div class="stat-value">34</div>
+          <div class="stat-delta">8 enterprise</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg, #EF4444, #F59E0B)">
+          <div class="stat-label">AI API Calls</div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-delta delta-up">▲ 23% this month</div>
+        </div>
+      </div>
+      
+      <div class="grid-2 mb-6">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">System Health</div>
+            <span class="kpi-status status-on-track">All Systems Operational</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <div class="flex justify-between mb-2"><span class="text-sm">Database</span><span class="text-sm text-success">99.9% uptime</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:99%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2"><span class="text-sm">API Response Time</span><span class="text-sm">124ms avg</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:85%; background:linear-gradient(90deg,#10B981,#3B82F6)"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2"><span class="text-sm">PWA Cache</span><span class="text-sm">98% hit rate</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:98%; background:linear-gradient(90deg,#6366F1,#3B82F6)"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2"><span class="text-sm">Email Delivery</span><span class="text-sm text-success">97.3% success</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:97%; background:linear-gradient(90deg,#F59E0B,#EF4444)"></div></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header"><div class="card-title">User Management</div></div>
+          <div id="adminUserList"></div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Audit Log</div>
+        </div>
+        <div id="adminAuditLog"></div>
+      </div>
+    </div>
+    
+  </main>
+</div>
+
+<script>
+// ========================================
+// STATE MANAGEMENT
+// ========================================
+const STATE = {
+  currentPage: 'dashboard',
+  currentUser: {
+    name: 'Maria Santos',
+    email: 'maria@asilvainnovations.com',
+    role: 'Strategy Lead',
+    isAdmin: false,
+    initials: 'MS'
+  },
+  plans: [],
+  activePlan: {
+    id: 'plan-001',
+    name: 'Q2 2025 – Corporate Strategy',
+    org: 'ASSILVA Innovations, Inc.',
+    swot: {
+      strengths: [
+        { id: 's1', text: 'Strong brand recognition in Southeast Asian markets with 15+ years presence', comments: [] },
+        { id: 's2', text: 'Highly skilled workforce with expertise in digital transformation', comments: [] },
+        { id: 's3', text: 'Robust financial position with low debt-to-equity ratio', comments: [] },
+      ],
+      weaknesses: [
+        { id: 'w1', text: 'Legacy IT infrastructure limiting scalability and innovation speed', comments: [] },
+        { id: 'w2', text: 'High operational costs compared to digital-native competitors', comments: [] },
+      ],
+      opportunities: [
+        { id: 'o1', text: 'Growing digital adoption post-pandemic creates expansion opportunities', comments: [] },
+        { id: 'o2', text: 'Government digitalization programs open new public sector contracts', comments: [] },
+        { id: 'o3', text: 'Regional ASEAN integration reduces cross-border trade barriers', comments: [] },
+      ],
+      threats: [
+        { id: 't1', text: 'Increasing competition from global tech giants entering local markets', comments: [] },
+        { id: 't2', text: 'Talent retention challenges amid aggressive hiring by multinationals', comments: [] },
+      ]
+    },
+    strategies: {
+      so: [
+        { id: 'so1', text: 'Leverage brand strength to capture government digitalization contracts' },
+        { id: 'so2', text: 'Use skilled workforce to lead ASEAN digital transformation advisory' },
+      ],
+      st: [
+        { id: 'st1', text: 'Differentiate through client relationships to resist global competition' },
+      ],
+      wo: [
+        { id: 'wo1', text: 'Modernize IT infrastructure to capitalize on cloud opportunity' },
+      ],
+      wt: [
+        { id: 'wt1', text: 'Implement talent development programs to reduce attrition risk' },
+      ]
+    },
+    scorecard: {
+      financial: [
+        { kpi: 'Revenue Growth', target: '15%', actual: '12%', status: 'at-risk', weight: 0.3 },
+        { kpi: 'Cost Reduction', target: '10%', actual: '8.5%', status: 'on-track', weight: 0.2 },
+        { kpi: 'EBITDA Margin', target: '22%', actual: '20%', status: 'at-risk', weight: 0.3 },
+      ],
+      customer: [
+        { kpi: 'NPS Score', target: '65', actual: '71', status: 'complete', weight: 0.4 },
+        { kpi: 'Customer Retention', target: '92%', actual: '93%', status: 'complete', weight: 0.3 },
+        { kpi: 'New Client Acquisition', target: '20', actual: '14', status: 'behind', weight: 0.3 },
+      ],
+      internal: [
+        { kpi: 'Process Automation Rate', target: '40%', actual: '38%', status: 'on-track', weight: 0.3 },
+        { kpi: 'IT Modernization %', target: '60%', actual: '45%', status: 'at-risk', weight: 0.4 },
+        { kpi: 'Cycle Time Reduction', target: '25%', actual: '22%', status: 'on-track', weight: 0.3 },
+      ],
+      learning: [
+        { kpi: 'Employee Satisfaction', target: '80%', actual: '76%', status: 'at-risk', weight: 0.3 },
+        { kpi: 'Training Hours/Employee', target: '40h', actual: '44h', status: 'complete', weight: 0.2 },
+        { kpi: 'Innovation Index', target: '7.5', actual: '6.8', status: 'at-risk', weight: 0.3 },
+      ]
+    },
+    initiatives: [
+      { id: 'i1', type: 'program', name: 'Digital Transformation Program', owner: 'CTO Office', budget: 12000000, utilized: 8400000, progress: 70, status: 'on-track' },
+      { id: 'i2', type: 'activity', name: 'Cloud Migration Phase 1', owner: 'IT Dept', budget: 4500000, utilized: 3200000, progress: 71, status: 'on-track' },
+      { id: 'i3', type: 'project', name: 'ERP Upgrade', owner: 'Finance', budget: 2800000, utilized: 1900000, progress: 68, status: 'at-risk' },
+      { id: 'i4', type: 'program', name: 'Talent Excellence Program', owner: 'CHRO', budget: 6000000, utilized: 2500000, progress: 42, status: 'on-track' },
+      { id: 'i5', type: 'activity', name: 'Leadership Academy', owner: 'HR', budget: 1800000, utilized: 900000, progress: 50, status: 'on-track' },
+      { id: 'i6', type: 'project', name: 'ASEAN Market Entry', owner: 'BD Team', budget: 9500000, utilized: 4200000, progress: 44, status: 'at-risk' },
+      { id: 'i7', type: 'project', name: 'Customer Portal 2.0', owner: 'Product', budget: 3200000, utilized: 3000000, progress: 94, status: 'complete' },
+    ]
+  },
+  notifications: [
+    { id: 'n1', type: 'invite', icon: '👥', msg: '<strong>Juan Cruz</strong> joined your organization', time: '2 min ago', unread: true },
+    { id: 'n2', type: 'comment', icon: '💬', msg: '<strong>Ana Reyes</strong> commented on SWOT item S2', time: '14 min ago', unread: true },
+    { id: 'n3', type: 'share', icon: '📤', msg: 'Plan shared with <strong>Marco Dela Cruz</strong>', time: '1 hr ago', unread: false },
+    { id: 'n4', type: 'kpi', icon: '⚠️', msg: 'KPI <strong>New Client Acquisition</strong> is behind target', time: '3 hr ago', unread: false },
+  ],
+  teamMembers: [
+    { name: 'Maria Santos', email: 'maria@asilvainnovations.com', role: 'admin', initials: 'MS', color: 'linear-gradient(135deg,#3B82F6,#06B6D4)', online: true },
+    { name: 'Juan Cruz', email: 'juan@asilvainnovations.com', role: 'editor', initials: 'JC', color: 'linear-gradient(135deg,#10B981,#3B82F6)', online: true },
+    { name: 'Ana Reyes', email: 'ana@asilvainnovations.com', role: 'editor', initials: 'AR', color: 'linear-gradient(135deg,#6366F1,#EF4444)', online: true },
+    { name: 'Marco Dela Cruz', email: 'marco@asilvainnovations.com', role: 'viewer', initials: 'MD', color: 'linear-gradient(135deg,#F59E0B,#EF4444)', online: false },
+    { name: 'Liza Navarro', email: 'liza@asilvainnovations.com', role: 'viewer', initials: 'LN', color: 'linear-gradient(135deg,#8B5CF6,#EC4899)', online: false },
+  ],
+  activityLog: [
+    { user: 'Juan Cruz', initials: 'JC', color: 'linear-gradient(135deg,#10B981,#3B82F6)', action: 'added a new Strength', item: '"New partnership with AWS accelerates cloud capacity"', time: '5 min ago', icon: '✏️', bg: 'rgba(16,185,129,0.15)' },
+    { user: 'Ana Reyes', initials: 'AR', color: 'linear-gradient(135deg,#6366F1,#EF4444)', action: 'updated KPI target for', item: 'Revenue Growth', time: '23 min ago', icon: '🎯', bg: 'rgba(37,99,235,0.15)' },
+    { user: 'Maria Santos', initials: 'MS', color: 'linear-gradient(135deg,#3B82F6,#06B6D4)', action: 'generated AI SWOT for', item: 'Technology sector', time: '1 hr ago', icon: '✦', bg: 'rgba(99,102,241,0.15)' },
+    { user: 'Juan Cruz', initials: 'JC', color: 'linear-gradient(135deg,#10B981,#3B82F6)', action: 'added initiative', item: 'Customer Portal 2.0', time: '2 hr ago', icon: '🚀', bg: 'rgba(16,185,129,0.15)' },
+    { user: 'Marco Dela Cruz', initials: 'MD', color: 'linear-gradient(135deg,#F59E0B,#EF4444)', action: 'viewed the plan', item: 'Q2 2025 – Corporate Strategy', time: '3 hr ago', icon: '👁', bg: 'rgba(245,158,11,0.15)' },
+    { user: 'Ana Reyes', initials: 'AR', color: 'linear-gradient(135deg,#6366F1,#EF4444)', action: 'commented on', item: 'Weakness W1 – Legacy IT', time: '4 hr ago', icon: '💬', bg: 'rgba(99,102,241,0.15)' },
+  ]
+};
+
+const TEMPLATES = [
+  { id: 't1', industry: 'government', emoji: '🏛', name: 'Local Government Unit (LGU) Strategic Plan', desc: '5-year development plan template aligned with Philippine Comprehensive Land Use Plan guidelines.', swotItems: 24, kpis: 18, strategies: 12, shared: true, color: 'rgba(37,99,235,0.2)', badgeColor: '#93C5FD' },
+  { id: 't2', industry: 'healthcare', emoji: '🏥', name: 'Hospital / Health System Strategy', desc: 'Quality improvement and patient safety focused plan for regional and tertiary hospitals.', swotItems: 20, kpis: 16, strategies: 10, shared: false, color: 'rgba(16,185,129,0.2)', badgeColor: '#34D399' },
+  { id: 't3', industry: 'technology', emoji: '💻', name: 'Tech Startup Growth Strategy', desc: 'Lean strategy framework for early-stage tech companies targeting Series A/B funding.', swotItems: 18, kpis: 14, strategies: 14, shared: true, color: 'rgba(99,102,241,0.2)', badgeColor: '#A5B4FC' },
+  { id: 't4', industry: 'education', emoji: '🎓', name: 'Higher Education Institution Plan', desc: 'Institutional strategic plan aligned with CHED requirements and CMO standards.', swotItems: 22, kpis: 20, strategies: 11, shared: false, color: 'rgba(245,158,11,0.2)', badgeColor: '#FCD34D' },
+  { id: 't5', industry: 'government', emoji: '📋', name: 'National Agency Annual Plan', desc: 'Executive-level operational plan with performance governance alignment for national agencies.', swotItems: 28, kpis: 22, strategies: 16, shared: true, color: 'rgba(37,99,235,0.2)', badgeColor: '#93C5FD' },
+  { id: 't6', industry: 'healthcare', emoji: '💊', name: 'Pharmaceutical Business Strategy', desc: 'Market expansion and regulatory compliance focused strategy for pharma companies.', swotItems: 16, kpis: 12, strategies: 8, shared: false, color: 'rgba(16,185,129,0.2)', badgeColor: '#34D399' },
+  { id: 't7', industry: 'technology', emoji: '🏢', name: 'Digital Transformation Roadmap', desc: 'Enterprise IT modernization and digitalization strategy with phased implementation plan.', swotItems: 20, kpis: 16, strategies: 12, shared: true, color: 'rgba(6,182,212,0.2)', badgeColor: '#67E8F9' },
+  { id: 't8', industry: 'education', emoji: '📚', name: 'K-12 School Improvement Plan', desc: 'School-based management strategy aligned with DepEd MATATAG curriculum standards.', swotItems: 18, kpis: 14, strategies: 9, shared: false, color: 'rgba(245,158,11,0.2)', badgeColor: '#FCD34D' },
+];
+
+// ========================================
+// NAVIGATION
+// ========================================
+function navigate(page) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  // Show target page
+  const pageEl = document.getElementById(`page-${page}`);
+  if (pageEl) pageEl.classList.add('active');
+  
+  // Activate nav item
+  const navEl = document.querySelector(`[data-page="${page}"]`);
+  if (navEl) navEl.classList.add('active');
+  
+  STATE.currentPage = page;
+  
+  // Initialize page content
+  initPage(page);
+  
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('mobile-open');
+}
+
+function initPage(page) {
+  switch(page) {
+    case 'dashboard': initDashboard(); break;
+    case 'swot': initSwot(); break;
+    case 'strategy-matrix': initStrategyMatrix(); break;
+    case 'scorecard': initScorecard(); break;
+    case 'initiatives': initInitiatives(); break;
+    case 'templates': initTemplates(); break;
+    case 'team': initTeam(); break;
+    case 'activity': initActivity(); break;
+    case 'admin': initAdmin(); break;
+    case 'archetypes': initArchetypes(); break;
+    case 'cld': initCLD(); break;
+    case 'reports': break;
+  }
+}
+
+// ========================================
+// DASHBOARD
+// ========================================
+function initDashboard() {
+  renderMilestones();
+  renderRecentActivity();
+  setTimeout(() => {
+    renderProgressChart();
+    renderSwotRadar();
+  }, 100);
+}
+
+function renderMilestones() {
+  const container = document.getElementById('milestonesContainer');
+  const milestones = [
+    { name: 'Digital Transformation Phase 1', progress: 70, status: 'on-track', due: 'Jun 30' },
+    { name: 'ASEAN Market Entry', progress: 44, status: 'at-risk', due: 'Sep 15' },
+    { name: 'Customer Portal 2.0', progress: 94, status: 'complete', due: 'May 31' },
+    { name: 'ERP Upgrade', progress: 68, status: 'at-risk', due: 'Aug 20' },
+  ];
+  container.innerHTML = milestones.map(m => `
+    <div style="margin-bottom:16px;">
+      <div class="flex justify-between mb-2">
+        <span class="text-sm">${m.name}</span>
+        <span class="kpi-status status-${m.status}" style="font-size:9px;">${m.status.replace('-',' ')}</span>
+      </div>
+      <div class="progress-bar" style="height:8px; margin-bottom:4px;">
+        <div class="progress-fill" style="width:${m.progress}%; background:${m.status==='complete' ? 'linear-gradient(90deg,#10B981,#3B82F6)' : m.status==='at-risk' ? 'linear-gradient(90deg,#F59E0B,#EF4444)' : 'linear-gradient(90deg,#3B82F6,#06B6D4)'}"></div>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-xs text-secondary">${m.progress}% complete</span>
+        <span class="text-xs text-secondary">Due: ${m.due}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRecentActivity() {
+  const container = document.getElementById('recentActivityContainer');
+  container.innerHTML = STATE.activityLog.slice(0, 5).map(a => `
+    <div class="activity-item">
+      <div class="activity-icon" style="background:${a.bg};">${a.icon}</div>
+      <div class="activity-content">
+        <div class="activity-desc"><strong>${a.user}</strong> ${a.action} <span style="color:var(--blue-300)">${a.item}</span></div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderProgressChart() {
+  const ctx = document.getElementById('progressChart');
+  if (!ctx || ctx._chartDestroyed) return;
+  if (ctx._chart) ctx._chart.destroy();
+  
+  ctx._chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Financial', 'Customer', 'Internal Process', 'Learning & Growth'],
+      datasets: [{
+        label: 'Actual',
+        data: [67, 79, 68, 72],
+        backgroundColor: [
+          'rgba(37,99,235,0.7)',
+          'rgba(16,185,129,0.7)',
+          'rgba(6,182,212,0.7)',
+          'rgba(99,102,241,0.7)'
+        ],
+        borderRadius: 6,
+      }, {
+        label: 'Target',
+        data: [80, 85, 80, 80],
+        backgroundColor: 'rgba(255,255,255,0.08)',
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: 'rgba(255,255,255,0.6)', font: { size: 11, family: 'Roboto Condensed' } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10, family: 'Roboto Condensed' } } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } }, max: 100 }
+      }
+    }
+  });
+}
+
+function renderSwotRadar() {
+  const ctx = document.getElementById('swotRadarChart');
+  if (!ctx) return;
+  if (ctx._chart) ctx._chart.destroy();
+  
+  ctx._chart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Strengths', 'Weaknesses', 'Opportunities', 'Threats', 'Balance'],
+      datasets: [{
+        label: 'Current',
+        data: [75, 45, 80, 55, 68],
+        fill: true,
+        backgroundColor: 'rgba(37,99,235,0.2)',
+        borderColor: 'rgba(37,99,235,0.8)',
+        pointBackgroundColor: '#2563EB',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: 'rgba(255,255,255,0.6)', font: { size: 11 } } } },
+      scales: {
+        r: {
+          grid: { color: 'rgba(255,255,255,0.08)' },
+          ticks: { color: 'rgba(255,255,255,0.4)', backdropColor: 'transparent', font: { size: 9 } },
+          pointLabels: { color: 'rgba(255,255,255,0.7)', font: { size: 11, family: 'Roboto Condensed' } }
+        }
+      }
+    }
+  });
+}
+
+function refreshDashboard() {
+  showToast('Dashboard refreshed', 'success');
+  renderMilestones();
+}
+
+// ========================================
+// SWOT
+// ========================================
+function initSwot() {
+  const grid = document.getElementById('swotGrid');
+  const quadrants = [
+    { key: 'strengths', label: 'Strengths', letter: 'S', cls: 'swot-s', emoji: '💪', desc: 'Internal positive factors' },
+    { key: 'weaknesses', label: 'Weaknesses', letter: 'W', cls: 'swot-w', emoji: '⚠️', desc: 'Internal negative factors' },
+    { key: 'opportunities', label: 'Opportunities', letter: 'O', cls: 'swot-o', emoji: '🚀', desc: 'External positive factors' },
+    { key: 'threats', label: 'Threats', letter: 'T', cls: 'swot-t', emoji: '🛡️', desc: 'External negative factors' },
+  ];
+  
+  grid.innerHTML = quadrants.map(q => `
+    <div class="swot-quadrant ${q.cls}" id="swot-${q.key}">
+      <div class="swot-header">
+        <div class="swot-title">${q.emoji} ${q.label}</div>
+        <span class="swot-badge">${STATE.activePlan.swot[q.key].length} items</span>
+      </div>
+      <div class="swot-items" id="items-${q.key}">
+        ${STATE.activePlan.swot[q.key].map(item => `
+          <div class="swot-item" onclick="openSwotItemModal('${q.key}','${item.id}')">
+            <div>${item.text}</div>
+            <div class="swot-item-actions">
+              <span class="glass-btn" style="padding:3px 8px; font-size:10px;" onclick="event.stopPropagation(); openComment('${q.key}','${item.id}')">💬 ${item.comments.length}</span>
+              <span class="glass-btn" style="padding:3px 8px; font-size:10px; color:var(--danger);" onclick="event.stopPropagation(); deleteSwotItem('${q.key}','${item.id}')">✕</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="swot-add-btn" onclick="addSwotItemTo('${q.key}')">+ Add ${q.label.slice(0,-1)}</button>
+    </div>
+  `).join('');
+}
+
+function addSwotItemTo(quadrant) {
+  showModal(`Add ${quadrant.charAt(0).toUpperCase() + quadrant.slice(1).replace('s','')}`, `
+    <div class="form-group">
+      <label class="form-label">Item Description</label>
+      <textarea class="form-textarea" id="swot-input" placeholder="Describe this ${quadrant.replace('s','')} factor clearly and specifically..." rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Evidence / Notes</label>
+      <input type="text" class="form-input" id="swot-evidence" placeholder="Supporting data or evidence...">
+    </div>
+    <div style="display:flex; gap:10px; margin-top:8px;">
+      <button class="btn-primary p-md w-full" onclick="saveSwotItem('${quadrant}')">Save Item</button>
+    </div>
+  `);
+}
+
+function saveSwotItem(quadrant) {
+  const input = document.getElementById('swot-input').value.trim();
+  if (!input) { showToast('Please enter item text', 'error'); return; }
+  const id = quadrant[0] + Date.now();
+  STATE.activePlan.swot[quadrant].push({ id, text: input, comments: [] });
+  closeModal();
+  initSwot();
+  showToast('SWOT item added', 'success');
+  logActivity('You', 'added a new item to', `${quadrant}`);
+}
+
+function deleteSwotItem(quadrant, id) {
+  STATE.activePlan.swot[quadrant] = STATE.activePlan.swot[quadrant].filter(i => i.id !== id);
+  initSwot();
+  showToast('Item removed', 'info');
+}
+
+function addSwotItem() { openSwotGuide(); }
+
+function openSwotGuide() {
+  showModal('Guided SWOT Entry', `
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-select" id="guide-category">
+        <option value="strengths">Strength</option>
+        <option value="weaknesses">Weakness</option>
+        <option value="opportunities">Opportunity</option>
+        <option value="threats">Threat</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Factor</label>
+      <input type="text" class="form-input" id="guide-factor" placeholder="Name of the factor...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="guide-desc" placeholder="Describe with specificity..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Impact Level</label>
+      <select class="form-select" id="guide-impact">
+        <option>High Impact</option>
+        <option>Medium Impact</option>
+        <option>Low Impact</option>
+      </select>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="saveGuidedSwot()">Save to SWOT</button>
+  `);
+}
+
+function saveGuidedSwot() {
+  const cat = document.getElementById('guide-category').value;
+  const factor = document.getElementById('guide-factor').value.trim();
+  const desc = document.getElementById('guide-desc').value.trim();
+  const impact = document.getElementById('guide-impact').value;
+  if (!factor || !desc) { showToast('Please fill all fields', 'error'); return; }
+  const id = cat[0] + Date.now();
+  STATE.activePlan.swot[cat].push({ id, text: `[${impact}] ${factor}: ${desc}`, comments: [] });
+  closeModal();
+  if (STATE.currentPage === 'swot') initSwot();
+  showToast('SWOT item saved', 'success');
+}
+
+function openComment(quadrant, itemId) {
+  const item = STATE.activePlan.swot[quadrant].find(i => i.id === itemId);
+  if (!item) return;
+  showModal('Comments', `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px; color:var(--text-secondary); background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">${item.text}</div>
+    </div>
+    <div id="comment-list">
+      ${item.comments.length ? item.comments.map(c => `
+        <div class="comment">
+          <div class="flex justify-between mb-2">
+            <span class="comment-author">${c.author}</span>
+            <span class="comment-time">${c.time}</span>
+          </div>
+          <div class="comment-text">${c.text}</div>
+        </div>
+      `).join('') : '<div class="text-sm text-secondary" style="margin-bottom:12px;">No comments yet</div>'}
+    </div>
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <input type="text" class="form-input" id="new-comment" placeholder="Add a comment..." style="flex:1;">
+      <button class="btn-primary p-sm" onclick="addComment('${quadrant}','${itemId}')">Post</button>
+    </div>
+  `);
+}
+
+function addComment(quadrant, itemId) {
+  const text = document.getElementById('new-comment').value.trim();
+  if (!text) return;
+  const item = STATE.activePlan.swot[quadrant].find(i => i.id === itemId);
+  item.comments.push({ author: STATE.currentUser.name, text, time: 'Just now' });
+  closeModal();
+  showToast('Comment posted', 'success');
+}
+
+// ========================================
+// STRATEGY MATRIX
+// ========================================
+function initStrategyMatrix() {
+  const matrix = document.getElementById('strategyMatrix');
+  const cells = [
+    { key: 'so', label: 'SO Strategies', desc: 'Use Strengths to seize Opportunities', cls: 'strategy-so', color: '#10B981' },
+    { key: 'st', label: 'ST Strategies', desc: 'Use Strengths to counter Threats', cls: 'strategy-st', color: '#3B82F6' },
+    { key: 'wo', label: 'WO Strategies', desc: 'Overcome Weaknesses via Opportunities', cls: 'strategy-wo', color: '#06B6D4' },
+    { key: 'wt', label: 'WT Strategies', desc: 'Minimize Weaknesses, avoid Threats', cls: 'strategy-wt', color: '#F59E0B' },
+  ];
+  
+  matrix.innerHTML = cells.map(c => `
+    <div class="strategy-cell ${c.cls}">
+      <div class="strategy-label" style="color:${c.color}">${c.label}</div>
+      <div class="strategy-desc">${c.desc}</div>
+      ${STATE.activePlan.strategies[c.key].map(s => `
+        <div class="strategy-item">
+          <div style="font-size:13px; line-height:1.5;">${s.text}</div>
+        </div>
+      `).join('')}
+      <button class="swot-add-btn" onclick="addStrategyTo('${c.key}')">+ Add Strategy</button>
+    </div>
+  `).join('');
+}
+
+function addStrategyTo(type) {
+  showModal(`Add ${type.toUpperCase()} Strategy`, `
+    <div class="form-group">
+      <label class="form-label">Strategy Statement</label>
+      <textarea class="form-textarea" id="strategy-text" placeholder="Describe the strategic option clearly..."></textarea>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="saveStrategy('${type}')">Save Strategy</button>
+  `);
+}
+
+function saveStrategy(type) {
+  const text = document.getElementById('strategy-text').value.trim();
+  if (!text) { showToast('Please enter strategy text', 'error'); return; }
+  STATE.activePlan.strategies[type].push({ id: type + Date.now(), text });
+  closeModal();
+  initStrategyMatrix();
+  showToast('Strategy added', 'success');
+}
+
+function addStrategyItem() { showModal('Add Strategy', `
+  <div class="form-group">
+    <label class="form-label">Strategy Type</label>
+    <select class="form-select" id="strat-type">
+      <option value="so">SO – Use Strengths to seize Opportunities</option>
+      <option value="st">ST – Use Strengths to counter Threats</option>
+      <option value="wo">WO – Overcome Weaknesses via Opportunities</option>
+      <option value="wt">WT – Minimize Weaknesses, avoid Threats</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Strategy Statement</label>
+    <textarea class="form-textarea" id="strategy-text" placeholder="Describe the strategic option..."></textarea>
+  </div>
+  <button class="btn-primary p-md w-full" onclick="saveStrategyFromModal()">Save Strategy</button>
+`); }
+
+function saveStrategyFromModal() {
+  const type = document.getElementById('strat-type').value;
+  const text = document.getElementById('strategy-text').value.trim();
+  if (!text) return;
+  STATE.activePlan.strategies[type].push({ id: type + Date.now(), text });
+  closeModal();
+  if (STATE.currentPage === 'strategy-matrix') initStrategyMatrix();
+  showToast('Strategy added', 'success');
+}
+
+// ========================================
+// BALANCED SCORECARD
+// ========================================
+function initScorecard() {
+  const container = document.getElementById('scorecardContainer');
+  const perspectives = [
+    { key: 'financial', label: 'Financial Perspective', icon: '💰', color: 'rgba(37,99,235,0.1)', iconBg: 'rgba(37,99,235,0.2)' },
+    { key: 'customer', label: 'Customer Perspective', icon: '👥', color: 'rgba(16,185,129,0.1)', iconBg: 'rgba(16,185,129,0.2)' },
+    { key: 'internal', label: 'Internal Process Perspective', icon: '⚙️', color: 'rgba(6,182,212,0.1)', iconBg: 'rgba(6,182,212,0.2)' },
+    { key: 'learning', label: 'Learning & Growth Perspective', icon: '🌱', color: 'rgba(99,102,241,0.1)', iconBg: 'rgba(99,102,241,0.2)' },
+  ];
+  
+  container.innerHTML = perspectives.map(p => `
+    <div class="scorecard-perspective" style="background:${p.color};">
+      <div class="perspective-header">
+        <div class="perspective-icon" style="background:${p.iconBg};">${p.icon}</div>
+        <div>
+          <div class="card-title">${p.label}</div>
+          <div class="card-subtitle">${STATE.activePlan.scorecard[p.key].length} KPIs</div>
+        </div>
+        <button class="glass-btn p-sm text-xs" style="margin-left:auto;" onclick="addKPITo('${p.key}')">+ Add KPI</button>
+      </div>
+      <table class="kpi-table">
+        <thead>
+          <tr>
+            <th>KPI</th>
+            <th>Target</th>
+            <th>Actual</th>
+            <th>Status</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${STATE.activePlan.scorecard[p.key].map(k => `
+            <tr>
+              <td style="font-weight:500;">${k.kpi}</td>
+              <td class="font-mono">${k.target}</td>
+              <td class="font-mono" style="color:var(--blue-300)">${k.actual}</td>
+              <td><span class="kpi-status status-${k.status}">${k.status.replace('-',' ')}</span></td>
+              <td class="font-mono text-secondary">${Math.round(k.weight*100)}%</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `).join('');
+}
+
+function addKPITo(perspective) {
+  showModal(`Add KPI – ${perspective.charAt(0).toUpperCase() + perspective.slice(1)} Perspective`, `
+    <div class="form-group">
+      <label class="form-label">KPI Name</label>
+      <input type="text" class="form-input" id="kpi-name" placeholder="e.g. Customer Satisfaction Score">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Target</label>
+        <input type="text" class="form-input" id="kpi-target" placeholder="e.g. 85%">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Actual</label>
+        <input type="text" class="form-input" id="kpi-actual" placeholder="e.g. 79%">
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="kpi-status">
+          <option value="on-track">On Track</option>
+          <option value="at-risk">At Risk</option>
+          <option value="behind">Behind</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Weight</label>
+        <input type="number" class="form-input" id="kpi-weight" min="0.1" max="1" step="0.1" value="0.3">
+      </div>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="saveKPI('${perspective}')">Save KPI</button>
+  `);
+}
+
+function saveKPI(perspective) {
+  const name = document.getElementById('kpi-name').value.trim();
+  const target = document.getElementById('kpi-target').value.trim();
+  const actual = document.getElementById('kpi-actual').value.trim();
+  const status = document.getElementById('kpi-status').value;
+  const weight = parseFloat(document.getElementById('kpi-weight').value);
+  if (!name || !target) { showToast('Please fill required fields', 'error'); return; }
+  STATE.activePlan.scorecard[perspective].push({ kpi: name, target, actual, status, weight });
+  closeModal();
+  initScorecard();
+  showToast('KPI added', 'success');
+}
+
+function addKPI() {
+  showModal('Add KPI', `
+    <div class="form-group">
+      <label class="form-label">Perspective</label>
+      <select class="form-select" id="kpi-perspective">
+        <option value="financial">Financial</option>
+        <option value="customer">Customer</option>
+        <option value="internal">Internal Process</option>
+        <option value="learning">Learning & Growth</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">KPI Name</label>
+      <input type="text" class="form-input" id="kpi-name" placeholder="KPI name...">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group"><label class="form-label">Target</label><input type="text" class="form-input" id="kpi-target" placeholder="Target value"></div>
+      <div class="form-group"><label class="form-label">Actual</label><input type="text" class="form-input" id="kpi-actual" placeholder="Actual value"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="kpi-status"><option value="on-track">On Track</option><option value="at-risk">At Risk</option><option value="behind">Behind</option><option value="complete">Complete</option></select>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="saveKPIFromModal()">Save KPI</button>
+  `);
+}
+
+function saveKPIFromModal() {
+  const persp = document.getElementById('kpi-perspective').value;
+  saveKPI(persp);
+}
+
+// ========================================
+// INITIATIVES
+// ========================================
+function initInitiatives() {
+  renderInitiatives('all');
+  updateBudgetTotals();
+}
+
+function updateBudgetTotals() {
+  const inits = STATE.activePlan.initiatives;
+  const total = inits.reduce((s, i) => s + i.budget, 0);
+  const utilized = inits.reduce((s, i) => s + i.utilized, 0);
+  const remaining = total - utilized;
+  
+  document.getElementById('totalBudget').textContent = formatCurrency(total);
+  document.getElementById('utilizedBudget').textContent = formatCurrency(utilized);
+  document.getElementById('remainingBudget').textContent = formatCurrency(remaining);
+}
+
+function formatCurrency(n) {
+  if (n >= 1000000) return `₱${(n/1000000).toFixed(1)}M`;
+  if (n >= 1000) return `₱${(n/1000).toFixed(0)}K`;
+  return `₱${n}`;
+}
+
+function renderInitiatives(filter) {
+  const container = document.getElementById('initiativesContainer');
+  const inits = filter === 'all' ? STATE.activePlan.initiatives : STATE.activePlan.initiatives.filter(i => i.type === filter);
+  
+  container.innerHTML = inits.map(i => `
+    <div class="initiative-row">
+      <div class="initiative-type type-${i.type}"></div>
+      <span style="font-size:10px; font-family:'Roboto Condensed'; text-transform:uppercase; color:var(--text-tertiary); width:60px;">${i.type}</span>
+      <span class="initiative-name">${i.name}</span>
+      <span class="initiative-owner text-secondary" style="width:120px; flex-shrink:0;">${i.owner}</span>
+      <div class="initiative-progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${i.progress}%; background:${i.status==='complete' ? 'linear-gradient(90deg,#10B981,#3B82F6)' : i.status==='at-risk' ? 'linear-gradient(90deg,#F59E0B,#EF4444)' : 'linear-gradient(90deg,#3B82F6,#06B6D4)'}"></div></div>
+        <div class="text-xs text-secondary" style="text-align:center; margin-top:2px;">${i.progress}%</div>
+      </div>
+      <span class="initiative-budget">${formatCurrency(i.budget)}</span>
+      <span class="kpi-status status-${i.status}" style="font-size:9px;">${i.status.replace('-',' ')}</span>
+      <span class="glass-btn" style="padding:4px 10px; font-size:11px;" onclick="editInitiative('${i.id}')">Edit</span>
+    </div>
+  `).join('');
+}
+
+function filterInitiativeType(el, type) {
+  document.querySelectorAll('.page#page-initiatives .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderInitiatives(type);
+}
+
+function addInitiative() {
+  showModal('Add Initiative', `
+    <div class="form-group">
+      <label class="form-label">Type</label>
+      <select class="form-select" id="init-type">
+        <option value="program">Program</option>
+        <option value="activity">Activity</option>
+        <option value="project">Project</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" id="init-name" placeholder="Initiative name...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Owner</label>
+      <input type="text" class="form-input" id="init-owner" placeholder="Department or person...">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group"><label class="form-label">Budget (₱)</label><input type="number" class="form-input" id="init-budget" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Progress %</label><input type="number" class="form-input" id="init-progress" min="0" max="100" value="0"></div>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="saveInitiative()">Save Initiative</button>
+  `);
+}
+
+function saveInitiative() {
+  const type = document.getElementById('init-type').value;
+  const name = document.getElementById('init-name').value.trim();
+  const owner = document.getElementById('init-owner').value.trim();
+  const budget = parseFloat(document.getElementById('init-budget').value) || 0;
+  const progress = parseInt(document.getElementById('init-progress').value) || 0;
+  if (!name) { showToast('Please enter initiative name', 'error'); return; }
+  STATE.activePlan.initiatives.push({ id: 'i'+Date.now(), type, name, owner, budget, utilized: 0, progress, status: 'on-track' });
+  closeModal();
+  initInitiatives();
+  showToast('Initiative added', 'success');
+}
+
+function editInitiative(id) {
+  const init = STATE.activePlan.initiatives.find(i => i.id === id);
+  if (!init) return;
+  showModal('Edit Initiative', `
+    <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" id="edit-name" value="${init.name}"></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="edit-status">
+        <option value="on-track" ${init.status==='on-track'?'selected':''}>On Track</option>
+        <option value="at-risk" ${init.status==='at-risk'?'selected':''}>At Risk</option>
+        <option value="behind" ${init.status==='behind'?'selected':''}>Behind</option>
+        <option value="complete" ${init.status==='complete'?'selected':''}>Complete</option>
+      </select>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group"><label class="form-label">Progress %</label><input type="number" class="form-input" id="edit-progress" value="${init.progress}" min="0" max="100"></div>
+      <div class="form-group"><label class="form-label">Utilized (₱)</label><input type="number" class="form-input" id="edit-utilized" value="${init.utilized}"></div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-primary p-md" style="flex:1;" onclick="updateInitiative('${id}')">Update</button>
+      <button class="glass-btn p-md" style="color:var(--danger);" onclick="deleteInitiative('${id}')">Delete</button>
+    </div>
+  `);
+}
+
+function updateInitiative(id) {
+  const init = STATE.activePlan.initiatives.find(i => i.id === id);
+  init.name = document.getElementById('edit-name').value;
+  init.status = document.getElementById('edit-status').value;
+  init.progress = parseInt(document.getElementById('edit-progress').value);
+  init.utilized = parseFloat(document.getElementById('edit-utilized').value);
+  closeModal();
+  initInitiatives();
+  showToast('Initiative updated', 'success');
+}
+
+function deleteInitiative(id) {
+  STATE.activePlan.initiatives = STATE.activePlan.initiatives.filter(i => i.id !== id);
+  closeModal();
+  initInitiatives();
+  showToast('Initiative deleted', 'info');
+}
+
+function filterInitiatives() { showToast('Filter panel — coming soon', 'info'); }
+
+// ========================================
+// TEMPLATES
+// ========================================
+function initTemplates() {
+  filterTemplates(null, 'all');
+}
+
+function filterTemplates(el, filter) {
+  if (el) {
+    document.querySelectorAll('#page-templates .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const container = document.getElementById('templatesContainer');
+  const filtered = filter === 'all' || filter === 'my' ? TEMPLATES : TEMPLATES.filter(t => t.industry === filter);
+  
+  container.innerHTML = filtered.map(t => `
+    <div class="template-card">
+      <div class="template-industry-badge" style="background:${t.color}; color:${t.badgeColor};">
+        ${t.emoji} ${t.industry.charAt(0).toUpperCase()+t.industry.slice(1)}
+        ${t.shared ? '<span style="margin-left:4px;">• Shared</span>' : ''}
+      </div>
+      <div class="template-name">${t.name}</div>
+      <div class="template-desc">${t.desc}</div>
+      <div class="template-stats">
+        <span class="template-stat">📋 ${t.swotItems} SWOT items</span>
+        <span class="template-stat">🎯 ${t.kpis} KPIs</span>
+        <span class="template-stat">⚡ ${t.strategies} strategies</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button class="btn-primary p-sm text-xs" style="flex:1;" onclick="useTemplate('${t.id}')">Use Template</button>
+        <button class="glass-btn p-sm text-xs" onclick="previewTemplate('${t.id}')">Preview</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function useTemplate(id) {
+  const t = TEMPLATES.find(x => x.id === id);
+  showToast(`Applying template: ${t.name}`, 'success');
+  setTimeout(() => navigate('swot'), 800);
+}
+
+function previewTemplate(id) {
+  const t = TEMPLATES.find(x => x.id === id);
+  showModal(t.name, `
+    <div class="template-industry-badge" style="background:${t.color}; color:${t.badgeColor}; margin-bottom:12px;">${t.emoji} ${t.industry}</div>
+    <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:16px;">${t.desc}</p>
+    <div class="grid-2" style="gap:12px; margin-bottom:16px;">
+      <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; text-align:center;">
+        <div style="font-size:24px; font-weight:700;">${t.swotItems}</div>
+        <div style="font-size:11px; color:var(--text-tertiary);">SWOT Items</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; text-align:center;">
+        <div style="font-size:24px; font-weight:700;">${t.kpis}</div>
+        <div style="font-size:11px; color:var(--text-tertiary);">KPIs</div>
+      </div>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="useTemplate('${id}'); closeModal()">Use This Template</button>
+  `);
+}
+
+function saveAsTemplate() {
+  showModal('Save as Template', `
+    <div class="form-group">
+      <label class="form-label">Template Name</label>
+      <input type="text" class="form-input" id="tmpl-name" value="My Custom Strategy Plan" placeholder="Template name...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Industry</label>
+      <select class="form-select" id="tmpl-industry">
+        <option>Technology</option><option>Government</option><option>Healthcare</option><option>Education</option><option>Finance</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="tmpl-desc" placeholder="Describe this template..."></textarea>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <input type="checkbox" id="tmpl-share" checked>
+      <label for="tmpl-share" style="font-size:13px; cursor:pointer;">Share with team</label>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="confirmSaveTemplate()">Save Template</button>
+  `);
+}
+
+function confirmSaveTemplate() {
+  closeModal();
+  showToast('Template saved to library', 'success');
+}
+
+// ========================================
+// TEAM & COLLABORATION
+// ========================================
+function initTeam() {
+  const membersList = document.getElementById('teamMembersList');
+  membersList.innerHTML = STATE.teamMembers.map(m => `
+    <div class="initiative-row" style="padding:10px 12px; margin-bottom:6px;">
+      <div class="avatar" style="width:32px; height:32px; background:${m.color}; font-size:12px; position:relative; flex-shrink:0;">
+        ${m.initials}
+        ${m.online ? `<div class="presence-dot"></div>` : ''}
+      </div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:13px; font-weight:600;">${m.name}</div>
+        <div style="font-size:11px; color:var(--text-tertiary);">${m.email}</div>
+      </div>
+      <span style="padding:3px 10px; border-radius:var(--radius-full); font-size:10px; font-family:'Roboto Condensed'; font-weight:700; background:${m.role==='admin' ? 'rgba(255,215,0,0.15)' : m.role==='editor' ? 'rgba(37,99,235,0.15)' : 'rgba(255,255,255,0.1)'}; color:${m.role==='admin' ? '#FFD700' : m.role==='editor' ? '#93C5FD' : 'var(--text-secondary)'}">${m.role}</span>
+      <span class="glass-btn" style="padding:3px 10px; font-size:11px;" onclick="changeRole('${m.email}')">···</span>
+    </div>
+  `).join('');
+  
+  const sharedList = document.getElementById('sharedPlansList');
+  sharedList.innerHTML = `
+    <div class="initiative-row" style="padding:10px 12px; margin-bottom:6px;">
+      <span style="font-size:16px;">📊</span>
+      <div style="flex:1;">
+        <div style="font-size:13px; font-weight:500;">Q2 2025 – Corporate Strategy</div>
+        <div style="font-size:11px; color:var(--text-tertiary);">Shared with 4 members</div>
+      </div>
+      <span class="kpi-status status-on-track">Active</span>
+    </div>
+    <div class="initiative-row" style="padding:10px 12px;">
+      <span style="font-size:16px;">📋</span>
+      <div style="flex:1;">
+        <div style="font-size:13px; font-weight:500;">2026 Annual Plan Draft</div>
+        <div style="font-size:11px; color:var(--text-tertiary);">Shared with 2 members</div>
+      </div>
+      <span class="kpi-status status-at-risk">Draft</span>
+    </div>
+  `;
+}
+
+function inviteTeamMember() {
+  showModal('Invite Team Member', `
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" id="invite-email" placeholder="colleague@company.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Role</label>
+      <select class="form-select" id="invite-role">
+        <option value="viewer">Viewer – Read-only access</option>
+        <option value="editor">Editor – Can edit plans</option>
+        <option value="admin">Admin – Full access</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Personal Message (optional)</label>
+      <textarea class="form-textarea" id="invite-msg" placeholder="Add a personal note..." rows="3"></textarea>
+    </div>
+    <div style="background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.2); border-radius:8px; padding:12px; margin-bottom:16px; font-size:12px; color:var(--text-secondary);">
+      📧 An email notification will be sent to the invitee
+    </div>
+    <button class="btn-primary p-md w-full" onclick="sendInvite()">Send Invitation</button>
+  `);
+}
+
+function sendInvite() {
+  const email = document.getElementById('invite-email').value.trim();
+  if (!email) { showToast('Please enter an email', 'error'); return; }
+  closeModal();
+  showToast(`Invitation sent to ${email}`, 'success');
+  logActivity('You', 'invited', email);
+}
+
+function createOrganization() {
+  showModal('Create Organization', `
+    <div class="form-group">
+      <label class="form-label">Organization Name</label>
+      <input type="text" class="form-input" id="org-name" placeholder="Company or team name...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Organization Type</label>
+      <select class="form-select" id="org-type">
+        <option>Corporation</option><option>Government Agency</option><option>NGO/Non-profit</option><option>Academic Institution</option><option>Team / Department</option>
+      </select>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="confirmCreateOrg()">Create Organization</button>
+  `);
+}
+
+function confirmCreateOrg() {
+  closeModal();
+  showToast('Organization created!', 'success');
+}
+
+function sharePlan() {
+  showModal('Share Plan', `
+    <div class="form-group">
+      <label class="form-label">Plan</label>
+      <select class="form-select"><option>Q2 2025 – Corporate Strategy</option><option>2026 Annual Plan Draft</option></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Share with (email or team)</label>
+      <input type="text" class="form-input" placeholder="Email or team name...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Permission Level</label>
+      <select class="form-select">
+        <option>Viewer – View only</option>
+        <option>Editor – Can edit</option>
+        <option>Admin – Full control</option>
+      </select>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="closeModal(); showToast('Plan shared successfully', 'success');">Share Plan</button>
+  `);
+}
+
+function changeRole(email) {
+  showModal('Manage Member', `
+    <div style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">${email}</div>
+    <div class="form-group">
+      <label class="form-label">Change Role</label>
+      <select class="form-select">
+        <option>Viewer</option><option>Editor</option><option>Admin</option>
+      </select>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-primary p-md" style="flex:1;" onclick="closeModal(); showToast('Role updated', 'success');">Update Role</button>
+      <button class="glass-btn p-md" style="color:var(--danger);" onclick="closeModal(); showToast('Member removed', 'info');">Remove</button>
+    </div>
+  `);
+}
+
+// ========================================
+// ACTIVITY LOG
+// ========================================
+function initActivity() {
+  const container = document.getElementById('activityLogContainer');
+  container.innerHTML = STATE.activityLog.map(a => `
+    <div class="activity-item">
+      <div class="activity-icon" style="background:${a.bg};">${a.icon}</div>
+      <div class="activity-content">
+        <div class="activity-desc"><strong>${a.user}</strong> ${a.action} <span style="color:var(--blue-300)">${a.item}</span></div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+      <div class="avatar" style="width:28px; height:28px; background:${a.color}; font-size:10px; flex-shrink:0;">${a.initials}</div>
+    </div>
+  `).join('');
+}
+
+function logActivity(user, action, item) {
+  STATE.activityLog.unshift({
+    user, initials: user === 'You' ? STATE.currentUser.initials : user.split(' ').map(n=>n[0]).join(''),
+    color: 'linear-gradient(135deg,#3B82F6,#06B6D4)',
+    action, item, time: 'Just now',
+    icon: '✏️', bg: 'rgba(37,99,235,0.15)'
+  });
+}
+
+// ========================================
+// ADMIN
+// ========================================
+function initAdmin() {
+  // Only accessible to admin
+  const adminUsers = [
+    { name: 'Maria Santos', email: 'maria@asilvainnovations.com', role: 'admin', plans: 3, lastActive: 'Now', initials: 'MS', color: 'linear-gradient(135deg,#3B82F6,#06B6D4)' },
+    { name: 'Juan Cruz', email: 'juan@asilvainnovations.com', role: 'editor', plans: 2, lastActive: '5 min ago', initials: 'JC', color: 'linear-gradient(135deg,#10B981,#3B82F6)' },
+    { name: 'Ana Reyes', email: 'ana@asilvainnovations.com', role: 'editor', plans: 1, lastActive: '14 min ago', initials: 'AR', color: 'linear-gradient(135deg,#6366F1,#EF4444)' },
+    { name: 'admin', email: 'admin@asilvainnovations.com', role: 'super-admin', plans: 89, lastActive: '1 hr ago', initials: 'AD', color: 'linear-gradient(135deg,#FFD700,#FFA500)' },
+  ];
+  
+  const userList = document.getElementById('adminUserList');
+  userList.innerHTML = adminUsers.map(u => `
+    <div class="initiative-row" style="padding:8px 10px; margin-bottom:4px;">
+      <div class="avatar" style="width:28px; height:28px; background:${u.color}; font-size:10px;">${u.initials}</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:12px; font-weight:600;">${u.name}</div>
+        <div style="font-size:10px; color:var(--text-tertiary);">${u.email}</div>
+      </div>
+      <span style="font-size:10px; color:var(--text-tertiary);">${u.plans} plans</span>
+      <span style="padding:2px 8px; border-radius:4px; font-size:9px; font-family:'Roboto Condensed'; background:${u.role==='super-admin'?'rgba(255,215,0,0.15)':'rgba(37,99,235,0.15)'}; color:${u.role==='super-admin'?'#FFD700':'#93C5FD'}">${u.role}</span>
+    </div>
+  `).join('');
+  
+  const auditLog = document.getElementById('adminAuditLog');
+  auditLog.innerHTML = STATE.activityLog.map(a => `
+    <div class="activity-item">
+      <div class="activity-icon" style="background:${a.bg}; font-size:11px;">${a.icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:12px; color:var(--text-secondary);"><strong style="color:white">${a.user}</strong> ${a.action} <span style="color:var(--blue-300)">${a.item}</span></div>
+        <div style="font-size:10px; color:var(--text-tertiary); margin-top:2px;">${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ========================================
+// CLD (Causal Loop Diagram)
+// ========================================
+let cldNodes = [], cldLinks = [], selectedNode = null, isDragging = false, dragOffset = {x:0,y:0};
+
+function initCLD() {
+  // Initialize default nodes from SWOT
+  if (cldNodes.length === 0) {
+    cldNodes = [
+      { id: 'n1', label: 'Innovation Capacity', type: 's', x: 150, y: 150 },
+      { id: 'n2', label: 'Market Share', type: 'o', x: 350, y: 100 },
+      { id: 'n3', label: 'R&D Budget', type: 's', x: 550, y: 150 },
+      { id: 'n4', label: 'Legacy IT', type: 'w', x: 200, y: 300 },
+      { id: 'n5', label: 'Digital Demand', type: 'o', x: 450, y: 300 },
+      { id: 'n6', label: 'Competition', type: 't', x: 650, y: 250 },
+      { id: 'n7', label: 'Talent', type: 's', x: 300, y: 400 },
+    ];
+    cldLinks = [
+      { from: 'n1', to: 'n2', polarity: '+', label: '+' },
+      { from: 'n2', to: 'n3', polarity: '+', label: '+' },
+      { from: 'n3', to: 'n1', polarity: '+', label: '+' },
+      { from: 'n4', to: 'n1', polarity: '-', label: '−' },
+      { from: 'n5', to: 'n2', polarity: '+', label: '+' },
+      { from: 'n6', to: 'n2', polarity: '-', label: '−' },
+      { from: 'n7', to: 'n1', polarity: '+', label: '+' },
+    ];
+  }
+  renderCLD();
+}
+
+function renderCLD() {
+  const canvas = document.getElementById('cldCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.offsetWidth, h = canvas.offsetHeight;
+  canvas.width = w; canvas.height = h;
+  ctx.clearRect(0, 0, w, h);
+  
+  // Draw links
+  cldLinks.forEach(link => {
+    const from = cldNodes.find(n => n.id === link.from);
+    const to = cldNodes.find(n => n.id === link.to);
+    if (!from || !to) return;
+    
+    ctx.beginPath();
+    ctx.strokeStyle = link.polarity === '+' ? 'rgba(16,185,129,0.6)' : 'rgba(239,68,68,0.6)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    
+    const fx = from.x + 50, fy = from.y + 20;
+    const tx = to.x + 50, ty = to.y + 20;
+    
+    // Curved line
+    const cpx = (fx + tx) / 2 - (ty - fy) * 0.3;
+    const cpy = (fy + ty) / 2 + (tx - fx) * 0.3;
+    ctx.moveTo(fx, fy);
+    ctx.quadraticCurveTo(cpx, cpy, tx, ty);
+    ctx.stroke();
+    
+    // Arrow
+    const angle = Math.atan2(ty - cpy, tx - cpx);
+    ctx.beginPath();
+    ctx.fillStyle = link.polarity === '+' ? 'rgba(16,185,129,0.8)' : 'rgba(239,68,68,0.8)';
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(tx - 10*Math.cos(angle - 0.4), ty - 10*Math.sin(angle - 0.4));
+    ctx.lineTo(tx - 10*Math.cos(angle + 0.4), ty - 10*Math.sin(angle + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    
+    // Label
+    const lx = (fx + cpx + tx) / 3;
+    const ly = (fy + cpy + ty) / 3;
+    ctx.fillStyle = link.polarity === '+' ? '#34D399' : '#FC8181';
+    ctx.font = 'bold 14px Roboto Condensed';
+    ctx.fillText(link.label, lx, ly);
+  });
+  
+  // Draw nodes as DOM overlay (simpler)
+  const existing = document.querySelectorAll('.cld-node-el');
+  existing.forEach(e => e.remove());
+  
+  const container = canvas.parentElement;
+  const canvasRect = canvas.getBoundingClientRect();
+  
+  cldNodes.forEach(node => {
+    const el = document.createElement('div');
+    el.className = `cld-node node-${node.type} cld-node-el`;
+    el.style.left = node.x + 'px';
+    el.style.top = node.y + 'px';
+    el.style.position = 'absolute';
+    el.style.zIndex = '10';
+    el.textContent = node.label;
+    el.title = `${node.type.toUpperCase()}: ${node.label}`;
+    container.appendChild(el);
+    
+    // Drag
+    el.addEventListener('mousedown', (e) => {
+      selectedNode = node;
+      isDragging = true;
+      const rect = el.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      e.preventDefault();
+    });
+  });
+  
+  container.onmousemove = (e) => {
+    if (!isDragging || !selectedNode) return;
+    const rect = container.getBoundingClientRect();
+    selectedNode.x = e.clientX - rect.left - dragOffset.x;
+    selectedNode.y = e.clientY - rect.top - dragOffset.y;
+    renderCLD();
+  };
+  
+  container.onmouseup = () => { isDragging = false; selectedNode = null; };
+}
+
+function addCLDNode() {
+  showModal('Add CLD Variable', `
+    <div class="form-group">
+      <label class="form-label">Variable Name</label>
+      <input type="text" class="form-input" id="cld-label" placeholder="e.g. Customer Satisfaction">
+    </div>
+    <div class="form-group">
+      <label class="form-label">SWOT Type</label>
+      <select class="form-select" id="cld-type">
+        <option value="s">Strength</option>
+        <option value="w">Weakness</option>
+        <option value="o">Opportunity</option>
+        <option value="t">Threat</option>
+      </select>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="saveCLDNode()">Add Variable</button>
+  `);
+}
+
+function saveCLDNode() {
+  const label = document.getElementById('cld-label').value.trim();
+  const type = document.getElementById('cld-type').value;
+  if (!label) return;
+  cldNodes.push({ id: 'n'+Date.now(), label, type, x: 200 + Math.random()*400, y: 100 + Math.random()*300 });
+  closeModal();
+  renderCLD();
+  showToast('Variable added to CLD', 'success');
+}
+
+function clearCLD() { cldNodes = []; cldLinks = []; renderCLD(); showToast('CLD cleared', 'info'); }
+function autoLayoutCLD() {
+  cldNodes.forEach((n, i) => {
+    const angle = (i / cldNodes.length) * Math.PI * 2;
+    n.x = 400 + Math.cos(angle) * 200;
+    n.y = 220 + Math.sin(angle) * 150;
+  });
+  renderCLD();
+  showToast('Auto layout applied', 'success');
+}
+
+// ========================================
+// SYSTEMS ARCHETYPES
+// ========================================
+const ARCHETYPES = {
+  limits: {
+    name: 'Limits to Growth',
+    desc: 'A reinforcing process builds results until it hits constraints that slow it down.',
+    pattern: 'Growing Action → Results → Reinforcing Loop ↑\nConstraint → Slowing Action ↓',
+    example: 'Digital transformation investment (R) drives capability growth, but talent shortage (B) eventually limits implementation speed.',
+    loops: ['R1: Investment → Capability → Performance → Investment (Reinforcing)','B1: Growth Rate → Talent Demand → Talent Gap → Growth Rate (Balancing)'],
+    leverage: 'Remove or weaken the constraint before it limits growth.'
+  },
+  shifting: {
+    name: 'Shifting the Burden',
+    desc: 'A short-term fix relieves symptoms but undermines fundamental solutions.',
+    pattern: 'Problem → Symptomatic Fix → (reduces problem)\nProblem → Fundamental Fix → (resolves root cause)\nSymptomatic Fix → (undermines) Fundamental Fix',
+    example: 'Quick outsourcing (fix) relieves talent shortage symptoms but undermines internal capability development (fundamental).',
+    loops: ['B1: Talent Gap → Outsourcing → Talent Gap (Balancing, fast)','B2: Talent Gap → Training → Talent Gap (Balancing, slow)','R1: Outsourcing → Dependency → Training Investment (Undermining)'],
+    leverage: 'Invest in the fundamental solution before symptoms grow unmanageable.'
+  },
+  escalation: {
+    name: 'Escalation',
+    desc: 'Two reinforcing loops create an arms race that accelerates out of control.',
+    pattern: 'Party A action → Party B threat → Party B response → Party A threat → Party A action',
+    example: 'As competitor lowers prices, we lower prices, competitor responds further — eroding industry margins.',
+    loops: ['R1: Our Price Cut → Competitor Response → Our Threat → Our Price Cut','R2: Competitor Price Cut → Our Response → Competitor Threat → Competitor Cut'],
+    leverage: 'Unilateral de-escalation or negotiated agreement breaks the loop.'
+  },
+  fixes: {
+    name: 'Fixes that Fail',
+    desc: 'A short-term fix creates unintended side effects that worsen the original problem.',
+    pattern: 'Problem → Fix → (reduces) Problem\nFix → (delayed) Side Effect → (increases) Problem',
+    example: 'Cutting training budget reduces cost pressure but erodes capability, increasing long-term costs.',
+    loops: ['B1: Cost Pressure → Budget Cut → Cost Pressure (Balancing, fast)','R1: Budget Cut → Capability Loss → Future Costs → Cost Pressure (Reinforcing, delayed)'],
+    leverage: 'Look for delayed side effects of every fix before implementing.'
+  },
+  tragedy: {
+    name: 'Tragedy of the Commons',
+    desc: 'Individual users erode a shared resource trying to maximize their gains.',
+    pattern: 'User A gains → Total resource burden increases\nUser B gains → Total resource burden increases\nResource depletion → All users suffer',
+    example: 'Multiple departments competing for budget create excessive overhead costs that constrain all budgets.',
+    loops: ['R1: Dept A Budget Request → Overhead → Dept B Request → Overhead (Reinforcing)','B1: Total Overhead → Budget Pressure → All Dept Allocations (Balancing)'],
+    leverage: 'Mutual accountability and shared visibility of resource usage.'
+  }
+};
+
+function initArchetypes() {
+  switchArchetype(null, 'limits');
+}
+
+function switchArchetype(el, key) {
+  if (el) {
+    document.querySelectorAll('#page-archetypes .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const a = ARCHETYPES[key];
+  document.getElementById('archetypeContent').innerHTML = `
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">${a.name}</div>
+            <div class="card-subtitle">Systems Archetype</div>
+          </div>
+        </div>
+        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:16px; line-height:1.7;">${a.desc}</p>
+        <div style="background:rgba(255,255,255,0.05); border-radius:8px; padding:16px; font-family:'Roboto Condensed'; font-size:12px; color:var(--blue-200); line-height:2; margin-bottom:16px; white-space:pre-line;">${a.pattern}</div>
+        <div style="background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.2); border-radius:8px; padding:14px;">
+          <div style="font-size:10px; font-family:'Roboto Condensed'; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--blue-300); margin-bottom:8px;">🎯 Leverage Point</div>
+          <div style="font-size:13px; color:var(--text-primary);">${a.leverage}</div>
+        </div>
+      </div>
+      <div>
+        <div class="card mb-4">
+          <div class="card-header"><div class="card-title">Strategic Example</div></div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">${a.example}</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Causal Loops</div></div>
+          ${a.loops.map((l, i) => `
+            <div style="display:flex; gap:10px; margin-bottom:10px; align-items:flex-start;">
+              <span style="background:${i%2===0 ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)'}; color:${i%2===0 ? '#34D399' : '#93C5FD'}; padding:3px 8px; border-radius:4px; font-size:10px; font-family:'Roboto Condensed'; font-weight:700; flex-shrink:0;">${l.split(':')[0]}</span>
+              <span style="font-size:12px; color:var(--text-secondary);">${l.split(':')[1]}</span>
+            </div>
+          `).join('')}
+          <button class="btn-primary p-sm w-full" style="margin-top:8px;" onclick="applyArchetypeToSwot('${key}')">Apply to My SWOT</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function applyArchetypeToSwot(key) {
+  showToast(`${ARCHETYPES[key].name} pattern applied to your CLD`, 'success');
+  setTimeout(() => navigate('cld'), 600);
+}
+
+// ========================================
+// AI FEATURES
+// ========================================
+async function generateSwotAI() {
+  const orgName = document.getElementById('ai-org-name').value.trim();
+  const industry = document.getElementById('ai-industry').value;
+  const context = document.getElementById('ai-context').value.trim();
+  const apiKey = document.getElementById('ai-api-key').value.trim();
+  
+  if (!context) { showToast('Please provide strategic context', 'error'); return; }
+  
+  const output = document.getElementById('aiSwotOutput');
+  output.innerHTML = `<div class="ai-label">Generating SWOT...</div><div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  
+  if (!apiKey || !apiKey.startsWith('sk-')) {
+    // Demo mode
+    await sleep(2000);
+    const demoSwot = {
+      strengths: ['Strong market presence and established brand recognition in the ' + (industry||'industry'), 'Experienced leadership team with proven execution track record', 'Stable financial base with sustainable revenue model'],
+      weaknesses: ['Legacy systems limiting operational agility and digital transformation speed', 'Limited data analytics capabilities compared to digital-native competitors', 'High dependency on key personnel creating talent concentration risk'],
+      opportunities: ['Digital economy growth creating new service delivery channels', 'Government programs supporting innovation and technology adoption', 'Emerging ASEAN market integration opening regional expansion pathways'],
+      threats: ['Increasing competitive pressure from well-funded global entrants', 'Regulatory changes increasing compliance costs and operational complexity', 'Economic uncertainty affecting budget cycles and procurement decisions']
+    };
+    renderAISwotResults(demoSwot);
+    output.innerHTML = `<div class="ai-label">✓ SWOT Generated</div><div style="font-size:13px; color:var(--text-secondary);">Demo mode — add an OpenAI API key for AI-powered generation tailored to your context.</div>`;
+    return;
+  }
+  
+  try {
+    const prompt = `You are an expert strategic planning consultant. Generate a comprehensive, bias-aware SWOT analysis for:
+Organization: ${orgName || 'Organization'}
+Industry: ${industry}
+Context: ${context}
+
+Return JSON with this exact structure:
+{
+  "strengths": ["item1", "item2", "item3", "item4"],
+  "weaknesses": ["item1", "item2", "item3"],
+  "opportunities": ["item1", "item2", "item3", "item4"],
+  "threats": ["item1", "item2", "item3"]
+}
+
+Each item should be specific, evidence-based, and actionable (1-2 sentences). Avoid generic statements.`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const text = data.content[0].text;
+    const clean = text.replace(/```json|```/g, '').trim();
+    const swot = JSON.parse(clean);
+    renderAISwotResults(swot);
+    output.innerHTML = `<div class="ai-label">✓ SWOT Generated</div><div style="font-size:13px; color:var(--text-secondary);">AI-powered SWOT generated based on your context. Review and apply to your plan.</div>`;
+  } catch(e) {
+    output.innerHTML = `<div class="ai-label" style="color:var(--danger);">Error</div><div style="font-size:13px; color:var(--text-secondary);">Failed to generate. Check your API key and try again. Demo mode activated.</div>`;
+    // Fallback demo
+    generateSwotAI_demo();
+  }
+}
+
+function generateSwotAI_demo() {
+  const demoSwot = {
+    strengths: ['Strong operational foundations and institutional knowledge', 'Committed workforce with sector expertise'],
+    weaknesses: ['Technology infrastructure gaps limiting service delivery', 'Budget constraints affecting implementation speed'],
+    opportunities: ['Digital transformation mandate creating modernization pathways', 'Partnership opportunities with technology providers'],
+    threats: ['Evolving regulatory requirements increasing compliance burden', 'Competitive talent market creating retention pressures']
+  };
+  renderAISwotResults(demoSwot);
+}
+
+function renderAISwotResults(swot) {
+  const resultsEl = document.getElementById('aiSwotResults');
+  resultsEl.style.display = 'block';
+  
+  const content = document.getElementById('aiSwotContent');
+  const types = ['strengths', 'weaknesses', 'opportunities', 'threats'];
+  const colors = { strengths: '#10B981', weaknesses: '#EF4444', opportunities: '#3B82F6', threats: '#F59E0B' };
+  
+  content.innerHTML = types.map(type => `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px; font-family:'Roboto Condensed'; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:${colors[type]}; margin-bottom:8px;">${type}</div>
+      ${swot[type].map(item => `<div class="swot-item">${item}</div>`).join('')}
+    </div>
+  `).join('');
+  
+  window._aiSwotData = swot;
+}
+
+function applyAISwot() {
+  if (!window._aiSwotData) return;
+  const swot = window._aiSwotData;
+  ['strengths', 'weaknesses', 'opportunities', 'threats'].forEach(type => {
+    swot[type].forEach(text => {
+      STATE.activePlan.swot[type].push({ id: type[0]+Date.now()+Math.random(), text, comments: [] });
+    });
+  });
+  showToast('AI SWOT applied to your plan!', 'success');
+  navigate('swot');
+}
+
+async function generateStrategyAI() {
+  const focus = document.getElementById('strategy-focus').value;
+  const horizon = document.getElementById('strategy-horizon').value;
+  const context = document.getElementById('strategy-context').value;
+  const apiKey = document.getElementById('strategy-api-key').value.trim();
+  
+  const output = document.getElementById('strategyAiOutput');
+  output.innerHTML = `<div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  
+  await sleep(1500);
+  
+  const demoStrategies = {
+    so: ['Leverage digital capabilities to capture emerging market opportunities in ASEAN', 'Use brand strength to lead government digitalization contracts'],
+    st: ['Build strategic partnerships to counter competitive threats', 'Differentiate through quality and relationships against price competition'],
+    wo: ['Invest in cloud migration to overcome legacy constraints and capitalize on digital demand', 'Hire digital talent to close capability gaps and seize opportunities'],
+    wt: ['Implement risk management framework to address regulatory and competitive threats', 'Diversify revenue streams to reduce vulnerability to market disruptions']
+  };
+  
+  const resultsEl = document.getElementById('strategyAiResults');
+  resultsEl.style.display = 'block';
+  
+  const content = document.getElementById('strategyAiContent');
+  const types = { so: ['#10B981', 'SO – Strength-Opportunity'], st: ['#3B82F6', 'ST – Strength-Threat'], wo: ['#06B6D4', 'WO – Weakness-Opportunity'], wt: ['#F59E0B', 'WT – Weakness-Threat'] };
+  
+  content.innerHTML = Object.entries(demoStrategies).map(([type, items]) => `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px; font-family:'Roboto Condensed'; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:${types[type][0]}; margin-bottom:8px;">${types[type][1]}</div>
+      ${items.map(item => `<div class="strategy-item" style="margin-bottom:6px;">${item}</div>`).join('')}
+    </div>
+  `).join('');
+  
+  output.innerHTML = `<div style="font-size:13px; color:var(--text-secondary);">✓ Generated ${focus} strategies for ${horizon}. Review and apply to your plan.</div>`;
+  window._aiStrategyData = demoStrategies;
+}
+
+function applyAIStrategies() {
+  if (!window._aiStrategyData) return;
+  const s = window._aiStrategyData;
+  Object.entries(s).forEach(([type, items]) => {
+    items.forEach(text => STATE.activePlan.strategies[type].push({ id: type+Date.now()+Math.random(), text }));
+  });
+  showToast('AI strategies applied!', 'success');
+  navigate('strategy-matrix');
+}
+
+async function aiSuggest(context) {
+  showModal('✦ AI Suggestions', `
+    <div class="ai-label" style="margin-bottom:16px;">Analyzing your ${context} data...</div>
+    <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+  `);
+  
+  await sleep(1800);
+  
+  const suggestions = {
+    swot: [
+      '💪 Consider adding: "Established data infrastructure enabling analytics-driven decisions"',
+      '⚠️ Consider adding: "Limited mobile-first capabilities affecting field team productivity"',
+      '🚀 Consider adding: "AI and automation tools reducing time-to-market by 40%"',
+    ],
+    strategy: [
+      '⚡ SO: "Deploy AI-powered services to capture premium enterprise segment"',
+      '🛡️ ST: "Build compliance automation to reduce regulatory risk at scale"',
+    ],
+    scorecard: [
+      '🎯 Financial: "Digital Revenue Share (Target: 30% of total revenue)"',
+      '👥 Customer: "Digital Adoption Rate (Target: 75% of customers on digital channels)"',
+    ],
+    dashboard: [
+      '📊 Your financial KPIs are trending 13% below target — consider reviewing IT modernization timeline',
+      '🎯 Customer satisfaction is above target — leverage this in renewal conversations',
+    ]
+  };
+  
+  const items = suggestions[context] || suggestions.dashboard;
+  
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">✦ AI Suggestions</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="ai-label" style="margin-bottom:16px;">Recommendations for ${context}</div>
+    ${items.map(s => `<div style="background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:10px; padding:14px; margin-bottom:10px; font-size:13px; line-height:1.6; color:var(--text-primary);">${s}</div>`).join('')}
+    <button class="btn-accent p-md w-full" style="margin-top:8px;" onclick="closeModal(); showToast('Suggestions noted', 'success');">Apply Suggestions</button>
+  `;
+}
+
+// ========================================
+// REPORTS
+// ========================================
+function generateReportPreview() {
+  const title = document.getElementById('report-title').value;
+  const org = document.getElementById('report-org').value;
+  const period = document.getElementById('report-period').value;
+  const inclExecutive = document.getElementById('incl-executive').checked;
+  const inclSwot = document.getElementById('incl-swot').checked;
+  const inclScorecard = document.getElementById('incl-scorecard').checked;
+  
+  const swot = STATE.activePlan.swot;
+  
+  let html = `
+    <div class="report-preview">
+      <div style="text-align:center; margin-bottom:32px; padding-bottom:24px; border-bottom:3px solid #0F2952;">
+        <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" style="width:60px; height:60px; border-radius:50%; margin-bottom:12px;">
+        <h1 style="font-size:22px; margin-bottom:4px;">${title}</h1>
+        <p style="color:#666; font-size:13px;">${org} · ${period}</p>
+        <p style="color:#999; font-size:11px; margin-top:8px;">Generated by Strat Planner Pro · ${new Date().toLocaleDateString()}</p>
+      </div>
+  `;
+  
+  if (inclExecutive) {
+    html += `
+      <h2>1. Executive Summary</h2>
+      <p>This strategic plan outlines the organizational priorities, key initiatives, and performance targets for ${period}. The plan is anchored on a comprehensive SWOT analysis and translated into actionable strategies through a robust Balanced Scorecard framework.</p>
+      <p>The organization has identified ${swot.strengths.length} key strengths, ${swot.weaknesses.length} areas for improvement, ${swot.opportunities.length} strategic opportunities, and ${swot.threats.length} external threats requiring mitigation.</p>
+    `;
+  }
+  
+  if (inclSwot) {
+    html += `<h2>2. SWOT Analysis</h2>`;
+    [['Strengths','strengths','#10B981'],['Weaknesses','weaknesses','#EF4444'],['Opportunities','opportunities','#3B82F6'],['Threats','threats','#F59E0B']].forEach(([name, key, color]) => {
+      html += `<h3 style="color:${color}; font-size:13px; margin:12px 0 6px;">${name}</h3><ul style="margin:0 0 8px 16px; font-size:12px; line-height:1.8; color:#444;">`;
+      swot[key].forEach(item => { html += `<li>${item.text}</li>`; });
+      html += `</ul>`;
+    });
+  }
+  
+  if (inclScorecard) {
+    html += `<h2>3. Balanced Scorecard</h2>`;
+    const sc = STATE.activePlan.scorecard;
+    [['Financial','financial'],['Customer','customer'],['Internal Process','internal'],['Learning & Growth','learning']].forEach(([name, key]) => {
+      html += `<h3 style="font-size:13px; margin:12px 0 6px;">${name} Perspective</h3>`;
+      html += `<table><tr><th>KPI</th><th>Target</th><th>Actual</th><th>Status</th></tr>`;
+      sc[key].forEach(k => { html += `<tr><td>${k.kpi}</td><td>${k.target}</td><td>${k.actual}</td><td>${k.status}</td></tr>`; });
+      html += `</table>`;
+    });
+  }
+  
+  html += `
+    <div style="margin-top:40px; padding-top:16px; border-top:1px solid #e5e7eb; text-align:center; font-size:11px; color:#999;">
+      Confidential · ${org} · ${new Date().getFullYear()} · Generated by Strat Planner Pro
+    </div>
+  </div>`;
+  
+  document.getElementById('reportPreviewContainer').innerHTML = `
+    <div class="card-header"><div class="card-title">Preview</div></div>
+    <div id="reportHTML" style="max-height:600px; overflow-y:auto;">${html}</div>
+  `;
+  showToast('Report preview generated', 'success');
+}
+
+function printReport() {
+  const content = document.getElementById('reportHTML');
+  if (!content) { showToast('Generate preview first', 'error'); return; }
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>Strategic Plan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>body{font-family:Inter,sans-serif;} @media print{@page{size:A4;margin:20mm;}}</style>
+    </head><body>${content.innerHTML}</body></html>
+  `);
+  win.document.close();
+  win.print();
+}
+
+// ========================================
+// PLAN SELECTOR
+// ========================================
+function openPlanSelector() {
+  showModal('Select Plan', `
+    <div style="margin-bottom:16px;">
+      ${['Q2 2025 – Corporate Strategy', '2026 Annual Plan (Draft)', 'IT Modernization Roadmap'].map((p, i) => `
+        <div class="initiative-row" style="padding:12px; cursor:pointer; margin-bottom:6px; ${i===0?'background:rgba(37,99,235,0.1); border-color:rgba(37,99,235,0.3);':''}" onclick="selectPlan('${p}')">
+          <span style="font-size:16px;">📊</span>
+          <span style="flex:1; font-size:13px; font-weight:500;">${p}</span>
+          ${i===0?'<span style="font-size:12px; color:var(--blue-300);">Active</span>':''}
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn-primary p-md w-full" onclick="createNewPlan()">+ Create New Plan</button>
+  `);
+}
+
+function selectPlan(name) {
+  document.getElementById('activePlanName').textContent = name;
+  closeModal();
+  showToast(`Switched to: ${name}`, 'success');
+}
+
+function createNewPlan() {
+  closeModal();
+  showModal('Create New Plan', `
+    <div class="form-group"><label class="form-label">Plan Name</label><input type="text" class="form-input" id="new-plan-name" placeholder="e.g. 2026 Annual Strategic Plan"></div>
+    <div class="form-group"><label class="form-label">Organization</label><input type="text" class="form-input" id="new-plan-org" placeholder="Organization name..."></div>
+    <div class="form-group"><label class="form-label">Start from Template?</label>
+      <select class="form-select" id="new-plan-template">
+        <option value="">Blank plan</option>
+        ${TEMPLATES.map(t => `<option value="${t.id}">${t.emoji} ${t.name}</option>`).join('')}
+      </select>
+    </div>
+    <button class="btn-primary p-md w-full" onclick="confirmNewPlan()">Create Plan</button>
+  `);
+}
+
+function confirmNewPlan() {
+  const name = document.getElementById('new-plan-name').value.trim();
+  if (!name) return;
+  document.getElementById('activePlanName').textContent = name;
+  closeModal();
+  showToast(`New plan created: ${name}`, 'success');
+}
+
+// ========================================
+// NOTIFICATIONS
+// ========================================
+function initNotifications() {
+  const list = document.getElementById('notifList');
+  list.innerHTML = STATE.notifications.map(n => `
+    <div class="notif-item">
+      <div class="notif-icon" style="background:rgba(37,99,235,0.15);">${n.icon}</div>
+      <div class="notif-text">
+        <div class="notif-msg">${n.msg}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+      ${n.unread ? '<div class="notif-unread"></div>' : ''}
+    </div>
+  `).join('');
+  
+  const unread = STATE.notifications.filter(n => n.unread).length;
+  const badge = document.getElementById('notifBadge');
+  badge.style.display = unread > 0 ? 'block' : 'none';
+}
+
+function toggleNotifications() {
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('visible');
+  STATE.notifications.forEach(n => n.unread = false);
+  document.getElementById('notifBadge').style.display = 'none';
+}
+
+function clearNotifs() {
+  STATE.notifications.forEach(n => n.unread = false);
+  document.getElementById('notifBadge').style.display = 'none';
+  showToast('All notifications marked as read', 'info');
+}
+
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('notifPanel');
+  if (panel.classList.contains('visible') && !panel.contains(e.target) && !e.target.closest('.header-btn')) {
+    panel.classList.remove('visible');
+  }
+});
+
+// ========================================
+// MODAL
+// ========================================
+function showModal(title, content) {
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">${title}</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    ${content}
+  `;
+  document.getElementById('modalOverlay').classList.add('visible');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('visible');
+}
+
+// ========================================
+// TOAST
+// ========================================
+function showToast(msg, type = 'info') {
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ========================================
+// USER MENU
+// ========================================
+function openUserMenu() {
+  const isAdmin = true; // demo: always show admin features
+  showModal('Account', `
+    <div style="text-align:center; margin-bottom:20px;">
+      <div class="avatar" style="width:56px; height:56px; font-size:20px; margin:0 auto 10px;">${STATE.currentUser.initials}</div>
+      <div style="font-weight:600; font-size:16px;">${STATE.currentUser.name}</div>
+      <div style="font-size:13px; color:var(--text-secondary);">${STATE.currentUser.email}</div>
+      <div style="font-size:11px; color:var(--blue-300); margin-top:4px;">${STATE.currentUser.role}</div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <div class="glass-btn p-md" style="justify-content:flex-start; border-radius:var(--radius-md);">⚙️ Account Settings</div>
+      <div class="glass-btn p-md" style="justify-content:flex-start; border-radius:var(--radius-md);" onclick="closeModal(); navigate('team')">👥 Manage Team</div>
+      <div class="glass-btn p-md" style="justify-content:flex-start; border-radius:var(--radius-md);" onclick="closeModal(); navigate('admin')">🔐 Admin Panel</div>
+      <div class="glass-btn p-md" style="justify-content:flex-start; border-radius:var(--radius-md); color:var(--danger);">⇥ Sign Out</div>
+    </div>
+  `);
+}
+
+// ========================================
+// SYNC SIMULATION
+// ========================================
+function simulateSync() {
+  const dot = document.getElementById('syncDot');
+  const status = document.getElementById('syncStatus');
+  
+  setInterval(() => {
+    dot.style.background = '#F59E0B';
+    status.textContent = 'Syncing...';
+    setTimeout(() => {
+      dot.style.background = 'var(--success)';
+      status.textContent = 'Synced';
+    }, 1200);
+  }, 30000);
+}
+
+// ========================================
+// OFFLINE DETECTION
+// ========================================
+window.addEventListener('offline', () => document.body.classList.add('offline'));
+window.addEventListener('online', () => {
+  document.body.classList.remove('offline');
+  showToast('Back online — syncing changes', 'success');
+});
+
+// ========================================
+// UTILS
+// ========================================
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ========================================
+// INIT APP
+// ========================================
+document.addEventListener('DOMContentLoaded', () => {
+  initNotifications();
+  initDashboard();
+  simulateSync();
+  
+  // Show welcome toast
+  setTimeout(() => showToast('Welcome back, Maria!', 'success'), 500);
+  setTimeout(() => showToast('2 new notifications', 'info'), 1500);
+});
+
+   <!-- Scripts -->
   <script src="auth.js"></script>
   <script src="database.js"></script>
   <script src="email.js"></script>
@@ -75,5 +4141,6 @@
       setTimeout(() => showToast('2 new notifications', 'info'), 1500);
     });
   </script>
+</script>
 </body>
 </html>
