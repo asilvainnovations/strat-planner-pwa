@@ -1,0 +1,30 @@
+{
+  "name": "strat-planner-pro",
+  "version": "1.0.0",
+  "description": "Strat Planner Pro",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node scripts/seed.js",
+    "db:reset": "node scripts/reset-db.js"
+  },
+  "engines": { "node": ">=18.0.0" },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "express-validator": "^7.2.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nedb-promises": "^6.2.3",
+    "nodemailer": "^6.9.14",
+    "uuid": "^10.0.0",
+    "ws": "^8.18.0"
+  }
+}
