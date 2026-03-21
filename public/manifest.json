@@ -2,36 +2,78 @@
   "name": "Strat Planner Pro",
   "short_name": "StratPro",
   "description": "Strategic Planning Platform for Leaders Who Demand Precision and Results",
-  "start_url": "/",
+  "start_url": "/app/",
+  "scope": "/app/",
   "display": "standalone",
   "background_color": "#0A1628",
   "theme_color": "#0A1628",
   "orientation": "any",
   "icons": [
     {
-      "src": "https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png",
-      "sizes": "512x512",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Strategic Planning Dashboard"
+    },
+    {
+      "src": "/screenshots/swot.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SWOT Analysis"
+    },
+    {
+      "src": "/screenshots/scorecard.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Balanced Scorecard"
+    },
+    {
+      "src": "/screenshots/dashboard-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Dashboard"
     }
   ],
   "categories": ["business", "productivity"],
-  "screenshots": [],
   "shortcuts": [
     {
       "name": "Dashboard",
-      "url": "/#dashboard",
-      "description": "Go to Dashboard"
+      "url": "/app/#dashboard",
+      "description": "Open strategic planning dashboard"
     },
     {
       "name": "SWOT Analysis",
-      "url": "/#swot",
+      "url": "/app/#swot",
       "description": "Open SWOT Analysis"
+    },
+    {
+      "name": "Scorecard",
+      "url": "/app/#scorecard",
+      "description": "Open Balanced Scorecard"
     }
   ]
 }
