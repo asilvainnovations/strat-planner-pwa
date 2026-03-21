@@ -1,33 +1,48 @@
 {
   "name": "strat-planner-pro",
   "version": "1.0.0",
-  "description": "Strat Planner Pro",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "seed": "node scripts/seed.js",
-    "db:reset": "node scripts/reset-db.js"
+  "description": "AI-powered strategic planning platform — full-stack PWA",
+  "license": "MIT",
+  "homepage": "https://stratplannerpro.app",
+  "author": {
+    "name": "ASilva Innovations, Inc.",
+    "url": "https://asilvainnovations.com"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start":      "node server.js",
+    "dev":        "node --watch server.js",
+    "seed":       "node scripts/seed.js",
+    "db:reset":   "node scripts/reset-db.js",
+    "lint":       "eslint src/ --ext .js --report-unused-disable-directives",
+    "lint:fix":   "eslint src/ --ext .js --fix",
+    "test":       "node --test tests/",
+    "test:watch": "node --test --watch tests/",
+    "check":      "npm run lint && npm test",
+    "build":      "echo 'No build step — fully static HTML + Node server'"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "express-rate-limit": "^7.3.1",
-    "express-validator": "^7.2.0",
-    "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
-    "nedb-promises": "^6.2.3",
-    "nodemailer": "^6.9.14",
-    "uuid": "^10.0.0",
-    "ws": "^8.18.0"
+    "bcryptjs":             "^2.4.3",
+    "compression":          "^1.7.4",
+    "cookie-parser":        "^1.4.6",
+    "cors":                 "^2.8.5",
+    "dotenv":               "^16.4.5",
+    "express":              "^4.19.2",
+    "express-rate-limit":   "^7.3.1",
+    "express-validator":    "^7.2.0",
+    "helmet":               "^7.1.0",
+    "jsonwebtoken":         "^9.0.2",
+    "morgan":               "^1.10.0",
+    "nedb-promises":        "^6.2.3",
+    "nodemailer":           "^6.9.14",
+    "uuid":                 "^10.0.0",
+    "ws":                   "^8.18.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
   }
 }
