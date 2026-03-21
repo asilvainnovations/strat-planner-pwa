@@ -1,2 +1,2 @@
-{"$$indexCreated":{"fieldName":"entityId"}}
-{"$$indexCreated":{"fieldName":"planId"}}
+{"$$indexCreated":{"fieldName":"entityId","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"planId","unique":false,"sparse":false}}

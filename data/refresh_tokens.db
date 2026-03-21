@@ -1,2 +1,2 @@
-{"$$indexCreated":{"fieldName":"token","unique":true}}
-{"$$indexCreated":{"fieldName":"userId"}}
+{"$$indexCreated":{"fieldName":"token","unique":true,"sparse":false}}
+{"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
