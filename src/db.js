@@ -1190,7 +1190,7 @@ const helpers = {
    * @param  {string} email
    * @returns {Promise<object|null>} User doc including password hash, or null
    */
-  async findUserByEmail(email) {
+  findUserByEmail(email) {
     return db.users.findOne({ email: email.toLowerCase().trim() });
   },
 
@@ -1327,7 +1327,7 @@ const helpers = {
    * @param  {string} [data.ipAddress]   req.ip
    * @returns {Promise<object>}  Inserted activity_log doc
    */
-  async logActivity(data) {
+  logActivity(data) {
     return db.activityLog.insert({
       userId:     data.userId,
       userEmail:  data.userEmail,
@@ -1363,7 +1363,7 @@ const helpers = {
    * @param  {string} [data.actionUrl]  Relative URL for click-through
    * @returns {Promise<object>}  Inserted notification doc
    */
-  async createNotification(data) {
+  createNotification(data) {
     return db.notifications.insert({
       userId:    data.userId,
       type:      data.type,
