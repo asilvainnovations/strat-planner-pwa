@@ -16,14 +16,14 @@
   "scripts": {
     "start":      "node server.js",
     "dev":        "node --watch server.js",
+    "build":      "node scripts/seed.js",
     "seed":       "node scripts/seed.js",
     "db:reset":   "node scripts/reset-db.js",
     "lint":       "eslint src/ --ext .js --report-unused-disable-directives",
     "lint:fix":   "eslint src/ --ext .js --fix",
     "test":       "node --test tests/",
     "test:watch": "node --test --watch tests/",
-    "check":      "npm run lint && npm test",
-    "build":      "echo 'No build step — fully static HTML + Node server'"
+    "check":      "npm run lint && npm test"
   },
   "dependencies": {
     "bcryptjs":             "^2.4.3",
