@@ -50,6 +50,13 @@ const { router }                  = require('./src/routes');
 const ws                          = require('./src/ws');
 const email                       = require('./src/email');
 
+// ── Optional observability (graceful no-ops when not installed) ───
+// Install with: npm install @sentry/node pino pino-http
+let Sentry   = null;
+let pinoHttp = null;
+try { Sentry   = require('@sentry/node');  } catch (_) { /* not installed */ }
+try { pinoHttp = require('pino-http');     } catch (_) { /* not installed */ }
+
 // ── App setup ─────────────────────────────────────────────
 const app    = express();
 const server = http.createServer(app);
@@ -61,10 +68,35 @@ const HOST = process.env.HOST || '0.0.0.0';
 const UPLOAD_PATH = process.env.UPLOAD_PATH || path.join(__dirname, 'uploads');
 if (!fs.existsSync(UPLOAD_PATH)) fs.mkdirSync(UPLOAD_PATH, { recursive: true });
 
-// ── Security headers ──────────────────────────────────────
+// ── Security headers + Content Security Policy ───────────────────
+// CSP is defined here so it works with or without Nginx / CDN.
+// Adjust script-src and connect-src to match your real domain in prod.
+const isProd = process.env.NODE_ENV === 'production';
+
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
-  contentSecurityPolicy: false, // Handled at CDN/proxy level
+  contentSecurityPolicy: isProd ? {
+    useDefaults: false,
+    directives: {
+      defaultSrc:     ["'self'"],
+      scriptSrc:      ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com'],
+      styleSrc:       ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc:        ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc:         ["'self'", 'data:', process.env.CORS_ORIGINS || ''],
+      connectSrc:     ["'self'",
+        // Allow wss:// WebSocket on same origin and explicitly listed domain
+        ...(process.env.CORS_ORIGINS || '').split(',').map(o => o.trim().replace(/^http/, 'ws')).filter(Boolean),
+        ...(process.env.CORS_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean),
+      ],
+      workerSrc:      ["'self'"],
+      manifestSrc:    ["'self'"],
+      frameAncestors: ["'none'"],
+      baseUri:        ["'self'"],
+      formAction:     ["'self'"],
+      upgradeInsecureRequests: [],
+    },
+  } : false,  // CSP disabled in development for easier debugging
+  hsts: isProd ? { maxAge: 63072000, includeSubDomains: true, preload: true } : false,
 }));
 
 // ── CORS ──────────────────────────────────────────────────
@@ -94,6 +126,22 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['X-RateLimit-Remaining'],
 }));
+
+// ── Sentry error monitoring (no-op if SENTRY_DSN not set) ────────
+if (Sentry && process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn:              process.env.SENTRY_DSN,
+    environment:      process.env.NODE_ENV || 'development',
+    tracesSampleRate: 0.1,   // 10% of requests traced
+  });
+  app.use(Sentry.Handlers.requestHandler());
+  console.log('[BOOT] Sentry error monitoring enabled');
+}
+
+// ── Structured logging via Pino (falls back to morgan) ────────────
+if (pinoHttp) {
+  app.use(pinoHttp({ level: process.env.LOG_LEVEL || 'info' }));
+} 
 
 // ── Compression ───────────────────────────────────────────
 app.use(compression());
@@ -139,6 +187,22 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth/login',    authLimiter);
 app.use('/api/auth/register', authLimiter);
+
+// Per-email account lockout — 5 attempts per 15 min per email address.
+// This is applied in addition to the IP-based authLimiter above.
+// KeyGenerator uses req.body.email so each account is tracked individually.
+// Important: express-rate-limit v7 requires trust proxy set for behind-proxy use.
+app.set('trust proxy', 1);
+const emailLockoutLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max:      5,
+  keyGenerator: (req) => (req.body?.email || req.ip || 'unknown').toLowerCase(),
+  message: { error: 'Account temporarily locked. Try again in 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders:   false,
+  skip: (req) => !req.body?.email, // skip if no email in body (malformed requests)
+});
+app.use('/api/auth/login', emailLockoutLimiter);
 
 // ── Static files ──────────────────────────────────────────
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -241,6 +305,11 @@ app.use(express.static(PUBLIC_DIR, {
   maxAge:       process.env.NODE_ENV === 'production' ? '1d' : 0,
 }));
 
+// ── Sentry error handler (must be before 404, after all routes) ──
+if (Sentry && process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.errorHandler());
+}
+
 // ── 404 handler ───────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` });
@@ -270,6 +339,14 @@ async function start() {
     // Validate environment at boot — throws in production if config is missing
     console.log('[BOOT] Validating environment...');
     email.validateEmailEnv();
+    // Validate JWT_SECRET at boot — auth.js also validates but this
+    // gives a clearer error message in the startup log
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 64) {
+      throw new Error('JWT_SECRET must be at least 64 characters. Generate with: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+    }
+    if (isProd && !process.env.CORS_ORIGINS) {
+      throw new Error('CORS_ORIGINS must be set in production');
+    }
 
     // Initialize database
     console.log('[BOOT] Initializing database...');
