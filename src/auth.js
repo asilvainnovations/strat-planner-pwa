@@ -80,7 +80,7 @@ function validateEnv() {
  * @param  {string} plain  Plaintext password
  * @returns {Promise<string>} bcrypt hash string
  */
-async function hashPassword(plain) {
+function hashPassword(plain) {
   const rounds = Math.max(10, parseInt(process.env.BCRYPT_ROUNDS || '12', 10));
   return bcrypt.hash(plain, rounds);
 }
@@ -95,7 +95,7 @@ async function hashPassword(plain) {
  * @param  {string} hash   Stored bcrypt hash
  * @returns {Promise<boolean>}
  */
-async function verifyPassword(plain, hash) {
+function verifyPassword(plain, hash) {
   return bcrypt.compare(plain, hash);
 }
 
