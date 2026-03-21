@@ -2,3 +2,4 @@
 {"token":"b24ba3c1-6a69-42ca-ae43-1ecc8bc1a163","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776703692949},"used":false,"_id":"Mbwir9KgTmdz0HLs","createdAt":{"$$date":1774111692949},"updatedAt":{"$$date":1774111692949}}
 {"$$indexCreated":{"fieldName":"token","unique":true,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
+{"token":"cc814f40-7380-4d6a-b877-48e02b5773da","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776707920056},"used":false,"_id":"0IbL2jI8QIhX0uei","createdAt":{"$$date":1774115920056},"updatedAt":{"$$date":1774115920056}}
