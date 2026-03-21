@@ -1,6 +1,6 @@
+{"token":"cc814f40-7380-4d6a-b877-48e02b5773da","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776707920056},"used":false,"_id":"0IbL2jI8QIhX0uei","createdAt":{"$$date":1774115920056},"updatedAt":{"$$date":1774115920056}}
+{"token":"70ac811e-9c2e-49c5-9e1e-03851790b228","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776707934639},"used":false,"_id":"FU1UK2Z3YoTZhQGg","createdAt":{"$$date":1774115934639},"updatedAt":{"$$date":1774115934639}}
 {"token":"69e661fb-e86d-45bb-84a8-0d31e0694189","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776703670557},"used":false,"_id":"GpOnFf4togNX9bSQ","createdAt":{"$$date":1774111670589},"updatedAt":{"$$date":1774111670589}}
 {"token":"b24ba3c1-6a69-42ca-ae43-1ecc8bc1a163","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776703692949},"used":false,"_id":"Mbwir9KgTmdz0HLs","createdAt":{"$$date":1774111692949},"updatedAt":{"$$date":1774111692949}}
 {"$$indexCreated":{"fieldName":"token","unique":true,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
-{"token":"cc814f40-7380-4d6a-b877-48e02b5773da","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776707920056},"used":false,"_id":"0IbL2jI8QIhX0uei","createdAt":{"$$date":1774115920056},"updatedAt":{"$$date":1774115920056}}
-{"token":"70ac811e-9c2e-49c5-9e1e-03851790b228","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776707934639},"used":false,"_id":"FU1UK2Z3YoTZhQGg","createdAt":{"$$date":1774115934639},"updatedAt":{"$$date":1774115934639}}
