@@ -118,11 +118,36 @@ function router() {
         const { email: emailAddr, password } = req.body;
         const user = await helpers.findUserByEmail(emailAddr);
 
-        if (!user || !(await auth.verifyPassword(password, user.password))) {
+        // Check if account is locked out
+        if (user && user.lockedUntil && new Date() < new Date(user.lockedUntil)) {
+          const mins = Math.ceil((new Date(user.lockedUntil) - new Date()) / 60000);
+          return res.status(429).json({ error: `Account locked. Try again in ${mins} minute(s).` });
+        }
+
+        const passwordValid = user && await auth.verifyPassword(password, user.password);
+
+        if (!user || !passwordValid) {
+          // Increment failed attempt counter — lock after 10 consecutive failures
+          if (user) {
+            const attempts = (user.failedLoginAttempts || 0) + 1;
+            const lockout  = attempts >= 10
+              ? { lockedUntil: new Date(Date.now() + 30 * 60 * 1000).toISOString() } // 30 min
+              : {};
+            await db.users.update({ _id: user._id }, {
+              $set: { failedLoginAttempts: attempts, lastFailedLogin: new Date().toISOString(), ...lockout },
+            });
+          }
           return res.status(401).json({ error: 'Invalid credentials' });
         }
         if (!user.isActive) {
           return res.status(403).json({ error: 'Account deactivated' });
+        }
+
+        // Reset failed attempts on successful login
+        if (user.failedLoginAttempts) {
+          await db.users.update({ _id: user._id }, {
+            $set: { failedLoginAttempts: 0, lockedUntil: null, lastFailedLogin: null },
+          });
         }
 
         const accessToken  = auth.createAccessToken(user);
@@ -475,8 +500,30 @@ function router() {
     if (!plan || plan.ownerId !== req.user.id) {
       return res.status(403).json({ error: 'Only owner can delete' });
     }
-    await db.plans.update({ _id: req.params.id }, { $set: { isDeleted: true } });
-    res.json({ success: true });
+
+    const planId    = req.params.id;
+    const deletedAt = new Date().toISOString();
+    const cascade   = { $set: { isDeleted: true, deletedAt } };
+
+    // Soft-delete cascade — mark all child documents so they are
+    // excluded from every query that filters isDeleted: { $ne: true }
+    await Promise.all([
+      db.plans.update(       { _id: planId },              cascade),
+      db.swotItems.update(   { planId }, cascade, { multi: true }),
+      db.strategies.update(  { planId }, cascade, { multi: true }),
+      db.kpis.update(        { planId }, cascade, { multi: true }),
+      db.initiatives.update( { planId }, cascade, { multi: true }),
+      db.comments.update(    { planId }, cascade, { multi: true }),
+      db.planMembers.update( { planId }, cascade, { multi: true }),
+    ]);
+
+    await helpers.logActivity({
+      userId: req.user.id, userEmail: req.user.email, userName: req.user.name,
+      planId, action: 'deleted_plan', entityType: 'plan', entityId: planId,
+      details: `Deleted plan "${plan.name}" with cascade`,
+    });
+
+    res.json({ success: true, cascaded: ['swotItems','strategies','kpis','initiatives','comments','planMembers'] });
   });
 
   /** POST /api/plans/:id/share */
