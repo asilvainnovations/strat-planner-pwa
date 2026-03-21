@@ -1,0 +1,29 @@
+{
+  "env": {
+    "node":  true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType":  "script"
+  },
+  "rules": {
+    "no-unused-vars":       ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-console":           "off",
+    "no-var":               "error",
+    "prefer-const":         "warn",
+    "eqeqeq":               ["error", "always"],
+    "no-eval":              "error",
+    "no-implied-eval":      "error",
+    "no-new-func":          "error",
+    "no-return-await":      "warn",
+    "require-await":        "warn",
+    "no-throw-literal":     "error",
+    "handle-callback-err":  "warn",
+    "no-process-exit":      "off",
+    "semi":                 ["warn", "always"],
+    "quotes":               ["warn", "single", { "avoidEscape": true }],
+    "no-trailing-spaces":   "warn",
+    "eol-last":             "warn"
+  }
+}
