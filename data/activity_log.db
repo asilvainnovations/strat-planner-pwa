@@ -5,3 +5,4 @@
 {"$$indexCreated":{"fieldName":"planId","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
 {"userId":"c2KPmZyz90VMaZYe","userEmail":"admin@asilvainnovations.com","userName":"Strat Plan Pro","planId":null,"action":"logged_in","entityType":null,"entityId":null,"details":null,"ipAddress":"127.0.0.1","_id":"o7GdFJSwHp2xL8dx","createdAt":{"$$date":1774122245088},"updatedAt":{"$$date":1774122245088}}
+{"userId":"c2KPmZyz90VMaZYe","userEmail":"admin@asilvainnovations.com","userName":"Strat Plan Pro","planId":null,"action":"logged_in","entityType":null,"entityId":null,"details":null,"ipAddress":"127.0.0.1","_id":"EFUHpxV1MNgQcm2o","createdAt":{"$$date":1774122264413},"updatedAt":{"$$date":1774122264413}}
