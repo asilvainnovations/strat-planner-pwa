@@ -48,6 +48,7 @@ const cookieParser = require('cookie-parser'); // [FIX-1] added
 const { db, ensureIndexes, seed } = require('./src/db');
 const { router }                  = require('./src/routes');
 const ws                          = require('./src/ws');
+const email                       = require('./src/email');
 
 // ── App setup ─────────────────────────────────────────────
 const app    = express();
@@ -265,6 +266,10 @@ async function start() {
     console.log('\n╔════════════════════════════════════════╗');
     console.log('║       STRAT PLANNER PRO — SERVER       ║');
     console.log('╚════════════════════════════════════════╝\n');
+
+    // Validate environment at boot — throws in production if config is missing
+    console.log('[BOOT] Validating environment...');
+    email.validateEmailEnv();
 
     // Initialize database
     console.log('[BOOT] Initializing database...');
