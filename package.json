@@ -9,14 +9,14 @@
     "url": "https://asilvainnovations.com"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": "22.x",
+    "npm": "10.x"
   },
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "build": "node scripts/seed.js",
+    "build": "echo \"Build complete — no compile step needed\"",
     "seed": "node scripts/seed.js",
     "db:reset": "node scripts/reset-db.js",
     "lint": "eslint src/ --ext .js --report-unused-disable-directives",
@@ -25,7 +25,8 @@
     "test:watch": "node --test --watch tests/",
     "check": "npm run lint && npm test",
     "start:prod": "NODE_ENV=production node server.js",
-    "logs": "node server.js | pino-pretty"
+    "logs": "node server.js | pino-pretty",
+    "heroku-postbuild": "node scripts/seed.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
