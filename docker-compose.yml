@@ -1,0 +1,65 @@
+# ============================================================
+# STRAT PLANNER PRO — DOCKER COMPOSE
+# docker-compose.yml
+#
+# Usage:
+#   Production:   docker compose up -d
+#   Development:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#   Rebuild:      docker compose up -d --build
+#   Logs:         docker compose logs -f app
+#   Stop:         docker compose down
+#
+# Before first run:
+#   cp .env.example .env   # fill in all required values
+#
+# IMPORTANT: data/ and uploads/ are mounted as persistent volumes.
+# Never delete these directories — they contain all user data.
+# Set up automated backups of ./data before going to production.
+# ============================================================
+
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: strat-planner-pro
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      HOST: 0.0.0.0
+      # DB_PATH and UPLOAD_PATH must match the volume mount paths below
+      DB_PATH: /app/data
+      UPLOAD_PATH: /app/uploads
+    ports:
+      # Expose 4000 to localhost only — Nginx handles public traffic
+      - "127.0.0.1:4000:4000"
+    volumes:
+      # Persistent data volumes — NEVER delete these
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    read_only: false   # app writes to /app/data and /app/uploads
+    tmpfs:
+      - /tmp
+
+networks:
+  default:
+    name: strat-planner-net
