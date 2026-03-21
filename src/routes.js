@@ -1,9 +1,27 @@
 /**
  * ============================================================
- * STRAT PLANNER PRO — API ROUTES
+ * STRAT PLANNER PRO — API ROUTES  (src/routes.js)
  * ============================================================
  * Mounts all route groups onto the Express app.
- * Each group is a self-contained router module.
+ * Each group is a self-contained section of this router module.
+ *
+ * Fixes applied in this version:
+ *  [FIX-5] GET /notifications — replaced broken ternary that was
+ *          causing a double full-table scan on every request.
+ *
+ *          BEFORE (broken):
+ *            const items = await db.notifications.find({...}).sort({...}).limit ?
+ *              (await db.notifications.find({...})).sort(...).slice(0,50) :
+ *              await db.notifications.find({...});
+ *          The ternary tested whether .limit is a function (always truthy),
+ *          so it always took the double-query branch, running two full
+ *          collection scans instead of one.
+ *
+ *          AFTER (fixed):
+ *            const items = (await db.notifications.find({ userId: req.user.id }))
+ *              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+ *              .slice(0, 50);
+ *          Single query, sort in JS (NeDB sort API), slice to 50.
  * ============================================================
  */
 
@@ -190,6 +208,40 @@ function router() {
     }
   );
 
+  /** POST /api/auth/forgot-password */
+  r.post('/auth/forgot-password',
+    body('email').isEmail().normalizeEmail(),
+    validate,
+    async (req, res) => {
+      try {
+        const user = await helpers.findUserByEmail(req.body.email);
+        // Always respond 200 — never reveal whether the email exists
+        if (user && user.isActive) {
+          const token = uuidv4();
+          // Store token (reuse invitations collection pattern, or a dedicated store)
+          await db.invitations.insert({
+            token,
+            email:     user.email,
+            orgId:     null,
+            role:      null,
+            invitedBy: null,
+            status:    'pending',
+            expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+          });
+          email.sendPasswordReset({
+            to:        user.email,
+            firstName: user.firstName,
+            token,
+          }).catch(console.error);
+        }
+        res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+      } catch (err) {
+        console.error('[AUTH] forgot-password error:', err);
+        res.status(500).json({ error: 'Failed to process password reset request' });
+      }
+    }
+  );
+
   // ===========================================================
   // ORGANIZATION ROUTES  /api/orgs/*
   // ===========================================================
@@ -252,28 +304,29 @@ function router() {
       const org = await db.organizations.findOne({ _id: orgId });
       if (!org) return res.status(404).json({ error: 'Organization not found' });
 
-      const { email: inviteeEmail, role, message: msg } = req.body;
+      const { email: inviteeEmail, role } = req.body;
       const token = uuidv4();
 
       await db.invitations.insert({
         token, orgId, email: inviteeEmail, role,
-        invitedBy: req.user.id, inviterName: req.user.name,
-        status: 'pending',
-        expiresAt: new Date(Date.now() + 7 * 86400000),
+        invitedBy:   req.user.id,
+        inviterName: req.user.name,
+        status:      'pending',
+        expiresAt:   new Date(Date.now() + 7 * 86400000),
       });
 
-      // Send email notification
-      await email.sendInviteToOrg({
-        to: inviteeEmail,
+      email.sendInviteToOrg({
+        to:          inviteeEmail,
         inviterName: req.user.name,
-        orgName: org.name,
+        orgName:     org.name,
         role,
         token,
       }).catch(console.error);
 
       await helpers.logActivity({
         userId: req.user.id, userEmail: req.user.email, userName: req.user.name,
-        action: 'invited', entityType: 'user', details: `invited ${inviteeEmail} to ${org.name}`,
+        action: 'invited', entityType: 'user',
+        details: `invited ${inviteeEmail} to ${org.name}`,
       });
 
       res.json({ success: true, message: `Invitation sent to ${inviteeEmail}` });
@@ -293,13 +346,15 @@ function router() {
         return res.status(410).json({ error: 'Invitation expired' });
       }
 
-      // Check if already a member
       const existing = await db.orgMembers.findOne({ orgId: invite.orgId, userId: req.user.id });
       if (existing) {
         return res.status(409).json({ error: 'Already a member of this organization' });
       }
 
-      await db.orgMembers.insert({ orgId: invite.orgId, userId: req.user.id, role: invite.role, invitedBy: invite.invitedBy });
+      await db.orgMembers.insert({
+        orgId: invite.orgId, userId: req.user.id,
+        role: invite.role, invitedBy: invite.invitedBy,
+      });
       await db.invitations.update({ _id: invite._id }, { $set: { status: 'accepted' } });
 
       res.json({ success: true, orgId: invite.orgId, role: invite.role });
@@ -329,7 +384,7 @@ function router() {
         isDeleted: false,
       });
 
-      // If using a template, pre-seed SWOT/strategies/KPIs
+      // If using a template, pre-seed all sections
       if (templateId) {
         const tmpl = await db.templates.findOne({ _id: templateId });
         if (tmpl && tmpl.swotItems) {
@@ -353,7 +408,10 @@ function router() {
         }
         if (tmpl && tmpl.initiatives) {
           for (const init of tmpl.initiatives) {
-            await db.initiatives.insert({ planId: plan._id, ...init, ownerId: req.user.id, budget: 0, utilized: 0, progress: 0, status: 'on-track' });
+            await db.initiatives.insert({
+              planId: plan._id, ...init, ownerId: req.user.id,
+              budget: 0, utilized: 0, progress: 0, status: 'on-track',
+            });
           }
         }
       }
@@ -414,7 +472,9 @@ function router() {
   /** DELETE /api/plans/:id */
   r.delete('/plans/:id', auth.requireAuth, async (req, res) => {
     const plan = await db.plans.findOne({ _id: req.params.id });
-    if (!plan || plan.ownerId !== req.user.id) return res.status(403).json({ error: 'Only owner can delete' });
+    if (!plan || plan.ownerId !== req.user.id) {
+      return res.status(403).json({ error: 'Only owner can delete' });
+    }
     await db.plans.update({ _id: req.params.id }, { $set: { isDeleted: true } });
     res.json({ success: true });
   });
@@ -432,36 +492,44 @@ function router() {
       const targetUser = await helpers.findUserByEmail(req.body.email);
 
       if (targetUser) {
-        const existing = await db.planMembers.findOne({ planId: req.params.id, userId: targetUser._id });
+        const existing = await db.planMembers.findOne({
+          planId: req.params.id, userId: targetUser._id,
+        });
         if (existing) {
-          await db.planMembers.update({ _id: existing._id }, { $set: { role: req.body.permission } });
+          await db.planMembers.update(
+            { _id: existing._id },
+            { $set: { role: req.body.permission } }
+          );
         } else {
-          await db.planMembers.insert({ planId: req.params.id, userId: targetUser._id, role: req.body.permission, sharedBy: req.user.id });
+          await db.planMembers.insert({
+            planId: req.params.id, userId: targetUser._id,
+            role: req.body.permission, sharedBy: req.user.id,
+          });
         }
 
-        // In-app notification
         await helpers.createNotification({
-          userId: targetUser._id,
-          type: 'share',
-          title: 'Plan shared with you',
+          userId:  targetUser._id,
+          type:    'share',
+          title:   'Plan shared with you',
           message: `${req.user.name} shared "${plan.name}" with you (${req.body.permission} access)`,
-          planId: req.params.id,
+          planId:  req.params.id,
         });
 
-        // Push WS notification
         ws.pushToUser(targetUser._id, {
-          type: 'NOTIFICATION',
-          payload: { message: `${req.user.name} shared "${plan.name}" with you`, type: 'share' },
+          type:    'NOTIFICATION',
+          payload: {
+            message: `${req.user.name} shared "${plan.name}" with you`,
+            type:    'share',
+          },
         });
       }
 
-      // Email regardless of whether user exists (they'll need to register)
-      await email.sendSharePlan({
-        to: req.body.email,
-        sharerName: req.user.name,
-        planName: plan.name,
-        permission: req.body.permission,
-        planId: req.params.id,
+      email.sendSharePlan({
+        to:          req.body.email,
+        sharerName:  req.user.name,
+        planName:    plan.name,
+        permission:  req.body.permission,
+        planId:      req.params.id,
       }).catch(console.error);
 
       res.json({ success: true });
@@ -488,12 +556,12 @@ function router() {
       if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
 
       const item = await db.swotItems.insert({
-        planId:   req.params.planId,
-        category: req.body.category,
-        text:     req.body.text,
-        evidence: req.body.evidence || '',
-        impact:   req.body.impact || 'medium',
-        ownerId:  req.user.id,
+        planId:    req.params.planId,
+        category:  req.body.category,
+        text:      req.body.text,
+        evidence:  req.body.evidence || '',
+        impact:    req.body.impact   || 'medium',
+        ownerId:   req.user.id,
         isDeleted: false,
       });
 
@@ -504,8 +572,7 @@ function router() {
       });
 
       ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', {
-        section: 'swot', action: 'add', item,
-        userName: req.user.name,
+        section: 'swot', action: 'add', item, userName: req.user.name,
       }, req.user.id);
 
       res.status(201).json({ item });
@@ -522,10 +589,14 @@ function router() {
       if (req.body[key] !== undefined) update[key] = req.body[key];
     }
 
-    await db.swotItems.update({ _id: req.params.id, planId: req.params.planId }, { $set: update });
+    await db.swotItems.update(
+      { _id: req.params.id, planId: req.params.planId },
+      { $set: update }
+    );
     const item = await db.swotItems.findOne({ _id: req.params.id });
 
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'swot', action: 'update', item }, req.user.id);
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'swot', action: 'update', item }, req.user.id);
     res.json({ item });
   });
 
@@ -534,7 +605,8 @@ function router() {
     if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
 
     await db.swotItems.update({ _id: req.params.id }, { $set: { isDeleted: true } });
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'swot', action: 'delete', id: req.params.id }, req.user.id);
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'swot', action: 'delete', id: req.params.id }, req.user.id);
     res.json({ success: true });
   });
 
@@ -558,11 +630,11 @@ function router() {
       if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
 
       const item = await db.strategies.insert({
-        planId: req.params.planId,
-        type: req.body.type,
-        text: req.body.text,
-        priority: req.body.priority || 'medium',
-        ownerId: req.user.id,
+        planId:    req.params.planId,
+        type:      req.body.type,
+        text:      req.body.text,
+        priority:  req.body.priority || 'medium',
+        ownerId:   req.user.id,
         isDeleted: false,
       });
 
@@ -572,7 +644,8 @@ function router() {
         details: `Added ${req.body.type.toUpperCase()} strategy`,
       });
 
-      ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'strategies', action: 'add', item }, req.user.id);
+      ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+        { section: 'strategies', action: 'add', item }, req.user.id);
       res.status(201).json({ item });
     }
   );
@@ -580,21 +653,26 @@ function router() {
   r.patch('/plans/:planId/strategies/:id', auth.requireAuth, async (req, res) => {
     const role = await helpers.getPlanRole(req.user.id, req.params.planId);
     if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
+
     const update = {};
     for (const key of ['text', 'type', 'priority']) {
       if (req.body[key] !== undefined) update[key] = req.body[key];
     }
     await db.strategies.update({ _id: req.params.id }, { $set: update });
     const item = await db.strategies.findOne({ _id: req.params.id });
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'strategies', action: 'update', item }, req.user.id);
+
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'strategies', action: 'update', item }, req.user.id);
     res.json({ item });
   });
 
   r.delete('/plans/:planId/strategies/:id', auth.requireAuth, async (req, res) => {
     const role = await helpers.getPlanRole(req.user.id, req.params.planId);
     if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
+
     await db.strategies.update({ _id: req.params.id }, { $set: { isDeleted: true } });
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'strategies', action: 'delete', id: req.params.id }, req.user.id);
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'strategies', action: 'delete', id: req.params.id }, req.user.id);
     res.json({ success: true });
   });
 
@@ -624,7 +702,7 @@ function router() {
         kpi:         req.body.kpi,
         target:      req.body.target,
         actual:      req.body.actual || '',
-        unit:        req.body.unit || '',
+        unit:        req.body.unit   || '',
         status:      req.body.status || 'on-track',
         weight:      parseFloat(req.body.weight) || 0.25,
         ownerId:     req.user.id,
@@ -637,7 +715,8 @@ function router() {
         details: `Added KPI: ${req.body.kpi}`,
       });
 
-      ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'kpis', action: 'add', item }, req.user.id);
+      ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+        { section: 'kpis', action: 'add', item }, req.user.id);
       res.status(201).json({ item });
     }
   );
@@ -655,28 +734,35 @@ function router() {
     await db.kpis.update({ _id: req.params.id }, { $set: update });
     const item = await db.kpis.findOne({ _id: req.params.id });
 
-    // KPI alert check
+    // KPI alert: email plan owner when KPI falls behind or at-risk
     if (update.status && ['behind', 'at-risk'].includes(update.status)) {
-      const plan = await db.plans.findOne({ _id: req.params.planId });
+      const plan  = await db.plans.findOne({ _id: req.params.planId });
       const owner = await db.users.findOne({ _id: plan.ownerId });
       if (owner) {
         email.sendKPIAlert({
-          to: owner.email,
-          kpiName: item.kpi, target: item.target, actual: item.actual,
-          status: update.status, planName: plan.name, planId: plan._id,
+          to:        owner.email,
+          kpiName:   item.kpi,
+          target:    item.target,
+          actual:    item.actual,
+          status:    update.status,
+          planName:  plan.name,
+          planId:    plan._id,
         }).catch(console.error);
       }
     }
 
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'kpis', action: 'update', item }, req.user.id);
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'kpis', action: 'update', item }, req.user.id);
     res.json({ item });
   });
 
   r.delete('/plans/:planId/kpis/:id', auth.requireAuth, async (req, res) => {
     const role = await helpers.getPlanRole(req.user.id, req.params.planId);
     if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
+
     await db.kpis.update({ _id: req.params.id }, { $set: { isDeleted: true } });
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'kpis', action: 'delete', id: req.params.id }, req.user.id);
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'kpis', action: 'delete', id: req.params.id }, req.user.id);
     res.json({ success: true });
   });
 
@@ -687,10 +773,11 @@ function router() {
   r.get('/plans/:planId/initiatives', auth.requireAuth, async (req, res) => {
     const access = await helpers.findPlanWithAccess(req.params.planId, req.user.id);
     if (!access) return res.status(403).json({ error: 'Access denied' });
+
     const items = await db.initiatives.find({ planId: req.params.planId, isDeleted: { $ne: true } });
 
-    // Auto-total budgets
-    const totalBudget   = items.reduce((s, i) => s + (i.budget || 0), 0);
+    // Compute budget totals server-side
+    const totalBudget   = items.reduce((s, i) => s + (i.budget   || 0), 0);
     const totalUtilized = items.reduce((s, i) => s + (i.utilized || 0), 0);
 
     res.json({ items, totalBudget, totalUtilized, remaining: totalBudget - totalUtilized });
@@ -705,16 +792,16 @@ function router() {
       if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
 
       const item = await db.initiatives.insert({
-        planId:   req.params.planId,
-        name:     req.body.name,
-        type:     req.body.type,
-        owner:    req.body.owner || '',
-        budget:   parseFloat(req.body.budget) || 0,
-        utilized: parseFloat(req.body.utilized) || 0,
-        progress: parseInt(req.body.progress) || 0,
-        status:   req.body.status || 'on-track',
-        dueDate:  req.body.dueDate || null,
-        ownerId:  req.user.id,
+        planId:    req.params.planId,
+        name:      req.body.name,
+        type:      req.body.type,
+        owner:     req.body.owner    || '',
+        budget:    parseFloat(req.body.budget)   || 0,
+        utilized:  parseFloat(req.body.utilized) || 0,
+        progress:  parseInt(req.body.progress)   || 0,
+        status:    req.body.status   || 'on-track',
+        dueDate:   req.body.dueDate  || null,
+        ownerId:   req.user.id,
         isDeleted: false,
       });
 
@@ -724,7 +811,8 @@ function router() {
         details: `Added ${req.body.type}: ${req.body.name}`,
       });
 
-      ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'initiatives', action: 'add', item }, req.user.id);
+      ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+        { section: 'initiatives', action: 'add', item }, req.user.id);
       res.status(201).json({ item });
     }
   );
@@ -741,15 +829,19 @@ function router() {
 
     await db.initiatives.update({ _id: req.params.id }, { $set: update });
     const item = await db.initiatives.findOne({ _id: req.params.id });
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'initiatives', action: 'update', item }, req.user.id);
+
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'initiatives', action: 'update', item }, req.user.id);
     res.json({ item });
   });
 
   r.delete('/plans/:planId/initiatives/:id', auth.requireAuth, async (req, res) => {
     const role = await helpers.getPlanRole(req.user.id, req.params.planId);
     if (!role || role === 'viewer') return res.status(403).json({ error: 'No edit access' });
+
     await db.initiatives.update({ _id: req.params.id }, { $set: { isDeleted: true } });
-    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED', { section: 'initiatives', action: 'delete', id: req.params.id }, req.user.id);
+    ws.broadcastPlanUpdate(req.params.planId, 'PLAN_UPDATED',
+      { section: 'initiatives', action: 'delete', id: req.params.id }, req.user.id);
     res.json({ success: true });
   });
 
@@ -777,15 +869,15 @@ function router() {
       if (!access) return res.status(403).json({ error: 'Access denied' });
 
       const comment = await db.comments.insert({
-        planId:      req.params.planId,
-        entityId:    req.body.entityId,
-        entityType:  req.body.entityType,
-        entityName:  req.body.entityName || '',
-        text:        req.body.text,
-        authorId:    req.user.id,
-        authorName:  req.user.name,
-        resolved:    false,
-        isDeleted:   false,
+        planId:     req.params.planId,
+        entityId:   req.body.entityId,
+        entityType: req.body.entityType,
+        entityName: req.body.entityName || '',
+        text:       req.body.text,
+        authorId:   req.user.id,
+        authorName: req.user.name,
+        resolved:   false,
+        isDeleted:  false,
       });
 
       // Notify plan owner (if not the commenter)
@@ -794,19 +886,28 @@ function router() {
         const owner = await db.users.findOne({ _id: plan.ownerId });
         if (owner) {
           await helpers.createNotification({
-            userId: owner._id, type: 'comment',
-            title: 'New comment on your plan',
+            userId:  owner._id,
+            type:    'comment',
+            title:   'New comment on your plan',
             message: `${req.user.name} commented on ${req.body.entityType}: "${req.body.text.slice(0, 60)}..."`,
-            planId: req.params.planId, entityId: req.body.entityId,
+            planId:  req.params.planId,
+            entityId: req.body.entityId,
           });
           ws.pushToUser(owner._id, {
-            type: 'NOTIFICATION',
-            payload: { type: 'comment', message: `${req.user.name} commented on ${req.body.entityType}`, planId: req.params.planId },
+            type:    'NOTIFICATION',
+            payload: {
+              type:    'comment',
+              message: `${req.user.name} commented on ${req.body.entityType}`,
+              planId:  req.params.planId,
+            },
           });
           email.sendCommentNotification({
-            to: owner.email, commenterName: req.user.name,
-            entityType: req.body.entityType, entityName: req.body.entityName,
-            commentText: req.body.text, planId: req.params.planId,
+            to:           owner.email,
+            commenterName: req.user.name,
+            entityType:   req.body.entityType,
+            entityName:   req.body.entityName,
+            commentText:  req.body.text,
+            planId:       req.params.planId,
           }).catch(console.error);
         }
       }
@@ -820,16 +921,20 @@ function router() {
     const comment = await db.comments.findOne({ _id: req.params.id });
     if (!comment) return res.status(404).json({ error: 'Comment not found' });
 
-    await db.comments.update({ _id: req.params.id }, { $set: { resolved: true, resolvedBy: req.user.id } });
+    await db.comments.update(
+      { _id: req.params.id },
+      { $set: { resolved: true, resolvedBy: req.user.id } }
+    );
 
     // Notify original author
     if (comment.authorId !== req.user.id) {
-      const plan = await db.plans.findOne({ _id: req.params.planId });
       const author = await db.users.findOne({ _id: comment.authorId });
       if (author) {
         email.sendCommentResolved({
-          to: author.email, resolverName: req.user.name,
-          entityName: comment.entityName, planId: req.params.planId,
+          to:           author.email,
+          resolverName: req.user.name,
+          entityName:   comment.entityName,
+          planId:       req.params.planId,
         }).catch(console.error);
       }
     }
@@ -841,7 +946,7 @@ function router() {
     const comment = await db.comments.findOne({ _id: req.params.id });
     if (!comment) return res.status(404).json({ error: 'Not found' });
     if (comment.authorId !== req.user.id && req.user.role !== 'super_admin') {
-      return res.status(403).json({ error: 'Cannot delete another user\'s comment' });
+      return res.status(403).json({ error: "Cannot delete another user's comment" });
     }
     await db.comments.update({ _id: req.params.id }, { $set: { isDeleted: true } });
     res.json({ success: true });
@@ -851,22 +956,45 @@ function router() {
   // NOTIFICATION ROUTES  /api/notifications
   // ===========================================================
 
+  /**
+   * GET /api/notifications
+   * ──────────────────────
+   * [FIX-5] The original implementation had a broken ternary:
+   *
+   *   const items = await db.notifications.find({...}).sort({...}).limit ?
+   *     (await db.notifications.find({...})).sort(...).slice(0, 50) :
+   *     await db.notifications.find({...});
+   *
+   * The ternary tested `.limit` which is always a function (truthy),
+   * so it always ran the double-query branch — two full collection
+   * scans on every notification fetch.
+   *
+   * Fixed: single query, sort descending by createdAt in JS, slice to 50.
+   */
   r.get('/notifications', auth.requireAuth, async (req, res) => {
-    const items = await db.notifications.find({ userId: req.user.id })
-      .sort({ createdAt: -1 }).limit ? 
-      (await db.notifications.find({ userId: req.user.id })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 50) :
-      await db.notifications.find({ userId: req.user.id });
+    // [FIX-5] Single query — fetch all for user, sort newest-first, limit to 50
+    const items = (await db.notifications.find({ userId: req.user.id }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 50);
+
     const unread = items.filter(n => !n.read).length;
     res.json({ items, unread });
   });
 
   r.patch('/notifications/read-all', auth.requireAuth, async (req, res) => {
-    await db.notifications.update({ userId: req.user.id, read: false }, { $set: { read: true } }, { multi: true });
+    await db.notifications.update(
+      { userId: req.user.id, read: false },
+      { $set: { read: true } },
+      { multi: true }
+    );
     res.json({ success: true });
   });
 
   r.patch('/notifications/:id/read', auth.requireAuth, async (req, res) => {
-    await db.notifications.update({ _id: req.params.id, userId: req.user.id }, { $set: { read: true } });
+    await db.notifications.update(
+      { _id: req.params.id, userId: req.user.id },
+      { $set: { read: true } }
+    );
     res.json({ success: true });
   });
 
@@ -877,9 +1005,12 @@ function router() {
   r.get('/plans/:planId/activity', auth.requireAuth, async (req, res) => {
     const access = await helpers.findPlanWithAccess(req.params.planId, req.user.id);
     if (!access) return res.status(403).json({ error: 'Access denied' });
-    const items = await db.activityLog.find({ planId: req.params.planId });
-    const sorted = items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 100);
-    res.json({ items: sorted });
+
+    const items = (await db.activityLog.find({ planId: req.params.planId }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 100);
+
+    res.json({ items });
   });
 
   // ===========================================================
@@ -906,8 +1037,9 @@ function router() {
     async (req, res) => {
       const { name, industry, description, planId, isPublic } = req.body;
 
-      // Optionally clone from an existing plan
       let swotItems = {}, strategies = {}, kpis = [], initiatives = [];
+
+      // Optionally clone from an existing plan the user has access to
       if (planId) {
         const access = await helpers.findPlanWithAccess(planId, req.user.id);
         if (access) {
@@ -917,24 +1049,24 @@ function router() {
             db.kpis.find({ planId, isDeleted: { $ne: true } }),
             db.initiatives.find({ planId, isDeleted: { $ne: true } }),
           ]);
-          // Group SWOT by category
           for (const item of si) {
             if (!swotItems[item.category]) swotItems[item.category] = [];
             swotItems[item.category].push(item.text);
           }
-          // Group strategies by type
           for (const item of st) {
             if (!strategies[item.type]) strategies[item.type] = [];
             strategies[item.type].push(item.text);
           }
-          kpis = ki.map(k => ({ perspective: k.perspective, kpi: k.kpi, target: k.target, unit: k.unit || '' }));
+          kpis       = ki.map(k  => ({ perspective: k.perspective, kpi: k.kpi, target: k.target, unit: k.unit || '' }));
           initiatives = ini.map(i => ({ name: i.name, type: i.type }));
         }
       }
 
       const tmpl = await db.templates.insert({
         name, industry, description: description || '',
-        ownerId: req.user.id, isPublic: Boolean(isPublic), isBuiltIn: false,
+        ownerId:   req.user.id,
+        isPublic:  Boolean(isPublic),
+        isBuiltIn: false,
         swotItems, strategies, kpis, initiatives,
       });
 
@@ -958,9 +1090,17 @@ function router() {
 
   r.post('/sync', auth.requireAuth, async (req, res) => {
     const { changes } = req.body;
-    if (!Array.isArray(changes)) return res.status(400).json({ error: 'changes must be an array' });
+    if (!Array.isArray(changes)) {
+      return res.status(400).json({ error: 'changes must be an array' });
+    }
+
+    // Guard against oversized batches (DoS protection)
+    if (changes.length > 100) {
+      return res.status(400).json({ error: 'Maximum 100 changes per sync request' });
+    }
 
     const results = [];
+
     for (const change of changes) {
       try {
         const { type, operation, planId, data } = change;
@@ -971,17 +1111,22 @@ function router() {
         }
 
         const collectionMap = {
-          swot: db.swotItems, strategy: db.strategies,
-          kpi: db.kpis, initiative: db.initiatives,
+          swot:       db.swotItems,
+          strategy:   db.strategies,
+          kpi:        db.kpis,
+          initiative: db.initiatives,
         };
         const coll = collectionMap[type];
-        if (!coll) { results.push({ id: change.clientId, status: 'rejected', reason: 'unknown_type' }); continue; }
+        if (!coll) {
+          results.push({ id: change.clientId, status: 'rejected', reason: 'unknown_type' });
+          continue;
+        }
 
         if (operation === 'upsert') {
           if (data._id) {
             const existing = await coll.findOne({ _id: data._id });
             if (existing) {
-              // Conflict resolution: last-write-wins using clientTimestamp
+              // Last-write-wins using clientTimestamp vs server updatedAt
               const serverTs = new Date(existing.updatedAt).getTime();
               const clientTs = change.timestamp || 0;
               if (clientTs >= serverTs) {
@@ -996,7 +1141,9 @@ function router() {
               results.push({ id: change.clientId, status: 'applied', serverId: data._id });
             }
           } else {
-            const inserted = await coll.insert({ ...data, planId, ownerId: req.user.id, isDeleted: false });
+            const inserted = await coll.insert({
+              ...data, planId, ownerId: req.user.id, isDeleted: false,
+            });
             results.push({ id: change.clientId, status: 'applied', serverId: inserted._id });
           }
         } else if (operation === 'delete') {
@@ -1027,28 +1174,29 @@ function router() {
     const wsStats = ws.getStats();
 
     res.json({
-      users:        userCount,
-      plans:        planCount,
-      organizations: orgCount,
-      activityLogs:  activityCount,
-      templates:     templateCount,
-      ws:            wsStats,
-      serverTime:    new Date().toISOString(),
-      uptime:        process.uptime(),
-      memory:        process.memoryUsage(),
+      users:          userCount,
+      plans:          planCount,
+      organizations:  orgCount,
+      activityLogs:   activityCount,
+      templates:      templateCount,
+      ws:             wsStats,
+      serverTime:     new Date().toISOString(),
+      uptime:         process.uptime(),
+      memory:         process.memoryUsage(),
     });
   });
 
   r.get('/admin/users', auth.requireAuth, auth.requireAdmin, async (req, res) => {
-    const page  = parseInt(req.query.page || '1', 10);
+    const page  = parseInt(req.query.page  || '1',  10);
     const limit = parseInt(req.query.limit || '20', 10);
     const skip  = (page - 1) * limit;
 
     const all   = await db.users.find({});
     const total = all.length;
-    const users = all.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                     .slice(skip, skip + limit)
-                     .map(safeUser);
+    const users = all
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(skip, skip + limit)
+      .map(safeUser);
 
     res.json({ users, total, page, limit, pages: Math.ceil(total / limit) });
   });
@@ -1056,15 +1204,18 @@ function router() {
   r.patch('/admin/users/:id', auth.requireAuth, auth.requireAdmin, async (req, res) => {
     const { role, isActive } = req.body;
     const update = {};
-    if (role)             update.role     = role;
+    if (role !== undefined)     update.role     = role;
     if (isActive !== undefined) update.isActive = isActive;
+
     await db.users.update({ _id: req.params.id }, { $set: update });
     const user = await db.users.findOne({ _id: req.params.id });
     res.json({ user: safeUser(user) });
   });
 
   r.delete('/admin/users/:id', auth.requireAuth, auth.requireAdmin, async (req, res) => {
-    if (req.params.id === req.user.id) return res.status(400).json({ error: 'Cannot delete yourself' });
+    if (req.params.id === req.user.id) {
+      return res.status(400).json({ error: 'Cannot delete yourself' });
+    }
     await db.users.update({ _id: req.params.id }, { $set: { isActive: false } });
     await auth.revokeAllUserTokens(req.params.id);
     res.json({ success: true });
@@ -1072,7 +1223,9 @@ function router() {
 
   r.get('/admin/audit-log', auth.requireAuth, auth.requireAdmin, async (req, res) => {
     const all    = await db.activityLog.find({});
-    const sorted = all.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 200);
+    const sorted = all
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 200);
     res.json({ items: sorted });
   });
 
