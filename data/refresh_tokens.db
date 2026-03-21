@@ -6,3 +6,4 @@
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
 {"token":"8d898aad-122c-4166-ab6e-da52a49eaac5","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776714245045},"used":false,"_id":"yYMfUzmrBuZTBn2V","createdAt":{"$$date":1774122245067},"updatedAt":{"$$date":1774122245067}}
 {"token":"53e62abe-54e5-4ba9-8fa6-b9122fc029ee","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776714264412},"used":false,"_id":"PqH7kwim9GEiK8OP","createdAt":{"$$date":1774122264412},"updatedAt":{"$$date":1774122264412}}
+{"token":"400287e2-93e8-4e8f-b5f8-9aa4fc29809d","userId":"GG6pEk6RkQ6d3fce","expiresAt":{"$$date":1776714300598},"used":false,"_id":"0FRZXWsZWuFrm1BD","createdAt":{"$$date":1774122300598},"updatedAt":{"$$date":1774122300598}}
