@@ -8,3 +8,4 @@
 {"$$indexCreated":{"fieldName":"token","unique":true,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
 {"token":"4bfa211a-8510-473b-9de4-cabd22d7c728","userId":"GG6pEk6RkQ6d3fce","expiresAt":{"$$date":1776716530459},"used":false,"_id":"OIPqkNnWc0pjujgS","createdAt":{"$$date":1774124530460},"updatedAt":{"$$date":1774124530460}}
+{"token":"b0329378-3465-4128-96d7-9a0f16229953","userId":"GG6pEk6RkQ6d3fce","expiresAt":{"$$date":1776716612559},"used":false,"_id":"6lB4HHNACiylqtO8","createdAt":{"$$date":1774124612559},"updatedAt":{"$$date":1774124612559}}

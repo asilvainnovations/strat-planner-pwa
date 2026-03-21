@@ -8,3 +8,4 @@
 {"$$indexCreated":{"fieldName":"planId","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
 {"userId":"GG6pEk6RkQ6d3fce","userEmail":"alvin.silva@asilvainnovations.com","userName":"Alvin Silva","planId":null,"action":"logged_in","entityType":null,"entityId":null,"details":null,"ipAddress":"127.0.0.1","_id":"GVCVg9mWWPUtXUjl","createdAt":{"$$date":1774124530460},"updatedAt":{"$$date":1774124530460}}
+{"userId":"GG6pEk6RkQ6d3fce","userEmail":"alvin.silva@asilvainnovations.com","userName":"Alvin Silva","planId":null,"action":"logged_in","entityType":null,"entityId":null,"details":null,"ipAddress":"127.0.0.1","_id":"A0x8d3Nz4ulB85y2","createdAt":{"$$date":1774124612560},"updatedAt":{"$$date":1774124612560}}
