@@ -4,3 +4,4 @@
 {"userId":"c2KPmZyz90VMaZYe","userEmail":"admin@asilvainnovations.com","userName":"Strat Plan Pro","planId":null,"action":"logged_in","entityType":null,"entityId":null,"details":null,"ipAddress":"127.0.0.1","_id":"z4dupRDHkRtZYmDp","createdAt":{"$$date":1774115934639},"updatedAt":{"$$date":1774115934639}}
 {"$$indexCreated":{"fieldName":"planId","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
+{"userId":"c2KPmZyz90VMaZYe","userEmail":"admin@asilvainnovations.com","userName":"Strat Plan Pro","planId":null,"action":"logged_in","entityType":null,"entityId":null,"details":null,"ipAddress":"127.0.0.1","_id":"o7GdFJSwHp2xL8dx","createdAt":{"$$date":1774122245088},"updatedAt":{"$$date":1774122245088}}
