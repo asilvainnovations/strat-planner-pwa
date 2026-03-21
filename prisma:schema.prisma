@@ -1,0 +1,490 @@
+// ============================================================
+// STRAT PLANNER PRO — PRISMA SCHEMA
+// prisma/schema.prisma
+//
+// Maps all 15 NeDB collections → PostgreSQL tables.
+// Hosted on Supabase (PostgreSQL 15+).
+//
+// Setup:
+//   npm install prisma @prisma/client
+//   npx prisma generate          -- generates PrismaClient
+//   npx prisma migrate deploy    -- applies migrations in production
+//   npx prisma migrate dev       -- creates + applies migration in dev
+//   npx prisma studio            -- visual database browser
+//
+// Environment:
+//   DATABASE_URL = postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true
+//   DIRECT_URL   = postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
+//   (Both URLs are in your Supabase project → Settings → Database)
+//   DIRECT_URL is used for migrations only (bypasses PgBouncer).
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── Enums ─────────────────────────────────────────────────────
+
+enum UserRole {
+  user
+  super_admin
+}
+
+enum MemberRole {
+  viewer
+  editor
+  admin
+}
+
+enum SWOTCategory {
+  strengths
+  weaknesses
+  opportunities
+  threats
+}
+
+enum ImpactLevel {
+  high
+  medium
+  low
+}
+
+enum StrategyType {
+  so
+  st
+  wo
+  wt
+}
+
+enum PriorityLevel {
+  high
+  medium
+  low
+}
+
+enum KPIPerspective {
+  financial
+  customer
+  internal
+  learning
+}
+
+enum KPIStatus {
+  on_track
+  at_risk
+  behind
+  complete
+}
+
+enum InitiativeType {
+  program
+  activity
+  project
+}
+
+enum InitiativeStatus {
+  on_track
+  at_risk
+  behind
+  complete
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  expired
+}
+
+enum NotificationType {
+  invite
+  comment
+  share
+  mention
+  kpi_alert
+}
+
+enum Industry {
+  government
+  healthcare
+  technology
+  education
+  finance
+  retail
+  manufacturing
+  ngos
+}
+
+// ── Tables ────────────────────────────────────────────────────
+
+// NeDB: users.db
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  password            String    // bcrypt hash — never returned to client
+  firstName           String
+  lastName            String
+  role                UserRole  @default(user)
+  initials            String
+  color               String    // CSS gradient string for avatar
+  isActive            Boolean   @default(true)
+  emailVerified       Boolean   @default(false)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastFailedLogin     DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  ownedOrgs       Organization[]   @relation("OrgOwner")
+  orgMemberships  OrgMember[]
+  ownedPlans      Plan[]           @relation("PlanOwner")
+  planMemberships PlanMember[]
+  swotItems       SwotItem[]
+  strategies      Strategy[]
+  kpis            KPI[]
+  initiatives     Initiative[]
+  comments        Comment[]
+  notifications   Notification[]
+  activityLogs    ActivityLog[]
+  templates       Template[]
+  sentInvitations Invitation[]     @relation("InvitedBy")
+  refreshTokens   RefreshToken[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+// NeDB: organizations.db
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  type        String?
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  owner       User        @relation("OrgOwner", fields: [ownerId], references: [id])
+  members     OrgMember[]
+  plans       Plan[]
+  invitations Invitation[]
+
+  @@index([ownerId])
+  @@map("organizations")
+}
+
+// NeDB: org_members.db
+model OrgMember {
+  id         String     @id @default(cuid())
+  orgId      String
+  userId     String
+  role       MemberRole @default(viewer)
+  invitedBy  String?
+  createdAt  DateTime   @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, userId])
+  @@index([orgId])
+  @@index([userId])
+  @@map("org_members")
+}
+
+// NeDB: plans.db
+model Plan {
+  id          String    @id @default(cuid())
+  name        String
+  orgId       String?
+  ownerId     String
+  period      String?
+  description String?
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  organization  Organization? @relation(fields: [orgId], references: [id])
+  owner         User          @relation("PlanOwner", fields: [ownerId], references: [id])
+  members       PlanMember[]
+  swotItems     SwotItem[]
+  strategies    Strategy[]
+  kpis          KPI[]
+  initiatives   Initiative[]
+  comments      Comment[]
+  activityLogs  ActivityLog[]
+  notifications Notification[]
+
+  @@index([ownerId])
+  @@index([orgId])
+  @@index([isDeleted])
+  @@map("plans")
+}
+
+// NeDB: plan_members.db
+model PlanMember {
+  id        String     @id @default(cuid())
+  planId    String
+  userId    String
+  role      MemberRole @default(viewer)
+  sharedBy  String?
+  isDeleted Boolean    @default(false)
+  createdAt DateTime   @default(now())
+
+  // Relations
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, userId])
+  @@index([planId])
+  @@index([userId])
+  @@map("plan_members")
+}
+
+// NeDB: swot_items.db
+model SwotItem {
+  id        String       @id @default(cuid())
+  planId    String
+  category  SWOTCategory
+  text      String
+  evidence  String?
+  impact    ImpactLevel  @default(medium)
+  ownerId   String
+  isDeleted Boolean      @default(false)
+  deletedAt DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // Relations
+  plan  Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id])
+
+  @@index([planId])
+  @@index([planId, category])
+  @@map("swot_items")
+}
+
+// NeDB: strategies.db
+model Strategy {
+  id        String        @id @default(cuid())
+  planId    String
+  type      StrategyType
+  text      String
+  priority  PriorityLevel @default(medium)
+  ownerId   String
+  isDeleted Boolean       @default(false)
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Relations
+  plan  Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id])
+
+  @@index([planId])
+  @@index([planId, type])
+  @@map("strategies")
+}
+
+// NeDB: kpis.db
+model KPI {
+  id          String         @id @default(cuid())
+  planId      String
+  perspective KPIPerspective
+  kpi         String         // KPI name/label
+  target      String
+  actual      String?
+  unit        String?
+  status      KPIStatus      @default(on_track)
+  weight      Float?
+  ownerId     String
+  isDeleted   Boolean        @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relations
+  plan  Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id])
+
+  @@index([planId])
+  @@index([planId, perspective])
+  @@index([status])
+  @@map("kpis")
+}
+
+// NeDB: initiatives.db
+model Initiative {
+  id        String           @id @default(cuid())
+  planId    String
+  name      String
+  type      InitiativeType   @default(program)
+  owner     String?          // department/person name string
+  budget    Float?
+  utilized  Float?
+  progress  Int              @default(0) // 0–100
+  status    InitiativeStatus @default(on_track)
+  dueDate   DateTime?
+  ownerId   String
+  isDeleted Boolean          @default(false)
+  deletedAt DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // Relations
+  plan      Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  ownerUser User @relation(fields: [ownerId], references: [id])
+
+  @@index([planId])
+  @@index([status])
+  @@map("initiatives")
+}
+
+// NeDB: comments.db
+model Comment {
+  id           String    @id @default(cuid())
+  planId       String
+  entityId     String    // _id of the entity being commented on
+  entityType   String    // 'swot'|'strategy'|'kpi'|'initiative'
+  entityName   String?
+  text         String
+  authorId     String
+  authorName   String
+  resolved     Boolean   @default(false)
+  resolvedBy   String?
+  isDeleted    Boolean   @default(false)
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  plan   Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([planId])
+  @@index([entityId])
+  @@map("comments")
+}
+
+// NeDB: notifications.db
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  planId    String?
+  entityId  String?
+  actionUrl String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+// NeDB: activity_log.db
+model ActivityLog {
+  id         String    @id @default(cuid())
+  userId     String?
+  userEmail  String?
+  userName   String?
+  planId     String?
+  action     String
+  entityType String?
+  entityId   String?
+  details    String?
+  ipAddress  String?
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  user User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  plan Plan?  @relation(fields: [planId], references: [id], onDelete: SetNull)
+
+  @@index([planId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activity_log")
+}
+
+// NeDB: templates.db
+// swotItems, strategies, kpis, initiatives stored as JSON columns
+// since they are read/written as whole objects, not queried row-by-row.
+model Template {
+  id          String    @id @default(cuid())
+  name        String
+  industry    Industry
+  emoji       String?
+  description String?
+  ownerId     String?
+  isBuiltIn   Boolean   @default(false)
+  isPublic    Boolean   @default(true)
+  swotItems   Json?     // { strengths:[], weaknesses:[], opportunities:[], threats:[] }
+  strategies  Json?     // { so:[], st:[], wo:[], wt:[] }
+  kpis        Json?     // [{ perspective, kpi, target, unit }]
+  initiatives Json?     // [{ name, type }]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  owner User? @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@index([industry])
+  @@index([isPublic])
+  @@index([isBuiltIn])
+  @@map("templates")
+}
+
+// NeDB: invitations.db
+model Invitation {
+  id          String           @id @default(cuid())
+  token       String           @unique @default(cuid())
+  orgId       String
+  email       String
+  role        MemberRole       @default(viewer)
+  invitedBy   String
+  inviterName String
+  status      InvitationStatus @default(pending)
+  expiresAt   DateTime
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  inviter      User         @relation("InvitedBy", fields: [invitedBy], references: [id])
+
+  @@index([token])
+  @@index([email])
+  @@index([orgId])
+  @@map("invitations")
+}
+
+// NeDB: refresh_tokens.db
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique @default(cuid())
+  userId    String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("refresh_tokens")
+}
