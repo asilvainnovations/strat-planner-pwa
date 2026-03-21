@@ -1,2 +1,3 @@
 {"$$indexCreated":{"fieldName":"planId","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
+{"userId":"c2KPmZyz90VMaZYe","userEmail":"admin@asilvainnovations.com","userName":"Strat Plan Pro","planId":null,"action":"registered","entityType":"user","entityId":null,"details":null,"ipAddress":null,"_id":"7ntMxUwuTh1KYSwh","createdAt":{"$$date":1774111670635},"updatedAt":{"$$date":1774111670635}}
