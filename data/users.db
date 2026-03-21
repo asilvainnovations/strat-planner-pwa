@@ -1,2 +1,2 @@
 {"$$indexCreated":{"fieldName":"email","unique":true,"sparse":false}}
-{"$$indexCreated":{"fieldName":"email","unique":true}}
+{"email":"strat-planner-pro@asilvainnovations.com","password":"$2a$12$vPM5lpbeiHJPfXvjtBS3ae0NDRRZmleYHg/bBrB3oR/oDKNcZ1QQq","firstName":"Admin","lastName":"User","role":"super_admin","initials":"AD","color":"linear-gradient(135deg,#FFD700,#FFA500)","isActive":true,"emailVerified":true,"_id":"zWTbf5SV7Fqz6XV6","createdAt":{"$$date":1774111561047},"updatedAt":{"$$date":1774111561047}}
