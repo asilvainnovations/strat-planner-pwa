@@ -27,6 +27,7 @@
  * 18. Accessibility — :focus-visible  ← WCAG 2.1 AA
  * 19. Accessibility — prefers-reduced-motion  ← WCAG 2.3
  * 20. Responsive (mobile)
+ * 21. Third-party badge / watermark suppression  ← NEW
  * ============================================================
  */
 
@@ -1197,4 +1198,339 @@ a:focus-visible {
   .modal-footer { flex-direction: column; }
   .modal-footer .btn-primary,
   .modal-footer .btn-secondary { width: 100%; justify-content: center; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   21. THIRD-PARTY BADGE / WATERMARK SUPPRESSION
+   ══════════════════════════════════════════════════════════════
+
+   Persistently removes, hides, and off-screens platform-injected
+   badges, watermarks, and attribution overlays across ALL pages,
+   components, modals, and sections — at every screen size from
+   320 px mobile to 4 K ultrawide.
+
+   Platforms covered:
+     Bolt (bolt.new / bolt.diy)   · Lovable (lovable.dev)
+     v0 by Vercel                 · Cursor
+     Windsurf / Codeium           · Kimi / Moonshot AI
+     Figma / FigJam               · famous.ai
+     Replit                       · StackBlitz
+     CodeSandbox                  · GitHub Copilot
+     Appimize                     · Generic powered-by / built-with
+
+   Kill-set applied to every rule group (belt-and-suspenders):
+     display: none        removes from layout; no space reserved
+     visibility: hidden   blocks screen-reader announcement
+     opacity: 0           stops fade-in animations revealing it
+     pointer-events: none blocks hover or click re-revealing it
+     position + coords    moves element fully off-canvas as fallback
+     overflow: hidden     ensures no scroll bleed
+     clip / clip-path     clips to zero area as final backstop
+     white-space: nowrap  prevents reflow from revealing text
+
+   z-index is deliberately NOT set — avoids conflicts with:
+     sidebar (100) · notif panel (200) · modals (1000) ·
+     toasts (9998) · auth overlay (9999)
+   ══════════════════════════════════════════════════════════════ */
+
+
+/* ── 21a. All named-platform selectors — single kill block ───── */
+
+/* Bolt */
+#bolt-badge,
+.bolt-badge,
+[data-bolt-badge],
+[id*="bolt"][id*="badge"],
+[class*="bolt"][class*="badge"],
+[data-badge="bolt"],
+[data-platform="bolt"],
+[data-branding="bolt"],
+a[href*="bolt.new"],
+a[href*="bolt.diy"],
+iframe[src*="bolt"],
+iframe[title*="bolt"],
+
+/* Lovable (formerly GPT Engineer) */
+#lovable-badge,
+.lovable-badge,
+[id*="lovable"],
+[class*="lovable"],
+a[href*="lovable.dev"],
+a[href*="gptengineer.app"],
+iframe[src*="lovable"],
+
+/* v0 by Vercel */
+[id*="v0-badge"],
+[class*="v0-badge"],
+[data-v0-badge],
+a[href*="v0.dev"],
+iframe[src*="v0.dev"],
+
+/* Cursor */
+[id*="cursor-badge"],
+[class*="cursor-badge"],
+[data-cursor-badge],
+a[href*="cursor.sh"],
+a[href*="cursor.com"][class*="badge"],
+a[href*="cursor.com"][id*="badge"],
+
+/* Windsurf / Codeium */
+[id*="windsurf"],
+[class*="windsurf"],
+a[href*="windsurf.com"],
+[id*="codeium"],
+[class*="codeium"],
+a[href*="codeium.com"],
+
+/* Kimi / Moonshot AI */
+[id*="kimi-badge"],
+[class*="kimi-badge"],
+[data-kimi],
+a[href*="kimi.ai"],
+a[href*="moonshot.cn"],
+[data-moonshot],
+
+/* Figma / FigJam */
+[id*="figma-badge"],
+[class*="figma-badge"],
+a[href*="figma.com"][class*="badge"],
+a[href*="figma.com"][id*="badge"],
+iframe[src*="figma.com"][title*="badge"],
+
+/* famous.ai */
+a[href*="famous.ai"],
+[id*="famous-badge"],
+[class*="famous-badge"],
+
+/* Replit */
+[id*="replit-badge"],
+[class*="replit-badge"],
+a[href*="replit.com"][class*="badge"],
+a[href*="replit.com"][id*="badge"],
+
+/* StackBlitz */
+a[href*="stackblitz.com"][class*="badge"],
+a[href*="stackblitz.com"][id*="badge"],
+[id*="stackblitz-badge"],
+[class*="stackblitz-badge"],
+
+/* CodeSandbox */
+a[href*="codesandbox.io"][class*="badge"],
+a[href*="codesandbox.io"][id*="badge"],
+[id*="codesandbox-badge"],
+[class*="codesandbox-badge"],
+
+/* GitHub Copilot */
+a[href*="github.com/features/copilot"][class*="badge"],
+a[href*="github.com/features/copilot"][id*="badge"],
+
+/* Appimize (white-label host) */
+[id*="appimize-badge"],
+[class*="appimize-badge"],
+a[href*="appimize.app"][class*="badge"],
+a[href*="appimize.app"][id*="badge"],
+[data-appimize-badge] {
+  display:        none          !important;
+  visibility:     hidden        !important;
+  opacity:        0             !important;
+  pointer-events: none          !important;
+  position:       absolute      !important;
+  left:           -9999px       !important;
+  top:            -9999px       !important;
+  height:         0             !important;
+  width:          0             !important;
+  overflow:       hidden        !important;
+  clip:           rect(0,0,0,0) !important;
+  clip-path:      inset(50%)    !important;
+  white-space:    nowrap        !important;
+}
+
+
+/* ── 21b. Generic class-name / data-attribute patterns ──────── */
+/* Covers any platform using common attribution class names.     */
+
+.platform-badge,
+.builder-badge,
+.powered-by-badge,
+.watermark,
+.attribution,
+[class*="powered-by"],
+[class*="built-with"],
+[class*="made-with"],
+[class*="made-in"],
+[class*="made-by"],
+[class*="created-with"],
+[class*="generated-by"],
+[data-watermark],
+[data-attribution],
+[data-powered-by],
+[data-built-with],
+[data-badge]:not(input):not(button) {
+  display:        none          !important;
+  visibility:     hidden        !important;
+  opacity:        0             !important;
+  pointer-events: none          !important;
+  position:       absolute      !important;
+  left:           -9999px       !important;
+  top:            -9999px       !important;
+  height:         0             !important;
+  width:          0             !important;
+  overflow:       hidden        !important;
+  clip:           rect(0,0,0,0) !important;
+  clip-path:      inset(50%)    !important;
+  white-space:    nowrap        !important;
+}
+
+
+/* ── 21c. iframe-based badge injection ───────────────────────── */
+/* Many platforms inject their badge inside a sandboxed iframe.  */
+
+iframe[src*="badge"],
+iframe[title*="badge"],
+iframe[title*="powered by"],
+iframe[title*="built with"],
+iframe[title*="made with"],
+iframe[data-badge],
+iframe.badge {
+  display:        none   !important;
+  visibility:     hidden !important;
+  opacity:        0      !important;
+  pointer-events: none   !important;
+  height:         0      !important;
+  width:          0      !important;
+  border:         none   !important;
+}
+
+
+/* ── 21d. SVG-based badge logos ──────────────────────────────── */
+/* Some platforms embed an <svg> logo directly into the DOM.     */
+
+svg[data-badge],
+svg[class*="badge"],
+svg[id*="badge"],
+svg[class*="watermark"],
+svg[id*="watermark"] {
+  display:    none   !important;
+  visibility: hidden !important;
+}
+
+
+/* ── 21e. Fixed-position corner injection ────────────────────── */
+/* Scoped tightly to direct <body> children only — prevents       */
+/* accidentally hiding our own fixed UI elements (sidebar at      */
+/* z-index 100, notif panel 200, toast container 9998, etc.).     */
+/*                                                                 */
+/* Covers the two most common badge placements:                    */
+/*   • bottom-right <a> anchor  (Bolt, Lovable, v0)               */
+/*   • bottom-right <div>       (Cursor, Windsurf, Kimi)          */
+
+body > a[style*="position: fixed"],
+body > a[style*="position:fixed"],
+body > div[style*="position: fixed"][style*="bottom"][style*="right"],
+body > div[style*="position:fixed"][style*="bottom"][style*="right"],
+body > div[style*="position: fixed"][style*="bottom: 0"],
+body > div[style*="position:fixed"][style*="bottom:0"],
+body > div[style*="position: fixed"][style*="bottom: 1"],
+body > div[style*="position:fixed"][style*="bottom:1"],
+body > div[style*="position: fixed"][style*="bottom: 2"],
+body > div[style*="position:fixed"][style*="bottom:2"] {
+  display:        none   !important;
+  visibility:     hidden !important;
+  opacity:        0      !important;
+  pointer-events: none   !important;
+}
+
+
+/* ── 21f. High-z-index injected overlays ─────────────────────── */
+/* Catches badges injected with very high z-index values.         */
+/* :not(#toast-container) preserves our own toast stack.          */
+
+body > div[style*="z-index: 999"]:not(#toast-container),
+body > div[style*="z-index:999"]:not(#toast-container),
+body > div[style*="z-index: 9999"]:not(#toast-container),
+body > div[style*="z-index:9999"]:not(#toast-container),
+body > div[style*="z-index: 99999"]:not(#toast-container),
+body > div[style*="z-index:99999"]:not(#toast-container),
+body > div[style*="z-index: 999999"]:not(#toast-container),
+body > div[style*="z-index:999999"]:not(#toast-container) {
+  display:        none   !important;
+  visibility:     hidden !important;
+  opacity:        0      !important;
+  pointer-events: none   !important;
+}
+
+
+/* ── 21g. Last-child fixed elements (catch-all) ──────────────── */
+/* Badges are almost always the last injected child of <body>.    */
+
+body > div:last-child[style*="position: fixed"],
+body > div:last-child[style*="position:fixed"],
+body > a:last-child[style*="position: fixed"],
+body > a:last-child[style*="position:fixed"] {
+  display:        none   !important;
+  visibility:     hidden !important;
+  opacity:        0      !important;
+  pointer-events: none   !important;
+}
+
+
+/* ── 21h. Screen-size persistence ───────────────────────────── */
+/* Repeats the highest-priority selectors inside @media screen   */
+/* so no responsive stylesheet from any third party can override  */
+/* these rules at any breakpoint (320 px → 4 K ultrawide).       */
+
+@media screen {
+  [id*="bolt"][id*="badge"],
+  [class*="bolt"][class*="badge"],
+  a[href*="bolt.new"],
+  a[href*="bolt.diy"],
+  [id*="lovable"],
+  a[href*="lovable.dev"],
+  a[href*="v0.dev"],
+  a[href*="cursor.sh"],
+  [id*="windsurf"],
+  a[href*="windsurf.com"],
+  [id*="kimi-badge"],
+  a[href*="kimi.ai"],
+  a[href*="famous.ai"],
+  a[href*="appimize.app"][class*="badge"],
+  .platform-badge,
+  .builder-badge,
+  .powered-by-badge,
+  .watermark,
+  .attribution,
+  [data-watermark],
+  [data-attribution],
+  [class*="powered-by"],
+  [class*="built-with"],
+  [class*="made-with"],
+  [class*="made-in"] {
+    display:    none   !important;
+    visibility: hidden !important;
+    opacity:    0      !important;
+  }
+}
+
+
+/* ── 21i. Print / PDF export ─────────────────────────────────── */
+/* Prevents any badge appearing in print preview or PDF export.   */
+/* :not(.badge) preserves our own app status badges (.badge class */
+/* is used for on-track / at-risk / behind / complete labels).    */
+
+@media print {
+  [id*="badge"]:not(.badge),
+  [class*="badge"]:not(.badge),
+  [class*="watermark"],
+  [class*="attribution"],
+  [data-watermark],
+  [data-attribution],
+  [class*="powered-by"],
+  [class*="built-with"],
+  [class*="made-with"],
+  iframe[src*="badge"],
+  iframe[title*="badge"] {
+    display:    none   !important;
+    visibility: hidden !important;
+  }
 }
