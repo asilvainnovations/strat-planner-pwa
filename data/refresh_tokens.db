@@ -7,3 +7,4 @@
 {"token":"8d898aad-122c-4166-ab6e-da52a49eaac5","userId":"c2KPmZyz90VMaZYe","expiresAt":{"$$date":1776714245045},"used":false,"_id":"yYMfUzmrBuZTBn2V","createdAt":{"$$date":1774122245067},"updatedAt":{"$$date":1774122245067}}
 {"$$indexCreated":{"fieldName":"token","unique":true,"sparse":false}}
 {"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
+{"token":"4bfa211a-8510-473b-9de4-cabd22d7c728","userId":"GG6pEk6RkQ6d3fce","expiresAt":{"$$date":1776716530459},"used":false,"_id":"OIPqkNnWc0pjujgS","createdAt":{"$$date":1774124530460},"updatedAt":{"$$date":1774124530460}}
