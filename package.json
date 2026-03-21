@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "AI-powered strategic planning platform — full-stack PWA",
   "license": "MIT",
-  "homepage": "https://stratplannerpro.app",
+  "homepage": "https://asilvainnovations.github.io/strat-planner-pwa/public/index.html",
   "author": {
-    "name": "ASilva Innovations, Inc.",
+    "name": "ASilva Innovations",
     "url": "https://asilvainnovations.com"
   },
   "engines": {
