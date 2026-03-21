@@ -336,16 +336,34 @@ async function start() {
     console.log('║       STRAT PLANNER PRO — SERVER       ║');
     console.log('╚════════════════════════════════════════╝\n');
 
-    // Validate environment at boot — throws in production if config is missing
+    // Validate environment at boot
     console.log('[BOOT] Validating environment...');
-    email.validateEmailEnv();
+    try {
+      email.validateEmailEnv();
+    } catch (smtpErr) {
+      // SMTP missing — warn but don't crash. Emails will log to console.
+      // Set SMTP_USER and SMTP_PASS in Heroku Config Vars to enable email sending.
+      console.warn('[BOOT] WARNING:', smtpErr.message);
+      console.warn('[BOOT]   Email sending is disabled until SMTP credentials are configured.');
+    }
     // Validate JWT_SECRET at boot — auth.js also validates but this
     // gives a clearer error message in the startup log
-    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 64) {
-      throw new Error('JWT_SECRET must be at least 64 characters. Generate with: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+    if (!process.env.JWT_SECRET) {
+      throw new Error(
+        '[BOOT] JWT_SECRET is not set.\n' +
+        '  In Heroku: heroku config:set JWT_SECRET=$(node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))")\n' +
+        '  In dashboard: Settings → Config Vars → add JWT_SECRET'
+      );
+    }
+    if (process.env.JWT_SECRET.length < 32) {
+      throw new Error(
+        `[BOOT] JWT_SECRET is too short (${process.env.JWT_SECRET.length} chars, minimum 32, recommended 64+).`
+      );
     }
     if (isProd && !process.env.CORS_ORIGINS) {
-      throw new Error('CORS_ORIGINS must be set in production');
+      // Warn but don't crash — Heroku URL is auto-assigned and may not be known at first deploy
+      console.warn('[BOOT] WARNING: CORS_ORIGINS not set — all origins will be allowed in this session.');
+      console.warn('[BOOT]   Set it with: heroku config:set CORS_ORIGINS=https://your-app.herokuapp.com');
     }
 
     // Initialize database
