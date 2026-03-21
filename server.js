@@ -67,14 +67,25 @@ app.use(helmet({
 }));
 
 // ── CORS ──────────────────────────────────────────────────
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:5173')
+// In development (NODE_ENV !== 'production') all origins are
+// allowed — this is required for StackBlitz, CodeSandbox, and
+// other browser-based IDEs that proxy requests through their
+// own domains (e.g. https://8080-project.stackblitz.io).
+//
+// In production, CORS_ORIGINS must be set to your real domain.
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
   .split(',')
-  .map(s => s.trim());
+  .map(s => s.trim())
+  .filter(Boolean);
 
 app.use(cors({
   origin: (origin, cb) => {
-    // Allow no-origin requests (mobile apps, Postman, curl)
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    // No origin = same-origin / Postman / curl — always allow
+    if (!origin) return cb(null, true);
+    // Development: allow everything so any IDE proxy URL works
+    if (process.env.NODE_ENV !== 'production') return cb(null, true);
+    // Production: enforce allow-list
+    if (allowedOrigins.includes(origin)) return cb(null, true);
     cb(new Error(`CORS: ${origin} not allowed`));
   },
   credentials: true,
