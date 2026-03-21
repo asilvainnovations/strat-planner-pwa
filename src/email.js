@@ -95,7 +95,7 @@ function validateEmailEnv() {
 }
 
 // ── Shared send helper ────────────────────────────────────────
-async function send({ to, subject, html }) {
+function send({ to, subject, html }) {
   const transporter = getTransporter();
   const fromName    = process.env.EMAIL_FROM_NAME    || 'Strat Planner Pro';
   const fromAddress = process.env.EMAIL_FROM_ADDRESS || 'noreply@stratplannerpro.app';
@@ -218,7 +218,7 @@ async function sendInviteToOrg({ to, inviterName, orgName, role, token }) {
  * Triggered by: POST /api/plans/:id/share
  * Recipient:    User the plan was shared with
  */
-async function sendSharePlan({ to, sharerName, planName, permission, planId }) {
+async function sendSharePlan({ to, sharerName, planName, permission, planId: _planId }) {
   const base     = process.env.FRONTEND_URL || 'http://localhost:4000';
   const planLink = `${base}/app/#dashboard`;
 
