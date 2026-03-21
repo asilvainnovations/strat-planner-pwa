@@ -1,0 +1,79 @@
+# ============================================================
+# STRAT PLANNER PRO — CI PIPELINE
+# .github/workflows/ci.yml
+#
+# Runs on every push to main/develop and every pull request.
+# Steps: install → lint → test → build check
+# ============================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop, "feature/**", "fix/**"]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ── Lint & test ──────────────────────────────────────────
+  ci:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Test (node --test)
+        run: npm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci-test-secret-not-for-production-use-64chars-min
+          ADMIN_EMAIL: admin@test.local
+          ADMIN_PASSWORD: TestAdmin@2025!
+          DB_PATH: /tmp/strat-planner-test-db
+          SMTP_USER: ""        # emails log to console in test
+          ANTHROPIC_API_KEY: "" # AI routes skipped in unit tests
+
+      - name: Build check
+        run: npm run build
+
+  # ── Security audit ───────────────────────────────────────
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm audit
+        run: npm audit --audit-level=high
+        # Fail on high+ severity vulnerabilities only.
+        # Remove --audit-level flag to fail on any severity.
