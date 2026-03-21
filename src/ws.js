@@ -1,6 +1,6 @@
 /**
  * ============================================================
- * STRAT PLANNER PRO — WEBSOCKET MANAGER
+ * STRAT PLANNER PRO — WEBSOCKET MANAGER  (src/ws.js)
  * ============================================================
  * Powers real-time collaboration features:
  *  - Presence tracking (who's viewing / editing a plan)
@@ -27,6 +27,13 @@
  *   NOTIFICATION         — user-level notification
  *   PONG                 — reply to PING
  *   ERROR                — something went wrong
+ *
+ * Fixes applied in this version:
+ *  [FIX-4] Added maxPayload: 64 * 1024 (64 KB) to WebSocket.Server
+ *          constructor. Without this limit NeDB/Node default is no
+ *          limit at all — a single malicious client could send a
+ *          multi-MB JSON frame and saturate the CPU during parsing.
+ *          64 KB is generous for any legitimate plan-update message.
  * ============================================================
  */
 
@@ -44,10 +51,20 @@ const clients = new Map();
 let wss = null;
 
 /**
- * Attach the WebSocket server to an existing HTTP server.
+ * attach(server)
+ * ──────────────
+ * Attaches the WebSocket server to an existing Node.js HTTP server.
+ * Called once from server.js at boot:
+ *   ws.attach(server);
+ *
+ * @param {http.Server} server
  */
 function attach(server) {
-  wss = new WebSocket.Server({ server, path: '/ws' });
+  wss = new WebSocket.Server({
+    server,
+    path: '/ws',
+    maxPayload: 64 * 1024, // [FIX-4] 64 KB per frame — blocks oversized DoS frames
+  });
 
   wss.on('connection', (ws, req) => {
     const token = extractToken(req);
@@ -59,7 +76,12 @@ function attach(server) {
     let user;
     try {
       const payload = verifyAccessToken(token);
-      user = { id: payload.sub, email: payload.email, name: payload.name, role: payload.role };
+      user = {
+        id:    payload.sub,
+        email: payload.email,
+        name:  payload.name,
+        role:  payload.role,
+      };
     } catch {
       ws.close(4002, 'Invalid token');
       return;
@@ -79,32 +101,45 @@ function attach(server) {
 
     ws.on('message', (raw) => handleMessage(ws, raw));
     ws.on('close',   ()    => handleClose(ws));
-    ws.on('error',   (err) => console.error('[WS] Error:', err.message));
+    ws.on('error',   (err) => console.error('[WS] Client error:', err.message));
 
-    // Start heartbeat
+    // Start heartbeat tracking for this connection
     ws.isAlive = true;
     ws.on('pong', () => { ws.isAlive = true; });
 
     send(ws, { type: 'CONNECTED', payload: { userId: user.id, name: user.name } });
   });
 
-  // Heartbeat interval
+  // ── Heartbeat interval ────────────────────────────────
+  // Detects and terminates zombie connections (clients that
+  // disconnected without sending a proper close frame).
+  // Interval is configurable via WS_HEARTBEAT_INTERVAL env var.
   const heartbeat = setInterval(() => {
     wss.clients.forEach((ws) => {
-      if (!ws.isAlive) { ws.terminate(); return; }
+      if (!ws.isAlive) {
+        ws.terminate();
+        return;
+      }
       ws.isAlive = false;
       ws.ping();
     });
   }, parseInt(process.env.WS_HEARTBEAT_INTERVAL || '30000', 10));
 
+  // Clean up interval when the WS server itself closes
   wss.on('close', () => clearInterval(heartbeat));
+
   console.log('[WS] WebSocket server attached');
 }
 
 // ── Message handler ───────────────────────────────────────
 function handleMessage(ws, raw) {
   let msg;
-  try { msg = JSON.parse(raw); } catch { return; }
+  try {
+    msg = JSON.parse(raw);
+  } catch {
+    // Malformed JSON — silently ignore (maxPayload already guards size)
+    return;
+  }
 
   const client = clients.get(ws);
   if (!client) return;
@@ -119,7 +154,7 @@ function handleMessage(ws, raw) {
       const planId = msg.planId;
       if (!planId) return;
 
-      // Leave current room if any
+      // Leave current room first if already in one
       if (client.planId) leaveRoom(ws, client.planId);
 
       // Join new room
@@ -129,7 +164,7 @@ function handleMessage(ws, raw) {
 
       console.log(`[WS] ${client.userName} joined room: ${planId}`);
 
-      // Broadcast presence update to room
+      // Broadcast updated presence to every member in the room
       broadcastPresence(planId);
       break;
     }
@@ -153,7 +188,7 @@ function handleMessage(ws, raw) {
             color:    client.color,
             section:  msg.payload?.section,
           },
-        }, ws); // exclude sender
+        }, ws); // exclude sender from cursor broadcasts
       }
       break;
     }
@@ -178,8 +213,11 @@ function leaveRoom(ws, planId) {
   const room = rooms.get(planId);
   if (room) {
     room.delete(ws);
-    if (room.size === 0) rooms.delete(planId);
-    else broadcastPresence(planId);
+    if (room.size === 0) {
+      rooms.delete(planId); // remove empty room from map
+    } else {
+      broadcastPresence(planId); // update remaining members
+    }
   }
 }
 
@@ -190,10 +228,21 @@ function broadcastPresence(planId) {
   const members = [];
   for (const ws of room) {
     const c = clients.get(ws);
-    if (c) members.push({ userId: c.userId, userName: c.userName, initials: c.initials, color: c.color });
+    if (c) {
+      members.push({
+        userId:   c.userId,
+        userName: c.userName,
+        initials: c.initials,
+        color:    c.color,
+      });
+    }
   }
 
-  broadcastToRoom(planId, { type: 'PRESENCE_UPDATE', planId, payload: { members } });
+  broadcastToRoom(planId, {
+    type:    'PRESENCE_UPDATE',
+    planId,
+    payload: { members },
+  });
 }
 
 function broadcastToRoom(planId, message, excludeWs = null) {
@@ -207,14 +256,27 @@ function broadcastToRoom(planId, message, excludeWs = null) {
 }
 
 // ── Public broadcast API ──────────────────────────────────
+
 /**
- * Call this from route handlers after DB mutations to push
+ * broadcastPlanUpdate(planId, eventType, data, excludeUserId?)
+ * ────────────────────────────────────────────────────────────
+ * Called from routes.js after every successful DB mutation to push
  * live updates to all subscribers of a plan.
+ *
+ * The sending user is excluded by userId so they don't receive an
+ * echo of their own change.
+ *
+ * @param {string}  planId
+ * @param {string}  eventType      e.g. 'PLAN_UPDATED', 'COMMENT_ADDED'
+ * @param {object}  data           payload (section, action, item/id, etc.)
+ * @param {string}  [excludeUserId] req.user.id of the originating request
  */
 function broadcastPlanUpdate(planId, eventType, data, excludeUserId = null) {
   const room = rooms.get(planId);
   if (!room) return;
+
   const message = { type: eventType, planId, payload: data };
+
   for (const ws of room) {
     const c = clients.get(ws);
     if (c && c.userId === excludeUserId) continue;
@@ -223,7 +285,17 @@ function broadcastPlanUpdate(planId, eventType, data, excludeUserId = null) {
 }
 
 /**
- * Push a notification to a specific user across all their connections.
+ * pushToUser(userId, message)
+ * ───────────────────────────
+ * Push a notification to a specific user across ALL their open
+ * connections (a user may have multiple browser tabs open).
+ *
+ * Called from routes.js after:
+ *   - POST /api/plans/:id/share     → notify target user
+ *   - POST /api/plans/:id/comments  → notify plan owner
+ *
+ * @param {string} userId
+ * @param {object} message
  */
 function pushToUser(userId, message) {
   for (const [ws, client] of clients) {
@@ -234,6 +306,13 @@ function pushToUser(userId, message) {
 }
 
 // ── Utilities ─────────────────────────────────────────────
+
+/**
+ * send(ws, data)
+ * ─────────────
+ * Serialise data to JSON and send. Wrapped in try/catch so a failed
+ * send on a closing connection doesn't propagate as an unhandled error.
+ */
 function send(ws, data) {
   try {
     ws.send(JSON.stringify(data));
@@ -242,17 +321,33 @@ function send(ws, data) {
   }
 }
 
+/**
+ * extractToken(req)
+ * ─────────────────
+ * Pulls the JWT from the upgrade request in order of preference:
+ *   1. Authorization: Bearer <token> header
+ *   2. ?token= query string parameter
+ *
+ * Note: the query string method logs the token in Morgan access logs.
+ * For production, prefer header auth or post-connect auth messages.
+ *
+ * @param  {http.IncomingMessage} req
+ * @returns {string|null}
+ */
 function extractToken(req) {
-  // Try Authorization header first
   const auth = req.headers.authorization || '';
   if (auth.startsWith('Bearer ')) return auth.slice(7);
-  // Try query string ?token=...
   const url = new URL(req.url, 'http://localhost');
   return url.searchParams.get('token');
 }
 
 function initials(name) {
-  return (name || 'U').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  return (name || 'U')
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 }
 
 function colorForUser(userId) {
@@ -268,11 +363,21 @@ function colorForUser(userId) {
   return palette[hash % palette.length];
 }
 
+/**
+ * getStats()
+ * ──────────
+ * Returns live connection and room metrics for the admin dashboard.
+ * Called by routes.js GET /api/admin/stats.
+ *
+ * @returns {{ totalConnections: number, activeRooms: number, roomBreakdown: object }}
+ */
 function getStats() {
   return {
     totalConnections: wss ? wss.clients.size : 0,
     activeRooms:      rooms.size,
-    roomBreakdown:    Object.fromEntries([...rooms.entries()].map(([k, v]) => [k, v.size])),
+    roomBreakdown:    Object.fromEntries(
+      [...rooms.entries()].map(([k, v]) => [k, v.size])
+    ),
   };
 }
 
