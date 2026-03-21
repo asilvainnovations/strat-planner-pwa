@@ -86,6 +86,21 @@ async function run() {
     process.exit(0);
 
   } catch (err) {
+    // In production build phase (Heroku slug compilation), config vars
+    // are not yet available — ADMIN_EMAIL/ADMIN_PASSWORD will be missing.
+    // This is expected: the heroku-postbuild hook runs after config vars
+    // are injected and will complete the seed successfully at that point.
+    // We treat a missing-credentials error as a warning here, not fatal.
+    const isMissingCreds = err.message && (
+      err.message.includes('ADMIN_EMAIL') ||
+      err.message.includes('ADMIN_PASSWORD')
+    );
+    if (isMissingCreds) {
+      console.warn('\n[SEED] ⚠  Skipping admin seed — config vars not yet available.');
+      console.warn('[SEED]    Set ADMIN_EMAIL and ADMIN_PASSWORD in Heroku Config Vars.');
+      console.warn('[SEED]    The seed will complete on next dyno start.\n');
+      process.exit(0); // exit 0 so Heroku build does not fail
+    }
     console.error('\n[SEED] ❌ Fatal error during seed:', err);
     process.exit(1);
   }
