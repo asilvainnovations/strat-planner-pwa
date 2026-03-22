@@ -3,2549 +3,772 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0A1628">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Strat Planner Pro</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="/icons/icon-192.png" type="image/png">
-  <link rel="stylesheet" href="/style.css">
+  <meta name="description" content="AI-powered strategic planning for organisations that demand precision and results. SWOT, systems thinking, balanced scorecard, KPIs, and print-ready reports — online or offline.">
+
+  <!-- Open Graph / social sharing -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://stratplannerpro.app/">
+  <meta property="og:title"       content="Strat Planner Pro — AI-Powered Strategic Planning">
+  <meta property="og:description" content="Turn strategy into execution excellence. SWOT, systems thinking, balanced scorecard, and AI-generated strategies — works offline as a PWA.">
+  <meta property="og:image"       content="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="Strat Planner Pro — AI-Powered Strategic Planning">
+  <meta name="twitter:description" content="Turn strategy into execution excellence.">
+
+  <link rel="canonical"   href="https://stratplannerpro.app/">
+  <link rel="icon"        href="/icons/icon-192.png" type="image/png">
+  <link rel="manifest"    href="/manifest.json">
+
+  <title>Strat Planner Pro | AI-Powered Strategic Planning</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Condensed:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <style>
+    /* ── Shared design tokens (match app + login) ── */
+    :root {
+      --bg:             #0A1628;
+      --bg-surface:     #0D1F3C;
+      --blue-900:       #0A1628;
+      --blue-700:       #1A3A6B;
+      --blue-600:       #1E4D9B;
+      --blue-500:       #2563EB;
+      --blue-400:       #3B82F6;
+      --blue-300:       #60A5FA;
+      --blue-200:       #93C5FD;
+      --cyan-500:       #06B6D4;
+      --emerald-400:    #34D399;
+      --indigo-400:     #818CF8;
+      --text-primary:   rgba(255,255,255,0.95);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-tertiary:  rgba(255,255,255,0.38);
+      --glass-border:   rgba(255,255,255,0.10);
+      --radius-md:      12px;
+      --radius-lg:      16px;
+      --radius-xl:      24px;
+      --font-display:   'Poppins', sans-serif;
+      --font-ui:        'Inter', sans-serif;
+      --success:        #10B981;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: var(--font-ui);
+      background: var(--bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── Typography ── */
+    .font-display { font-family: var(--font-display); }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; }
+
+    /* ── Layout helpers ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+
+    /* ── Animated background ── */
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37,99,235,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(26,58,107,0.10) 0%, transparent 50%),
+        var(--bg);
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.12;
+      animation: float 20s ease-in-out infinite;
+    }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #1E4D9B, transparent); top: -12%; left: -8%; animation-delay: 0s; }
+    .orb-2 { width: 380px; height: 380px; background: radial-gradient(circle, #06B6D4, transparent); top: 55%; right: -5%; animation-delay: -7s; }
+    .orb-3 { width: 260px; height: 260px; background: radial-gradient(circle, #6366F1, transparent); bottom: 15%; left: 28%; animation-delay: -14s; }
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      25%  { transform: translate(28px,-28px) scale(1.06); }
+      50%  { transform: translate(-16px,16px) scale(0.94); }
+      75%  { transform: translate(16px,24px) scale(1.02); }
+    }
+    .grid-pattern {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 54px 54px;
+      pointer-events: none;
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10,22,40,0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; gap: 20px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo img { width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.18); object-fit: cover; }
+    .nav-logo-name {
+      font-family: var(--font-display); font-size: 17px; font-weight: 700;
+      background: linear-gradient(135deg, #fff, var(--blue-300));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-badge {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      background: var(--blue-500); color: white; padding: 2px 6px; border-radius: 4px;
+      align-self: flex-start; margin-top: 2px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--text-secondary);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-ghost {
+      font-size: 14px; font-weight: 500; color: var(--text-secondary);
+      background: none; border: none; cursor: pointer; transition: color 0.2s;
+      text-decoration: none; padding: 6px 2px;
+    }
+    .btn-ghost:hover { color: var(--text-primary); }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: linear-gradient(135deg, var(--blue-500), #1d4ed8);
+      color: white; font-family: var(--font-ui); font-size: 14px; font-weight: 600;
+      padding: 10px 22px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.14);
+      cursor: pointer; text-decoration: none; transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--blue-400), var(--blue-500));
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(37,99,235,0.45), inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+    .btn-primary-lg { font-size: 16px; padding: 14px 30px; border-radius: var(--radius-lg); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent; color: var(--text-primary);
+      font-family: var(--font-ui); font-size: 16px; font-weight: 500;
+      padding: 14px 28px; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.18);
+      cursor: pointer; text-decoration: none; transition: all 0.2s ease;
+    }
+    .btn-secondary:hover { border-color: var(--blue-400); color: var(--blue-300); }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      color: var(--text-primary); padding: 6px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative; min-height: 100svh;
+      display: flex; align-items: center; padding-top: 64px; overflow: hidden;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 80px 0; }
+    .badge-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 99px;
+      background: rgba(52,211,153,0.10); border: 1px solid rgba(52,211,153,0.25);
+      font-size: 13px; font-weight: 500; color: var(--emerald-400); margin-bottom: 24px;
+    }
+    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald-400); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.8); } }
+
+    .hero-title { font-size: clamp(36px,4.5vw,60px); font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
+    .hero-title .gradient-text {
+      display: block;
+      background: linear-gradient(135deg, var(--emerald-400) 0%, var(--cyan-500) 50%, var(--indigo-400) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle { font-size: 18px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 36px; max-width: 520px; }
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 36px; }
+    .trust-badges { display: flex; flex-wrap: wrap; gap: 20px; }
+    .trust-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-tertiary); }
+    .trust-item svg { color: var(--emerald-400); flex-shrink: 0; }
+
+    /* ── Mock dashboard card ── */
+    .dashboard-preview {
+      border-radius: var(--radius-xl); padding: 1px;
+      background: linear-gradient(135deg, rgba(52,211,153,0.18), rgba(129,140,248,0.18));
+    }
+    .dashboard-inner { background: #111827; border-radius: calc(var(--radius-xl) - 1px); overflow: hidden; }
+    .db-topbar {
+      display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+      background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .db-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .db-urlbar {
+      flex: 1; margin: 0 12px; background: rgba(255,255,255,0.07);
+      border-radius: 6px; padding: 5px 12px; font-size: 11px; color: var(--text-tertiary);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .db-body { padding: 20px; }
+    .db-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .db-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 3px; }
+    .db-plan-name { font-size: 15px; font-weight: 600; }
+    .on-track { padding: 3px 10px; border-radius: 99px; background: rgba(52,211,153,0.15); color: var(--emerald-400); font-size: 11px; font-weight: 600; }
+    .mini-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
+    .mini-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; }
+    .mini-card-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 4px; }
+    .mini-card-value { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .mini-bar { height: 3px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+    .mini-fill { height: 100%; border-radius: 99px; }
+    .systems-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 14px; }
+    .systems-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 10px; }
+
+    /* Floating badge */
+    .float-badge {
+      position: absolute; background: #1F2937;
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .float-badge-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .float-badge-title { font-size: 12px; font-weight: 600; }
+    .float-badge-sub { font-size: 11px; color: var(--text-tertiary); }
+    .float-right { right: -20px; top: 22%; animation: bob 3s ease-in-out infinite; }
+    .float-left  { left: -20px; bottom: 22%; animation: bob 4s ease-in-out infinite; animation-delay: -1.2s; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    /* ── Section shared ── */
+    section { padding: 88px 0; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: 99px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+      margin-bottom: 14px;
+    }
+    .section-tag.emerald { background: rgba(52,211,153,0.10); border: 1px solid rgba(52,211,153,0.20); color: var(--emerald-400); }
+    .section-tag.indigo  { background: rgba(129,140,248,0.10); border: 1px solid rgba(129,140,248,0.20); color: var(--indigo-400); }
+    .section-tag.cyan    { background: rgba(6,182,212,0.10);   border: 1px solid rgba(6,182,212,0.20);   color: var(--cyan-500); }
+    .section-title { font-size: clamp(26px,3vw,38px); font-weight: 700; margin-bottom: 12px; }
+    .section-sub { font-size: 17px; color: var(--text-secondary); max-width: 600px; line-height: 1.6; }
+    .text-center { text-align: center; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Feature cards ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 20px; margin-top: 48px; }
+    .feature-card {
+      background: linear-gradient(135deg, rgba(19,31,52,0.85), rgba(19,31,52,0.45));
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl);
+      padding: 28px; transition: all 0.35s ease; position: relative; overflow: hidden;
+    }
+    .feature-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.15); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+    }
+    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; transition: color 0.2s; }
+    .feature-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Steps ── */
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 24px; margin-top: 48px; position: relative; }
+    .steps-connector { display: none; }
+    .step-card { background: linear-gradient(135deg, rgba(19,31,52,0.8),rgba(19,31,52,0.4)); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl); padding: 28px; text-align: center; }
+    .step-num {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--bg-surface); border: 2px solid var(--blue-500);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 17px; color: var(--blue-400); margin: 0 auto 18px;
+    }
+    .step-alt .step-num { border-color: var(--indigo-400); color: var(--indigo-400); }
+    .step-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .step-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Audience cards ── */
+    .audience-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 18px; margin-top: 48px; }
+    .audience-card { background: linear-gradient(135deg,rgba(19,31,52,0.85),rgba(19,31,52,0.4)); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl); padding: 28px; cursor: pointer; transition: all 0.3s ease; }
+    .audience-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.16); }
+    .audience-icon-wrap { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; transition: transform 0.3s; }
+    .audience-card:hover .audience-icon-wrap { transform: scale(1.1); }
+    .audience-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .audience-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── Benefits ── */
+    .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .benefit-list { display: flex; flex-direction: column; gap: 22px; }
+    .benefit-item { display: flex; align-items: flex-start; gap: 16px; }
+    .benefit-icon-wrap { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .benefit-item h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .benefit-item p  { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .stat-card { background: linear-gradient(135deg,rgba(19,31,52,0.85),rgba(19,31,52,0.4)); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl); padding: 28px; text-align: center; }
+    .stat-value {
+      font-size: 42px; font-weight: 700; line-height: 1;
+      background: linear-gradient(135deg, var(--blue-400), var(--cyan-500));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
+    }
+    .stat-card p { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── CTA section ── */
+    .cta-box {
+      background: linear-gradient(135deg, rgba(52,211,153,0.06), rgba(129,140,248,0.06));
+      border: 1px solid rgba(255,255,255,0.09); border-radius: 32px;
+      padding: 64px 48px; text-align: center; max-width: 780px; margin: 0 auto;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+      background: linear-gradient(135deg, rgba(52,211,153,0.35), transparent 50%, rgba(129,140,248,0.35));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+    }
+    .cta-box h2 { font-size: clamp(24px,2.8vw,36px); font-weight: 700; margin-bottom: 14px; }
+    .cta-box p  { font-size: 16px; color: var(--text-secondary); margin-bottom: 32px; }
+    .cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+    .cta-note { font-size: 12px; color: var(--text-tertiary); }
+
+    /* ── Footer ── */
+    footer { padding: 40px 0 32px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .footer-inner { display: flex; flex-direction: column; gap: 28px; }
+    .footer-top { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .footer-logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .footer-logo-wrap img { width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.18); object-fit: cover; }
+    .footer-logo-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; background: linear-gradient(135deg,#fff,var(--blue-300)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .footer-tagline { font-size: 13px; color: var(--text-tertiary); margin-top: 6px; max-width: 320px; }
+    .footer-powered { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .footer-powered span { font-size: 12px; color: var(--text-tertiary); }
+    .footer-powered img { height: 28px; object-fit: contain; filter: brightness(0.7); transition: filter 0.2s; }
+    .footer-powered img:hover { filter: brightness(1); }
+    .footer-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-primary); }
+    .footer-copy { font-size: 12px; color: var(--text-tertiary); }
+
+    /* ── Mobile nav overlay ── */
+    .mobile-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(10,22,40,0.97); backdrop-filter: blur(20px);
+      flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+    }
+    .mobile-overlay.open { display: flex; }
+    .mobile-overlay a { font-size: 22px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+    .mobile-close { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 28px; line-height: 1; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 3px; }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-grid    { grid-template-columns: 1fr; gap: 48px; padding: 60px 0 48px; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .footer-top   { grid-template-columns: 1fr; }
+      .footer-powered { align-items: flex-start; }
+      .float-right, .float-left { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .btn-ghost { display: none; }
+      .hamburger { display: flex; align-items: center; }
+      .hero-subtitle { font-size: 16px; }
+      section { padding: 64px 0; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .cta-box { padding: 44px 24px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .hero-ctas   { flex-direction: column; }
+      .btn-primary-lg, .btn-secondary { width: 100%; justify-content: center; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Auth loading overlay — visible until /api/auth/me resolves -->
-<div id="auth-loading" role="status" aria-label="Loading application">
-  <div class="spinner-lg"></div>
-  <span style="font-size:13px;color:var(--text-secondary)">Loading…</span>
+<!-- ── Mobile nav overlay ── -->
+<div class="mobile-overlay" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <button class="mobile-close" onclick="closeMobileNav()" aria-label="Close menu">✕</button>
+  <a href="#features"    onclick="closeMobileNav()">Features</a>
+  <a href="#how-it-works" onclick="closeMobileNav()">How It Works</a>
+  <a href="#benefits"    onclick="closeMobileNav()">Benefits</a>
+  <a href="https://asilvainnovations.github.io/website/pricing.html">Pricing</a>
+  <a href="/login" class="btn-primary btn-primary-lg" style="margin-top:10px">Sign In</a>
 </div>
 
-<!-- Offline banner -->
-<div id="offline-banner" role="alert" aria-live="polite">
-  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-  You're offline — changes will sync when connected
-  <span id="offline-pending-count" style="font-weight:600"></span>
-</div>
-
-<!-- Sidebar -->
-<nav id="sidebar" aria-label="Main navigation">
-  <a class="sidebar-logo" href="/">
-    <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="Strat Planner Pro" onerror="this.style.display='none'">
-    <span class="sidebar-logo-name">Strat Planner Pro</span>
-  </a>
-
-  <div class="nav-section">
-    <div class="nav-section-label">Workspace</div>
-    <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')" aria-current="page">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 4a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm9 0a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-2-2V4zM2 13a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2H4a2 2 0 01-2-2v-3zm9 0a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-2-2v-3z"/></svg>
-      Dashboard
-    </button>
-    <button class="nav-item" data-page="swot" onclick="navigate('swot')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 12H1v6a2 2 0 002 2h6v-8zM1 10h8V2H3a2 2 0 00-2 2v6zm10 10h6a2 2 0 002-2v-6h-8v8zm8-18h-6v8h8V4a2 2 0 00-2-2z"/></svg>
-      SWOT Analysis
-    </button>
-    <button class="nav-item" data-page="strategy" onclick="navigate('strategy')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
-      Strategy Matrix
-    </button>
-    <button class="nav-item" data-page="scorecard" onclick="navigate('scorecard')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
-      Balanced Scorecard
-    </button>
-    <button class="nav-item" data-page="initiatives" onclick="navigate('initiatives')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
-      Initiatives (PAPs)
-    </button>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-section-label">Collaboration</div>
-    <button class="nav-item" data-page="team" onclick="navigate('team')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zm5 2a2 2 0 11-4 0 2 2 0 014 0zm-4 7a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zm10 10v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
-      Team
-    </button>
-    <button class="nav-item" data-page="activity" onclick="navigate('activity')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
-      Activity Log
-    </button>
-    <button class="nav-item" data-page="templates" onclick="navigate('templates')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-      Templates
-    </button>
-  </div>
-
-  <div class="nav-section" id="admin-nav-section" style="display:none">
-    <div class="nav-section-label">Admin</div>
-    <button class="nav-item" data-page="admin" onclick="navigate('admin')">
-      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
-      Admin Panel
-    </button>
-  </div>
-
-  <div class="sidebar-bottom">
-    <!-- Offline / sync status -->
-    <div id="sync-indicator" title="Syncing offline changes">
-      <div class="sync-dot"></div>
-      <span>Syncing…</span>
+<!-- ── Navigation ── -->
+<nav class="nav" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="/" aria-label="Strat Planner Pro home">
+      <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="" onerror="this.style.display='none'">
+      <span class="nav-logo-name">Strat Planner Pro</span>
+      <span class="nav-badge">PRO</span>
+    </a>
+    <div class="nav-links" role="list">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#benefits">Benefits</a>
+      <a href="https://asilvainnovations.github.io/website/pricing.html">Pricing</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/login" class="btn-ghost">Sign In</a>
+      <a href="/login?mode=register" class="btn-primary">Get Started Free</a>
+      <button class="hamburger" onclick="openMobileNav()" aria-label="Open navigation menu" aria-expanded="false" id="hamburger-btn">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 6h16M3 11h16M3 16h16"/>
+        </svg>
+      </button>
     </div>
   </div>
 </nav>
 
-<!-- Main content -->
-<div id="main-content">
+<!-- ── Hero ── -->
+<section class="hero hero-bg">
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+  <div class="grid-pattern" aria-hidden="true"></div>
 
-  <!-- Top bar -->
-  <header id="top-bar">
-    <div class="top-bar-left">
-      <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
-      </button>
-      <!-- Plan selector -->
-      <button class="plan-selector" id="plan-selector-btn" onclick="openPlanSelector()" aria-haspopup="dialog" aria-label="Select strategic plan">
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-        <span class="plan-selector-name" id="plan-selector-name">Select a plan…</span>
-        <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-      </button>
-    </div>
+  <div class="container" style="position:relative; z-index:1; width:100%">
+    <div class="hero-grid">
 
-    <div class="top-bar-right">
-      <!-- Presence avatars (populated by PRESENCE_UPDATE) -->
-      <div id="presence-avatars" aria-label="Active collaborators" role="group"></div>
-
-      <!-- Notifications -->
-      <button class="icon-btn" id="notif-btn" onclick="toggleNotifications()" aria-label="Notifications" aria-expanded="false" aria-controls="notif-panel">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a2 2 0 01-2-2h4a2 2 0 01-2 2z"/></svg>
-        <span class="notif-dot" id="notif-dot" style="display:none" aria-hidden="true"></span>
-      </button>
-
-      <!-- User menu -->
-      <button class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()" aria-haspopup="menu" aria-expanded="false" aria-label="User menu" style="background:linear-gradient(135deg,#3B82F6,#06B6D4)">
-        <span id="user-initials">…</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- User menu dropdown -->
-  <div class="user-menu" id="user-menu" role="menu" aria-labelledby="user-avatar-btn">
-    <div class="user-menu-header">
-      <div class="user-menu-name"  id="user-menu-name">Loading…</div>
-      <div class="user-menu-email" id="user-menu-email"></div>
-    </div>
-    <button class="user-menu-item" role="menuitem" onclick="navigate('team'); closeUserMenu()">
-      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
-      Profile
-    </button>
-    <button class="user-menu-item" role="menuitem" onclick="openNewPlanModal(); closeUserMenu()">
-      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
-      New Plan
-    </button>
-    <button class="user-menu-item danger" role="menuitem" onclick="handleLogout()">
-      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
-      Sign Out
-    </button>
-  </div>
-
-  <!-- Notification panel -->
-  <aside class="notif-panel" id="notif-panel" aria-label="Notifications" role="complementary">
-    <div class="notif-panel-header">
-      <span class="notif-panel-title">Notifications</span>
-      <button class="btn-secondary" style="padding:4px 10px;font-size:12px" onclick="markAllNotificationsRead()">Mark all read</button>
-    </div>
-    <div class="notif-list" id="notif-list">
-      <div class="empty-state" style="padding:32px 20px">
-        <div class="empty-state-icon">🔔</div>
-        <p>No notifications yet</p>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Page area -->
-  <main id="page-area" role="main">
-
-    <!-- ── DASHBOARD ─────────────────────────────────── -->
-    <section class="page active" id="page-dashboard" aria-labelledby="dashboard-title">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="dashboard-title">Dashboard</h1>
-          <p class="page-subtitle" id="dashboard-plan-name">No plan selected</p>
+      <!-- Left: copy -->
+      <div>
+        <div class="badge-pill">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          AI-Powered Strategic Planning
         </div>
-        <button class="btn-primary" onclick="openNewPlanModal()">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
-          New Plan
-        </button>
-      </div>
-      <div class="metric-grid" id="dashboard-metrics"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-        <div class="glass-card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:16px">Execution Progress</div>
-          <div style="position:relative;height:180px"><canvas id="progressChart"></canvas></div>
+        <h1 class="hero-title">
+          Turn Strategy Into
+          <span class="gradient-text">Execution Excellence</span>
+        </h1>
+        <p class="hero-subtitle">
+          Your all-in-one AI-powered progressive web app for deep systems diagnosis, structured planning, and disciplined execution. Works offline, prints beautifully.
+        </p>
+        <div class="hero-ctas">
+          <a href="/login?mode=register" class="btn-primary btn-primary-lg">
+            Get Started for Free
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
+          </a>
+          <a href="https://asilvainnovations.github.io/website/#contact" class="btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+              <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Schedule a Demo
+          </a>
         </div>
-        <div class="glass-card">
-          <div style="font-size:13px;font-weight:600;margin-bottom:16px">SWOT Distribution</div>
-          <div style="position:relative;height:180px"><canvas id="swotChart"></canvas></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SWOT ───────────────────────────────────────── -->
-    <section class="page" id="page-swot" aria-labelledby="swot-title">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="swot-title">SWOT Analysis</h1>
-          <p class="page-subtitle">Identify strengths, weaknesses, opportunities, and threats</p>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button class="btn-secondary" onclick="generateSwotAI()">
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-            AI Generate
-          </button>
-          <button class="btn-primary" onclick="openAddSwotModal()">+ Add Item</button>
-        </div>
-      </div>
-      <div class="swot-grid" id="swot-grid">
-        <div class="swot-quadrant strengths">
-          <div class="swot-quadrant-header">
-            <span class="swot-quadrant-title">Strengths</span>
-            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('strengths')">+ Add</button>
+        <div class="trust-badges" role="list">
+          <div class="trust-item" role="listitem">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            No credit card required
           </div>
-          <div id="swot-strengths"></div>
-        </div>
-        <div class="swot-quadrant weaknesses">
-          <div class="swot-quadrant-header">
-            <span class="swot-quadrant-title">Weaknesses</span>
-            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('weaknesses')">+ Add</button>
+          <div class="trust-item" role="listitem">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Works offline (PWA)
           </div>
-          <div id="swot-weaknesses"></div>
-        </div>
-        <div class="swot-quadrant opportunities">
-          <div class="swot-quadrant-header">
-            <span class="swot-quadrant-title">Opportunities</span>
-            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('opportunities')">+ Add</button>
+          <div class="trust-item" role="listitem">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            GDPR compliant
           </div>
-          <div id="swot-opportunities"></div>
-        </div>
-        <div class="swot-quadrant threats">
-          <div class="swot-quadrant-header">
-            <span class="swot-quadrant-title">Threats</span>
-            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('threats')">+ Add</button>
-          </div>
-          <div id="swot-threats"></div>
         </div>
       </div>
-    </section>
 
-    <!-- ── STRATEGY MATRIX ───────────────────────────── -->
-    <section class="page" id="page-strategy" aria-labelledby="strategy-title">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="strategy-title">Strategy Matrix</h1>
-          <p class="page-subtitle">SO · ST · WO · WT strategic options</p>
-        </div>
-        <button class="btn-primary" onclick="openAddStrategyModal()">+ Add Strategy</button>
-      </div>
-      <div id="strategy-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
-    </section>
-
-    <!-- ── BALANCED SCORECARD ────────────────────────── -->
-    <section class="page" id="page-scorecard" aria-labelledby="scorecard-title">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="scorecard-title">Balanced Scorecard</h1>
-          <p class="page-subtitle">Financial · Customer · Internal · Learning & Growth</p>
-        </div>
-        <button class="btn-primary" onclick="openAddKPIModal()">+ Add KPI</button>
-      </div>
-      <div class="glass-card">
-        <table class="kpi-table" id="kpi-table">
-          <thead>
-            <tr>
-              <th>KPI</th><th>Perspective</th><th>Target</th>
-              <th>Actual</th><th>Status</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="kpi-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ── INITIATIVES ───────────────────────────────── -->
-    <section class="page" id="page-initiatives" aria-labelledby="initiatives-title">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="initiatives-title">Initiatives (PAPs)</h1>
-          <p class="page-subtitle">Programs, Activities, and Projects</p>
-        </div>
-        <button class="btn-primary" onclick="openAddInitiativeModal()">+ Add Initiative</button>
-      </div>
-      <div class="metric-grid" id="budget-metrics"></div>
-      <div id="initiatives-list"></div>
-    </section>
-
-    <!-- ── TEAM ──────────────────────────────────────── -->
-    <section class="page" id="page-team" aria-labelledby="team-title">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="team-title">Team</h1>
-          <p class="page-subtitle">Organisation members and plan collaborators</p>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button class="btn-secondary" onclick="openShareModal()">Share Plan</button>
-          <button class="btn-primary" onclick="openInviteModal()">+ Invite Member</button>
-        </div>
-      </div>
-      <div id="team-content"></div>
-    </section>
-
-    <!-- ── ACTIVITY LOG ──────────────────────────────── -->
-    <section class="page" id="page-activity" aria-labelledby="activity-title">
-      <h1 class="page-title" id="activity-title" style="margin-bottom:20px">Activity Log</h1>
-      <div id="activity-list"></div>
-    </section>
-
-    <!-- ── TEMPLATES ─────────────────────────────────── -->
-    <section class="page" id="page-templates" aria-labelledby="templates-title">
-      <div class="page-header">
-        <h1 class="page-title" id="templates-title">Templates</h1>
-      </div>
-      <div id="templates-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
-    </section>
-
-    <!-- ── ADMIN ─────────────────────────────────────── -->
-    <section class="page" id="page-admin" aria-labelledby="admin-title">
-      <h1 class="page-title" id="admin-title" style="margin-bottom:20px">Admin Panel</h1>
-      <div id="admin-content"></div>
-    </section>
-
-  </main>
-</div>
-
-<!-- Toast container -->
-<div id="toast-container" aria-live="polite" aria-atomic="false"></div>
-
-<!-- ── MODALS ─────────────────────────────────────────────── -->
-
-<!-- Add SWOT item -->
-<div class="modal-overlay" id="modal-swot" role="dialog" aria-modal="true" aria-labelledby="modal-swot-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-swot-title">Add SWOT Item</div>
-    <div class="field">
-      <label class="field-label" for="swot-category">Category</label>
-      <select id="swot-category">
-        <option value="strengths">Strength</option>
-        <option value="weaknesses">Weakness</option>
-        <option value="opportunities">Opportunity</option>
-        <option value="threats">Threat</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label" for="swot-text">Statement</label>
-      <textarea id="swot-text" rows="3" placeholder="Describe this SWOT item…"></textarea>
-    </div>
-    <div class="field">
-      <label class="field-label" for="swot-evidence">Evidence / Source</label>
-      <input type="text" id="swot-evidence" placeholder="Supporting data, study, or observation">
-    </div>
-    <div class="field">
-      <label class="field-label" for="swot-impact">Impact</label>
-      <select id="swot-impact">
-        <option value="high">High</option>
-        <option value="medium" selected>Medium</option>
-        <option value="low">Low</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-swot')">Cancel</button>
-      <button class="btn-primary" onclick="saveSwotItem()">Save Item</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add KPI -->
-<div class="modal-overlay" id="modal-kpi" role="dialog" aria-modal="true" aria-labelledby="modal-kpi-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-kpi-title">Add KPI</div>
-    <div class="field">
-      <label class="field-label" for="kpi-perspective">Perspective</label>
-      <select id="kpi-perspective">
-        <option value="financial">Financial</option>
-        <option value="customer">Customer</option>
-        <option value="internal">Internal Process</option>
-        <option value="learning">Learning & Growth</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label" for="kpi-name">KPI Name</label>
-      <input type="text" id="kpi-name" placeholder="e.g. Revenue Growth Rate">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-      <div class="field">
-        <label class="field-label" for="kpi-target">Target</label>
-        <input type="text" id="kpi-target" placeholder="e.g. 15%">
-      </div>
-      <div class="field">
-        <label class="field-label" for="kpi-actual">Actual</label>
-        <input type="text" id="kpi-actual" placeholder="e.g. 12%">
-      </div>
-      <div class="field">
-        <label class="field-label" for="kpi-unit">Unit</label>
-        <input type="text" id="kpi-unit" placeholder="%, ₱, days…">
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label" for="kpi-status">Status</label>
-      <select id="kpi-status">
-        <option value="on-track">On Track</option>
-        <option value="at-risk">At Risk</option>
-        <option value="behind">Behind</option>
-        <option value="complete">Complete</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-kpi')">Cancel</button>
-      <button class="btn-primary" onclick="saveKPI()">Save KPI</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Initiative -->
-<div class="modal-overlay" id="modal-initiative" role="dialog" aria-modal="true" aria-labelledby="modal-initiative-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-initiative-title">Add Initiative</div>
-    <div class="field">
-      <label class="field-label" for="init-type">Type</label>
-      <select id="init-type">
-        <option value="program">Program</option>
-        <option value="activity">Activity</option>
-        <option value="project">Project</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label" for="init-name">Name</label>
-      <input type="text" id="init-name" placeholder="Initiative name">
-    </div>
-    <div class="field">
-      <label class="field-label" for="init-owner">Owner / Department</label>
-      <input type="text" id="init-owner" placeholder="e.g. IT Department">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div class="field">
-        <label class="field-label" for="init-budget">Budget (₱)</label>
-        <input type="number" id="init-budget" placeholder="0">
-      </div>
-      <div class="field">
-        <label class="field-label" for="init-due">Due Date</label>
-        <input type="date" id="init-due">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-initiative')">Cancel</button>
-      <button class="btn-primary" onclick="saveInitiative()">Save Initiative</button>
-    </div>
-  </div>
-</div>
-
-<!-- New Plan -->
-<div class="modal-overlay" id="modal-new-plan" role="dialog" aria-modal="true" aria-labelledby="modal-new-plan-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-new-plan-title">Create New Plan</div>
-    <div class="field">
-      <label class="field-label" for="plan-name-input">Plan Name</label>
-      <input type="text" id="plan-name-input" placeholder="e.g. Q2 2025 Corporate Strategy">
-    </div>
-    <div class="field">
-      <label class="field-label" for="plan-period-input">Period</label>
-      <input type="text" id="plan-period-input" placeholder="e.g. January – June 2025">
-    </div>
-    <div class="field">
-      <label class="field-label" for="plan-desc-input">Description</label>
-      <textarea id="plan-desc-input" rows="2" placeholder="Brief description…"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-new-plan')">Cancel</button>
-      <button class="btn-primary" onclick="createPlan()">Create Plan</button>
-    </div>
-  </div>
-</div>
-
-<!-- Plan selector list -->
-<div class="modal-overlay" id="modal-plan-selector" role="dialog" aria-modal="true" aria-labelledby="modal-plan-selector-title">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-title" id="modal-plan-selector-title">Select Plan</div>
-    <div id="plan-selector-list" style="max-height:400px;overflow-y:auto"></div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-plan-selector')">Cancel</button>
-      <button class="btn-primary" onclick="openNewPlanModal()">+ New Plan</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Strategy -->
-<div class="modal-overlay" id="modal-strategy" role="dialog" aria-modal="true" aria-labelledby="modal-strategy-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-strategy-title">Add Strategy</div>
-    <div class="field">
-      <label class="field-label" for="strategy-type">Type</label>
-      <select id="strategy-type">
-        <option value="so">SO — Use Strengths for Opportunities</option>
-        <option value="st">ST — Use Strengths to counter Threats</option>
-        <option value="wo">WO — Overcome Weaknesses via Opportunities</option>
-        <option value="wt">WT — Minimise Weaknesses, avoid Threats</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label" for="strategy-text">Strategy Statement</label>
-      <textarea id="strategy-text" rows="3" placeholder="Describe the strategy…"></textarea>
-    </div>
-    <div class="field">
-      <label class="field-label" for="strategy-priority">Priority</label>
-      <select id="strategy-priority">
-        <option value="high">High</option>
-        <option value="medium" selected>Medium</option>
-        <option value="low">Low</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-strategy')">Cancel</button>
-      <button class="btn-primary" onclick="saveStrategy()">Save Strategy</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Update KPI (PATCH) ──────────────────────────────────── -->
-<div class="modal-overlay" id="modal-kpi-edit" role="dialog" aria-modal="true" aria-labelledby="modal-kpi-edit-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-kpi-edit-title">Update KPI</div>
-    <input type="hidden" id="kpi-edit-id">
-    <div class="field">
-      <label class="field-label" for="kpi-edit-actual">Actual Value</label>
-      <input type="text" id="kpi-edit-actual" placeholder="e.g. 13%">
-    </div>
-    <div class="field">
-      <label class="field-label" for="kpi-edit-status">Status</label>
-      <select id="kpi-edit-status">
-        <option value="on-track">On Track</option>
-        <option value="at-risk">At Risk</option>
-        <option value="behind">Behind</option>
-        <option value="complete">Complete</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label" for="kpi-edit-target">Target</label>
-      <input type="text" id="kpi-edit-target" placeholder="e.g. 15%">
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-kpi-edit')">Cancel</button>
-      <button class="btn-primary" onclick="updateKPI()">Update KPI</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Update Initiative (PATCH) ─────────────────────────── -->
-<div class="modal-overlay" id="modal-initiative-edit" role="dialog" aria-modal="true" aria-labelledby="modal-initiative-edit-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-initiative-edit-title">Update Initiative</div>
-    <input type="hidden" id="init-edit-id">
-    <div class="field">
-      <label class="field-label" for="init-edit-name">Name</label>
-      <input type="text" id="init-edit-name" placeholder="Initiative name">
-    </div>
-    <div class="field">
-      <label class="field-label" for="init-edit-owner">Owner / Department</label>
-      <input type="text" id="init-edit-owner" placeholder="e.g. IT Department">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div class="field">
-        <label class="field-label" for="init-edit-utilized">Utilized (₱)</label>
-        <input type="number" id="init-edit-utilized" placeholder="0">
-      </div>
-      <div class="field">
-        <label class="field-label" for="init-edit-progress">Progress (%)</label>
-        <input type="number" id="init-edit-progress" min="0" max="100" placeholder="0">
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label" for="init-edit-status">Status</label>
-      <select id="init-edit-status">
-        <option value="on-track">On Track</option>
-        <option value="at-risk">At Risk</option>
-        <option value="behind">Behind</option>
-        <option value="complete">Complete</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-initiative-edit')">Cancel</button>
-      <button class="btn-danger" onclick="deleteInitiative(document.getElementById('init-edit-id').value)" style="margin-right:auto">Delete</button>
-      <button class="btn-primary" onclick="updateInitiative()">Save Changes</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Add Comment ────────────────────────────────────────── -->
-<div class="modal-overlay" id="modal-comment" role="dialog" aria-modal="true" aria-labelledby="modal-comment-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-comment-title">Add Comment</div>
-    <input type="hidden" id="comment-entity-id">
-    <input type="hidden" id="comment-entity-type">
-    <input type="hidden" id="comment-entity-name">
-    <div class="field">
-      <label class="field-label" id="comment-context-label">On</label>
-    </div>
-    <div class="field">
-      <label class="field-label" for="comment-text">Comment</label>
-      <textarea id="comment-text" rows="4" placeholder="Write your comment…"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-comment')">Cancel</button>
-      <button class="btn-primary" onclick="addComment()">Post Comment</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Send Org Invite ────────────────────────────────────── -->
-<div class="modal-overlay" id="modal-invite" role="dialog" aria-modal="true" aria-labelledby="modal-invite-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-invite-title">Invite Team Member</div>
-    <div class="field">
-      <label class="field-label" for="invite-org-select">Organisation</label>
-      <select id="invite-org-select">
-        <option value="">Loading organisations…</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label" for="invite-email">Email Address</label>
-      <input type="email" id="invite-email" placeholder="colleague@organisation.com">
-    </div>
-    <div class="field">
-      <label class="field-label" for="invite-role">Role</label>
-      <select id="invite-role">
-        <option value="viewer">Viewer — read only</option>
-        <option value="editor" selected>Editor — can create and edit</option>
-        <option value="admin">Admin — full access + invite others</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-invite')">Cancel</button>
-      <button class="btn-primary" onclick="sendInvite()">Send Invitation</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Share Plan ─────────────────────────────────────────── -->
-<div class="modal-overlay" id="modal-share" role="dialog" aria-modal="true" aria-labelledby="modal-share-title">
-  <div class="modal">
-    <div class="modal-title" id="modal-share-title">Share Plan</div>
-    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px" id="share-plan-label">
-      Share this plan with a team member by email.
-    </p>
-    <div class="field">
-      <label class="field-label" for="share-email">Email Address</label>
-      <input type="email" id="share-email" placeholder="colleague@organisation.com">
-    </div>
-    <div class="field">
-      <label class="field-label" for="share-permission">Permission Level</label>
-      <select id="share-permission">
-        <option value="viewer">Viewer — read only</option>
-        <option value="editor" selected>Editor — can create and edit</option>
-        <option value="admin">Admin — full plan access</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal('modal-share')">Cancel</button>
-      <button class="btn-primary" onclick="sharePlan()">Share Plan</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// =============================================================
-// STRAT PLANNER PRO — APP SHELL
-// public/app/index.html
-//
-// Sections:
-//  1.  Constants & State
-//  2.  Auth layer        — apiFetch, refreshAccessToken, handleLogout
-//  3.  Bootstrap         — DOMContentLoaded, service worker, WebSocket
-//  4.  Navigation        — navigate, PAGE_INIT dispatch table
-//  5.  Plan CRUD         — loadUserPlans, loadPlan, openPlanSelector, createPlan
-//  6.  SWOT              — initSwot, renderSwot, saveSwotItem, deleteSwotItem
-//  7.  Strategy Matrix   — initStrategy, renderStrategy, saveStrategy
-//  8.  Scorecard / KPIs  — initScorecard, renderScorecard, saveKPI, deleteKPI
-//  9.  Initiatives       — initInitiatives, renderInitiatives, saveInitiative
-//  9b. Strategy DELETE   — deleteStrategy
-//  9c. KPI UPDATE (PATCH)— openUpdateKPIModal, updateKPI
-//  9d. Initiative UPDATE/DELETE — openUpdateInitiativeModal, updateInitiative, deleteInitiative
-//  9e. Comments ADD      — openCommentModal, addComment
-//  9f. Team INVITE/SHARE — openInviteModal, sendInvite, openShareModal, sharePlan
-// 10.  Notifications     — initNotifications, renderNotifications, markRead
-// 11.  Activity Log      — initActivity
-// 12.  Templates         — initTemplates, applyTemplate
-// 13.  Team              — initTeam (full — members, invite card, share)
-// 14.  Admin             — initAdmin
-// 15.  Dashboard         — initDashboard, renderDashboardCharts
-// 16.  Real-time         — handleWsMessage, applyRemoteUpdate, renderPresence
-// 17.  Offline queue     — queueOfflineChange, processSyncComplete
-// 18.  Online/offline    — handleOnline, handleOffline
-// 19.  UI helpers        — esc, showToast, openModal, closeModal, formatDate, fmt
-// =============================================================
-
-// ─────────────────────────────────────────────────────────────
-// 1. CONSTANTS & STATE
-// ─────────────────────────────────────────────────────────────
-const API = '/api';
-
-/** Application state — single source of truth for rendered UI */
-const STATE = {
-  currentUser:   null,   // populated from GET /api/auth/me on load
-  activePlan:    null,   // populated from GET /api/plans/:id
-  plans:         [],     // populated from GET /api/plans
-  notifications: [],     // populated from GET /api/notifications
-  unreadCount:   0,
-  wsSocket:      null,   // active WebSocket instance
-  swrRegistered: false,  // service worker registered flag
-  isOnline:      navigator.onLine,
-  pendingCount:  0,      // offline changes queued
-};
-
-// ─────────────────────────────────────────────────────────────
-// 2. AUTH LAYER
-// ─────────────────────────────────────────────────────────────
-
-/**
- * apiFetch(path, options)
- * ───────────────────────
- * Shared fetch wrapper used by every API call in the app.
- *
- * - Always attaches Authorization: Bearer <token>
- * - On 401: attempts one silent token refresh, then retries the
- *   original request once. If refresh fails → redirects to /login.
- * - Throws an Error with a user-readable message on HTTP errors.
- *
- * @param {string} path    API path, e.g. '/plans' (without /api prefix)
- * @param {object} options fetch options (method, body, headers, etc.)
- * @returns {Promise<Response>}
- */
-let _refreshing = false;        // prevent concurrent refresh races
-let _refreshPromise = null;
-
-async function apiFetch(path, options = {}) {
-  const token = sessionStorage.getItem('spp_access_token');
-
-  const res = await fetch(API + path, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-  });
-
-  // Silent refresh on 401
-  if (res.status === 401) {
-    // Only attempt refresh if we actually have a refresh token
-    if (sessionStorage.getItem('spp_refresh_token')) {
-      const refreshed = await refreshAccessToken();
-      if (refreshed) {
-        // Retry the original request exactly once with the new token
-        const newToken = sessionStorage.getItem('spp_access_token');
-        return fetch(API + path, {
-          ...options,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${newToken}`,
-            ...(options.headers || {}),
-          },
-        });
-      }
-    }
-    // Refresh failed or no refresh token — redirect to login
-    const redirect = encodeURIComponent(window.location.pathname + window.location.hash);
-    window.location.href = `/login?redirect=${redirect}`;
-    return;
-  }
-
-  if (!res.ok) {
-    let errMsg = `HTTP ${res.status}`;
-    try {
-      const data = await res.clone().json();
-      errMsg = data.error || data.message || errMsg;
-    } catch { /* response not JSON */ }
-    throw new Error(errMsg);
-  }
-
-  return res;
-}
-
-/**
- * refreshAccessToken()
- * ─────────────────────
- * Calls POST /api/auth/refresh with the stored refresh token.
- * Stores the new token pair in sessionStorage.
- * Pushes the new access token to the service worker so background
- * sync always has the latest token.
- *
- * Returns true on success, false on failure.
- *
- * @returns {Promise<boolean>}
- */
-async function refreshAccessToken() {
-  // Deduplicate concurrent refresh attempts
-  if (_refreshing) return _refreshPromise;
-
-  _refreshing = true;
-  _refreshPromise = (async () => {
-    try {
-      const refreshToken = sessionStorage.getItem('spp_refresh_token');
-      if (!refreshToken) return false;
-
-      const res = await fetch(API + '/auth/refresh', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ refreshToken }),
-      });
-
-      if (!res.ok) return false;
-
-      const { accessToken, refreshToken: newRefresh } = await res.json();
-
-      sessionStorage.setItem('spp_access_token',  accessToken);
-      sessionStorage.setItem('spp_refresh_token', newRefresh);
-
-      // Push new token to service worker for background sync [SW-1]
-      pushTokenToServiceWorker(accessToken);
-
-      return true;
-    } catch {
-      return false;
-    } finally {
-      _refreshing     = false;
-      _refreshPromise = null;
-    }
-  })();
-
-  return _refreshPromise;
-}
-
-/**
- * pushTokenToServiceWorker(token)
- * ────────────────────────────────
- * Sends the latest access token to the service worker via postMessage
- * so syncPlans() can attach it to the /api/sync Authorization header.
- */
-function pushTokenToServiceWorker(token) {
-  if (navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage({ type: 'STORE_TOKEN', token });
-  }
-}
-
-/**
- * handleLogout()
- * ──────────────
- * POST /api/auth/logout → clears session storage → redirects to /login.
- */
-async function handleLogout() {
-  closeUserMenu();
-  try {
-    const refreshToken = sessionStorage.getItem('spp_refresh_token');
-    if (refreshToken) {
-      await apiFetch('/auth/logout', {
-        method: 'POST',
-        body:   JSON.stringify({ refreshToken }),
-      });
-    }
-  } catch { /* ignore logout API errors — we clear local state either way */ }
-
-  // Disconnect WebSocket cleanly
-  if (STATE.wsSocket) {
-    STATE.wsSocket.close(1000, 'User logged out');
-    STATE.wsSocket = null;
-  }
-
-  sessionStorage.removeItem('spp_access_token');
-  sessionStorage.removeItem('spp_refresh_token');
-  window.location.href = '/login';
-}
-
-// ─────────────────────────────────────────────────────────────
-// 3. BOOTSTRAP
-// ─────────────────────────────────────────────────────────────
-
-document.addEventListener('DOMContentLoaded', async () => {
-  // ── Step 1: Verify authentication ──────────────────────────
-  // Hide the page until we know who the user is
-  document.getElementById('auth-loading').classList.remove('hidden');
-
-  const token = sessionStorage.getItem('spp_access_token');
-  if (!token) {
-    // No token at all — go straight to login
-    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
-    return;
-  }
-
-  try {
-    const res = await apiFetch('/auth/me');
-    if (!res) return; // apiFetch already redirected
-
-    const { user } = await res.json();
-    STATE.currentUser = user;
-
-    // Populate top-bar user elements
-    document.getElementById('user-initials').textContent   = user.initials || 'U';
-    document.getElementById('user-avatar-btn').style.background = user.color || 'linear-gradient(135deg,#3B82F6,#06B6D4)';
-    document.getElementById('user-menu-name').textContent  = `${user.firstName} ${user.lastName}`;
-    document.getElementById('user-menu-email').textContent = user.email;
-
-    // Show admin nav section for super_admin
-    if (user.role === 'super_admin') {
-      document.getElementById('admin-nav-section').style.display = 'block';
-    }
-
-  } catch {
-    // GET /api/auth/me failed for a non-401 reason — still redirect
-    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
-    return;
-  }
-
-  // ── Step 2: Register service worker ────────────────────────
-  registerServiceWorker();
-
-  // ── Step 3: Connect WebSocket ───────────────────────────────
-  connectWebSocket();
-
-  // ── Step 4: Online/offline detection ───────────────────────
-  window.addEventListener('online',  handleOnline);
-  window.addEventListener('offline', handleOffline);
-  if (!navigator.onLine) handleOffline();
-
-  // ── Step 5: Load initial plan data ─────────────────────────
-  await loadUserPlans();
-
-  // ── Step 6: Navigate to initial page ───────────────────────
-  const hash = window.location.hash.slice(1);
-  navigate(hash || 'dashboard', false);
-
-  // ── Step 7: Remove auth loading overlay ────────────────────
-  document.getElementById('auth-loading').classList.add('hidden');
-
-  // ── Step 8: Load notifications ─────────────────────────────
-  initNotifications();
-
-  // ── Keyboard navigation ─────────────────────────────────────
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-      closeUserMenu();
-      closeNotifications();
-    }
-  });
-
-  // Close menus on outside click
-  document.addEventListener('click', (e) => {
-    if (!document.getElementById('user-menu').contains(e.target) &&
-        !document.getElementById('user-avatar-btn').contains(e.target)) {
-      closeUserMenu();
-    }
-    if (!document.getElementById('notif-panel').contains(e.target) &&
-        !document.getElementById('notif-btn').contains(e.target)) {
-      closeNotifications();
-    }
-  });
-});
-
-/**
- * registerServiceWorker()
- * ────────────────────────
- * Registers sw.js scoped to /app/ — this single call activates
- * offline mode, background sync, and push notifications.
- */
-function registerServiceWorker() {
-  if (!('serviceWorker' in navigator)) return;
-
-  navigator.serviceWorker.register('/sw.js', { scope: '/app/' })
-    .then(registration => {
-      STATE.swrRegistered = true;
-      console.log('[App] Service worker registered, scope:', registration.scope);
-
-      // Push the current access token to the SW immediately
-      const token = sessionStorage.getItem('spp_access_token');
-      if (token) pushTokenToServiceWorker(token);
-
-      // Listen for SW update available
-      registration.addEventListener('updatefound', () => {
-        const newSW = registration.installing;
-        newSW.addEventListener('statechange', () => {
-          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-            showToast('App update available — refresh to apply', 'info');
-          }
-        });
-      });
-    })
-    .catch(err => console.warn('[App] Service worker registration failed:', err));
-
-  // Listen for messages from the service worker
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    const { type } = event.data || {};
-    switch (type) {
-      case 'SYNC_COMPLETE':
-        processSyncComplete(event.data);
-        break;
-    }
-  });
-}
-
-/**
- * connectWebSocket()
- * ───────────────────
- * Opens a WebSocket connection authenticated via the JWT query param.
- * Wires PLAN_UPDATED and PRESENCE_UPDATE to the render layer.
- * Implements automatic reconnect with exponential backoff.
- */
-let _wsReconnectDelay = 1000;
-let _wsReconnectTimer = null;
-
-function connectWebSocket() {
-  const token = sessionStorage.getItem('spp_access_token');
-  if (!token) return;
-
-  // Use wss:// in production (https), ws:// in development (http)
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  const socket = new WebSocket(`${proto}://${location.host}/ws?token=${encodeURIComponent(token)}`);
-
-  socket.addEventListener('open', () => {
-    console.log('[App] WebSocket connected');
-    STATE.wsSocket = socket;
-    _wsReconnectDelay = 1000; // reset backoff on successful connection
-
-    // If a plan is already loaded, subscribe to its room immediately
-    if (STATE.activePlan?._id) {
-      socket.send(JSON.stringify({ type: 'SUBSCRIBE_PLAN', planId: STATE.activePlan._id }));
-    }
-
-    // Start keepalive ping every 25 seconds
-    socket._pingInterval = setInterval(() => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ type: 'PING' }));
-      }
-    }, 25000);
-  });
-
-  socket.addEventListener('message', (event) => {
-    try {
-      const msg = JSON.parse(event.data);
-      handleWsMessage(msg);
-    } catch { /* ignore malformed messages */ }
-  });
-
-  socket.addEventListener('close', (event) => {
-    clearInterval(socket._pingInterval);
-    STATE.wsSocket = null;
-
-    // Don't reconnect on intentional close (code 1000 = normal, 4001/4002 = auth failure)
-    if (event.code === 1000 || event.code === 4001 || event.code === 4002) return;
-
-    // Exponential backoff reconnect (max 30 seconds)
-    console.log(`[App] WebSocket closed (${event.code}), reconnecting in ${_wsReconnectDelay}ms`);
-    _wsReconnectTimer = setTimeout(() => {
-      _wsReconnectDelay = Math.min(_wsReconnectDelay * 2, 30000);
-      connectWebSocket();
-    }, _wsReconnectDelay);
-  });
-
-  socket.addEventListener('error', (err) => {
-    console.warn('[App] WebSocket error:', err);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-// 4. NAVIGATION
-// ─────────────────────────────────────────────────────────────
-
-const PAGE_INIT = {
-  dashboard:   initDashboard,
-  swot:        initSwot,
-  strategy:    initStrategy,
-  scorecard:   initScorecard,
-  initiatives: initInitiatives,
-  team:        initTeam,
-  activity:    initActivity,
-  templates:   initTemplates,
-  admin:       initAdmin,
-};
-
-function navigate(page, updateHash = true) {
-  if (!PAGE_INIT[page]) page = 'dashboard';
-
-  // Update page visibility
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const pageEl = document.getElementById(`page-${page}`);
-  if (pageEl) pageEl.classList.add('active');
-
-  // Update nav item active state
-  document.querySelectorAll('.nav-item').forEach(btn => {
-    const isActive = btn.dataset.page === page;
-    btn.classList.toggle('active', isActive);
-    btn.setAttribute('aria-current', isActive ? 'page' : 'false');
-  });
-
-  // Update URL hash without pushing to history
-  if (updateHash) history.replaceState(null, '', `/app/#${page}`);
-
-  // Close mobile sidebar on navigate
-  document.getElementById('sidebar').classList.remove('mobile-open');
-  document.getElementById('hamburger-btn')?.setAttribute('aria-expanded', 'false');
-
-  // Send cursor location via WebSocket
-  if (STATE.wsSocket?.readyState === WebSocket.OPEN && STATE.activePlan?._id) {
-    STATE.wsSocket.send(JSON.stringify({
-      type: 'CURSOR_MOVE', planId: STATE.activePlan._id, payload: { section: page },
-    }));
-  }
-
-  // Run page initialiser
-  PAGE_INIT[page]();
-}
-
-// ─────────────────────────────────────────────────────────────
-// 5. PLAN CRUD
-// ─────────────────────────────────────────────────────────────
-
-async function loadUserPlans() {
-  try {
-    const res  = await apiFetch('/plans');
-    if (!res) return;
-    const data = await res.json();
-
-    STATE.plans = [...(data.owned || []), ...(data.shared || [])];
-
-    // Auto-load the first owned plan if none is active
-    const lastPlanId = sessionStorage.getItem('spp_last_plan_id');
-    const toLoad = (lastPlanId && STATE.plans.find(p => p._id === lastPlanId))
-      || (data.owned?.[0])
-      || null;
-
-    if (toLoad) await loadPlan(toLoad._id);
-    else {
-      document.getElementById('plan-selector-name').textContent = 'Select a plan…';
-    }
-  } catch (err) {
-    console.error('[App] loadUserPlans error:', err);
-  }
-}
-
-async function loadPlan(planId) {
-  try {
-    const res  = await apiFetch(`/plans/${planId}`);
-    if (!res) return;
-    const data = await res.json();
-
-    STATE.activePlan = {
-      ...data.plan,
-      role:        data.role,
-      swot:        groupSwot(data.swotItems || []),
-      strategies:  data.strategies || [],
-      kpis:        data.kpis || [],
-      initiatives: data.initiatives || [],
-      comments:    data.comments || [],
-      members:     data.members || [],
-    };
-
-    document.getElementById('plan-selector-name').textContent  = data.plan.name;
-    document.getElementById('dashboard-plan-name').textContent = data.plan.period || data.plan.name;
-
-    sessionStorage.setItem('spp_last_plan_id', planId);
-
-    // Subscribe WebSocket room
-    if (STATE.wsSocket?.readyState === WebSocket.OPEN) {
-      STATE.wsSocket.send(JSON.stringify({ type: 'SUBSCRIBE_PLAN', planId }));
-    }
-
-    // Re-render current page
-    const currentPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'dashboard';
-    if (PAGE_INIT[currentPage]) PAGE_INIT[currentPage]();
-
-  } catch (err) {
-    showToast(`Failed to load plan: ${err.message}`, 'error');
-  }
-}
-
-function groupSwot(items) {
-  const g = { strengths: [], weaknesses: [], opportunities: [], threats: [] };
-  for (const item of items) {
-    if (g[item.category]) g[item.category].push(item);
-  }
-  return g;
-}
-
-async function openPlanSelector() {
-  try {
-    const res  = await apiFetch('/plans');
-    if (!res) return;
-    const data = await res.json();
-    STATE.plans = [...(data.owned || []), ...(data.shared || [])];
-
-    const list = document.getElementById('plan-selector-list');
-    if (!STATE.plans.length) {
-      list.innerHTML = `<div class="empty-state"><p>No plans yet. Create your first plan!</p></div>`;
-    } else {
-      list.innerHTML = STATE.plans.map(p => `
-        <div class="swot-item" tabindex="0" role="button"
-             onclick="loadPlan('${esc(p._id)}'); closeModal('modal-plan-selector')"
-             onkeydown="if(event.key==='Enter') { loadPlan('${esc(p._id)}'); closeModal('modal-plan-selector'); }">
-          <div class="swot-item-text">${esc(p.name)}</div>
-          <div class="swot-item-meta">${esc(p.period || '')} · ${p.ownerId === STATE.currentUser?._id ? 'Owner' : 'Shared'}</div>
-        </div>
-      `).join('');
-    }
-    openModal('modal-plan-selector');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-function openNewPlanModal() {
-  closeModal('modal-plan-selector');
-  document.getElementById('plan-name-input').value   = '';
-  document.getElementById('plan-period-input').value = '';
-  document.getElementById('plan-desc-input').value   = '';
-  openModal('modal-new-plan');
-}
-
-async function createPlan() {
-  const name   = document.getElementById('plan-name-input').value.trim();
-  const period = document.getElementById('plan-period-input').value.trim();
-  const desc   = document.getElementById('plan-desc-input').value.trim();
-  if (!name) { showToast('Plan name is required', 'error'); return; }
-
-  try {
-    const res  = await apiFetch('/plans', { method: 'POST', body: JSON.stringify({ name, period, description: desc }) });
-    if (!res) return;
-    const data = await res.json();
-    closeModal('modal-new-plan');
-    showToast('Plan created', 'success');
-    await loadPlan(data.plan._id);
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 6. SWOT
-// ─────────────────────────────────────────────────────────────
-
-function initSwot() {
-  if (!STATE.activePlan) {
-    renderSwotEmpty();
-    return;
-  }
-  renderSwot();
-}
-
-function renderSwotEmpty() {
-  ['strengths','weaknesses','opportunities','threats'].forEach(cat => {
-    document.getElementById(`swot-${cat}`).innerHTML =
-      `<div class="empty-state" style="padding:20px 0"><p>No items yet. Add your first ${cat.slice(0,-1)}.</p></div>`;
-  });
-}
-
-function renderSwot() {
-  const swot = STATE.activePlan?.swot || {};
-  ['strengths','weaknesses','opportunities','threats'].forEach(cat => {
-    const container = document.getElementById(`swot-${cat}`);
-    const items = swot[cat] || [];
-    if (!items.length) {
-      container.innerHTML = `<div style="font-size:12px;color:var(--text-tertiary);padding:8px 0">No items yet</div>`;
-      return;
-    }
-    container.innerHTML = items.map(item => `
-      <div class="swot-item" tabindex="0" role="button"
-           aria-label="${esc(item.text)}"
-           onclick="openSwotItemMenu('${esc(item._id)}')"
-           onkeydown="if(event.key==='Enter') openSwotItemMenu('${esc(item._id)}')">
-        <div class="swot-item-text">${esc(item.text)}</div>
-        ${item.evidence ? `<div class="swot-item-meta">📎 ${esc(item.evidence)}</div>` : ''}
-        <div class="swot-item-meta" style="margin-top:4px">
-          <span class="badge ${item.impact === 'high' ? 'behind' : item.impact === 'medium' ? 'at-risk' : 'complete'}"
-                style="font-size:10px;padding:1px 6px">${esc(item.impact || 'medium')}</span>
-        </div>
-      </div>
-    `).join('');
-  });
-}
-
-function openAddSwotModal(category = 'strengths') {
-  document.getElementById('swot-category').value  = category;
-  document.getElementById('swot-text').value      = '';
-  document.getElementById('swot-evidence').value  = '';
-  document.getElementById('swot-impact').value    = 'medium';
-  openModal('modal-swot');
-  document.getElementById('swot-text').focus();
-}
-
-async function saveSwotItem() {
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-
-  const category = document.getElementById('swot-category').value;
-  const text     = document.getElementById('swot-text').value.trim();
-  const evidence = document.getElementById('swot-evidence').value.trim();
-  const impact   = document.getElementById('swot-impact').value;
-
-  if (!text) { showToast('Statement is required', 'error'); return; }
-
-  const payload = { category, text, evidence, impact };
-
-  try {
-    if (STATE.isOnline) {
-      const res  = await apiFetch(`/plans/${STATE.activePlan._id}/swot`, { method: 'POST', body: JSON.stringify(payload) });
-      if (!res) return;
-      const data = await res.json();
-      STATE.activePlan.swot[category].push(data.item);
-    } else {
-      // Queue for background sync
-      const localItem = { ...payload, _id: `local-${Date.now()}`, planId: STATE.activePlan._id };
-      STATE.activePlan.swot[category].push(localItem);
-      await queueOfflineChange({ type: 'swot', operation: 'upsert', planId: STATE.activePlan._id, data: localItem });
-    }
-    closeModal('modal-swot');
-    renderSwot();
-    showToast('SWOT item saved', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-async function deleteSwotItem(itemId, category) {
-  if (!confirm('Delete this SWOT item?')) return;
-  try {
-    if (STATE.isOnline) {
-      const res = await apiFetch(`/plans/${STATE.activePlan._id}/swot/${itemId}`, { method: 'DELETE' });
-      if (!res) return;
-    } else {
-      await queueOfflineChange({ type: 'swot', operation: 'delete', planId: STATE.activePlan._id, data: { _id: itemId } });
-    }
-    STATE.activePlan.swot[category] = STATE.activePlan.swot[category].filter(i => i._id !== itemId);
-    renderSwot();
-    showToast('Item deleted', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-function openSwotItemMenu(itemId) {
-  // Find item across all categories
-  const allItems = Object.values(STATE.activePlan?.swot || {}).flat();
-  const item = allItems.find(i => i._id === itemId);
-  if (!item) return;
-  if (confirm(`Delete: "${item.text.slice(0, 60)}…"?`)) {
-    deleteSwotItem(item._id, item.category);
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 7. STRATEGY MATRIX
-// ─────────────────────────────────────────────────────────────
-
-function initStrategy() {
-  const container = document.getElementById('strategy-grid');
-  if (!STATE.activePlan) {
-    container.innerHTML = `<div class="empty-state"><p>Select a plan to view strategies</p></div>`;
-    return;
-  }
-  renderStrategy();
-}
-
-function renderStrategy() {
-  const strategies = STATE.activePlan?.strategies || [];
-  const types = { so: 'SO Strategies', st: 'ST Strategies', wo: 'WO Strategies', wt: 'WT Strategies' };
-  const colors = { so: 'var(--emerald-500)', st: 'var(--blue-400)', wo: 'var(--warning)', wt: 'var(--danger)' };
-
-  const container = document.getElementById('strategy-grid');
-  container.innerHTML = Object.entries(types).map(([type, label]) => {
-    const items = strategies.filter(s => s.type === type);
-    return `
-      <div class="glass-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <span style="font-size:13px;font-weight:600;color:${colors[type]}">${label}</span>
-          <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddStrategyModal('${type}')">+ Add</button>
-        </div>
-        ${items.length
-          ? items.map(s => `
-            <div class="swot-item" style="position:relative">
-              <div class="swot-item-text">${esc(s.text)}</div>
-              <div class="swot-item-meta" style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
-                <span class="badge ${s.priority === 'high' ? 'behind' : s.priority === 'medium' ? 'at-risk' : 'complete'}"
-                      style="font-size:10px;padding:1px 6px">${esc(s.priority)}</span>
-                <button class="btn-danger" style="padding:2px 8px;font-size:10px;border-radius:6px"
-                        onclick="deleteStrategy('${esc(s._id)}')">Delete</button>
+      <!-- Right: dashboard mockup -->
+      <div style="position:relative">
+        <div class="dashboard-preview" role="img" aria-label="Strat Planner Pro dashboard preview">
+          <div class="dashboard-inner">
+            <div class="db-topbar">
+              <div class="db-dot" style="background:#FF5F57" aria-hidden="true"></div>
+              <div class="db-dot" style="background:#FEBC2E" aria-hidden="true"></div>
+              <div class="db-dot" style="background:#28C840" aria-hidden="true"></div>
+              <div class="db-urlbar">
+                <svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12l-2-2m0 0l2-2m-2 2h8m-4-8a8 8 0 100 16" stroke-linecap="round"/></svg>
+                app.stratplannerpro.app
               </div>
             </div>
-          `).join('')
-          : `<div style="font-size:12px;color:var(--text-tertiary)">No strategies yet</div>`
-        }
-      </div>
-    `;
-  }).join('');
-}
-
-function openAddStrategyModal(type = 'so') {
-  document.getElementById('strategy-type').value     = type;
-  document.getElementById('strategy-text').value     = '';
-  document.getElementById('strategy-priority').value = 'medium';
-  openModal('modal-strategy');
-  document.getElementById('strategy-text').focus();
-}
-
-async function saveStrategy() {
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-  const type     = document.getElementById('strategy-type').value;
-  const text     = document.getElementById('strategy-text').value.trim();
-  const priority = document.getElementById('strategy-priority').value;
-  if (!text) { showToast('Strategy statement is required', 'error'); return; }
-
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/strategies`, { method: 'POST', body: JSON.stringify({ type, text, priority }) });
-    if (!res) return;
-    const data = await res.json();
-    STATE.activePlan.strategies.push(data.item);
-    closeModal('modal-strategy');
-    renderStrategy();
-    showToast('Strategy saved', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 8. SCORECARD / KPIs
-// ─────────────────────────────────────────────────────────────
-
-function initScorecard() {
-  const tbody = document.getElementById('kpi-tbody');
-  if (!STATE.activePlan) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>Select a plan to view KPIs</p></div></td></tr>`;
-    return;
-  }
-  renderScorecard();
-}
-
-function renderScorecard() {
-  const kpis = STATE.activePlan?.kpis || [];
-  const tbody = document.getElementById('kpi-tbody');
-  if (!kpis.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>No KPIs yet. Add your first KPI.</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = kpis.map(k => `
-    <tr>
-      <td style="font-weight:500">${esc(k.kpi)}</td>
-      <td><span class="badge on-track" style="text-transform:capitalize">${esc(k.perspective)}</span></td>
-      <td>${esc(k.target)}</td>
-      <td>${esc(k.actual || '—')}</td>
-      <td><span class="badge ${k.status || 'on-track'}">${esc(k.status || 'on-track').replace('-',' ')}</span></td>
-      <td style="white-space:nowrap">
-        <button class="btn-secondary" style="padding:3px 10px;font-size:11px;margin-right:4px"
-                onclick="openUpdateKPIModal('${esc(k._id)}')">Edit</button>
-        <button class="btn-secondary" style="padding:3px 10px;font-size:11px"
-                onclick="deleteKPI('${esc(k._id)}')">Delete</button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function openAddKPIModal() {
-  ['kpi-name','kpi-target','kpi-actual','kpi-unit'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('kpi-perspective').value = 'financial';
-  document.getElementById('kpi-status').value      = 'on-track';
-  openModal('modal-kpi');
-  document.getElementById('kpi-name').focus();
-}
-
-async function saveKPI() {
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-  const kpi         = document.getElementById('kpi-name').value.trim();
-  const perspective = document.getElementById('kpi-perspective').value;
-  const target      = document.getElementById('kpi-target').value.trim();
-  const actual      = document.getElementById('kpi-actual').value.trim();
-  const unit        = document.getElementById('kpi-unit').value.trim();
-  const status      = document.getElementById('kpi-status').value;
-  if (!kpi || !target) { showToast('KPI name and target are required', 'error'); return; }
-
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/kpis`, { method: 'POST', body: JSON.stringify({ kpi, perspective, target, actual, unit, status }) });
-    if (!res) return;
-    const data = await res.json();
-    STATE.activePlan.kpis.push(data.item);
-    closeModal('modal-kpi');
-    renderScorecard();
-    showToast('KPI saved', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-async function deleteKPI(id) {
-  if (!confirm('Delete this KPI?')) return;
-  try {
-    await apiFetch(`/plans/${STATE.activePlan._id}/kpis/${id}`, { method: 'DELETE' });
-    STATE.activePlan.kpis = STATE.activePlan.kpis.filter(k => k._id !== id);
-    renderScorecard();
-    showToast('KPI deleted', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 9. INITIATIVES
-// ─────────────────────────────────────────────────────────────
-
-function initInitiatives() {
-  if (!STATE.activePlan) { document.getElementById('initiatives-list').innerHTML = `<div class="empty-state"><p>Select a plan to view initiatives</p></div>`; return; }
-  renderInitiatives();
-}
-
-function renderInitiatives() {
-  const items = STATE.activePlan?.initiatives || [];
-  const totalBudget   = items.reduce((s,i) => s + (i.budget || 0), 0);
-  const totalUtilized = items.reduce((s,i) => s + (i.utilized || 0), 0);
-
-  document.getElementById('budget-metrics').innerHTML = `
-    <div class="metric-card"><div class="metric-label">Total Budget</div><div class="metric-value">₱${fmt(totalBudget)}</div></div>
-    <div class="metric-card"><div class="metric-label">Utilized</div><div class="metric-value">₱${fmt(totalUtilized)}</div></div>
-    <div class="metric-card"><div class="metric-label">Remaining</div><div class="metric-value">₱${fmt(totalBudget - totalUtilized)}</div></div>
-    <div class="metric-card"><div class="metric-label">Initiatives</div><div class="metric-value">${items.length}</div></div>
-  `;
-
-  const list = document.getElementById('initiatives-list');
-  if (!items.length) { list.innerHTML = `<div class="empty-state"><p>No initiatives yet.</p></div>`; return; }
-  list.innerHTML = items.map(i => `
-    <div class="glass-card" style="margin-bottom:14px">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
-        <div>
-          <div style="font-weight:600;margin-bottom:4px">${esc(i.name)}</div>
-          <div style="font-size:12px;color:var(--text-secondary)">${esc(i.type)} · Owner: ${esc(i.owner||'—')} · Due: ${esc(i.dueDate||'—')}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:12px">
-          <span class="badge ${i.status||'on-track'}">${esc(i.status||'on-track').replace('-',' ')}</span>
-          <button class="btn-secondary" style="padding:3px 8px;font-size:11px"
-                  onclick="openUpdateInitiativeModal('${esc(i._id)}')">Edit</button>
-          <button class="btn-secondary" style="padding:3px 8px;font-size:11px"
-                  onclick="openCommentModal('${esc(i._id)}','initiative','${esc(i.name)}')">💬</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div class="prog-bar-bg" style="flex:1">
-          <div class="prog-bar-fg" style="width:${i.progress||0}%;background:linear-gradient(90deg,var(--blue-500),var(--cyan-500))"></div>
-        </div>
-        <span style="font-size:12px;color:var(--text-secondary);min-width:36px;text-align:right">${i.progress||0}%</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-top:8px">Budget: ₱${fmt(i.budget||0)} · Utilized: ₱${fmt(i.utilized||0)}</div>
-    </div>
-  `).join('');
-}
-
-function openAddInitiativeModal() {
-  ['init-name','init-owner'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('init-type').value   = 'program';
-  document.getElementById('init-budget').value = '';
-  document.getElementById('init-due').value    = '';
-  openModal('modal-initiative');
-  document.getElementById('init-name').focus();
-}
-
-async function saveInitiative() {
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-  const name   = document.getElementById('init-name').value.trim();
-  const type   = document.getElementById('init-type').value;
-  const owner  = document.getElementById('init-owner').value.trim();
-  const budget = parseFloat(document.getElementById('init-budget').value) || 0;
-  const due    = document.getElementById('init-due').value;
-  if (!name) { showToast('Initiative name is required', 'error'); return; }
-
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/initiatives`, { method: 'POST', body: JSON.stringify({ name, type, owner, budget, dueDate: due }) });
-    if (!res) return;
-    const data = await res.json();
-    STATE.activePlan.initiatives.push(data.item);
-    closeModal('modal-initiative');
-    renderInitiatives();
-    showToast('Initiative saved', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 9b. STRATEGY — DELETE
-// ─────────────────────────────────────────────────────────────
-
-/**
- * deleteStrategy(id)
- * DELETE /api/plans/:planId/strategies/:id
- * Only removes from STATE on confirmed server success.
- */
-async function deleteStrategy(id) {
-  if (!confirm('Delete this strategy?')) return;
-  try {
-    await apiFetch(`/plans/${STATE.activePlan._id}/strategies/${id}`, { method: 'DELETE' });
-    STATE.activePlan.strategies = STATE.activePlan.strategies.filter(s => s._id !== id);
-    renderStrategy();
-    showToast('Strategy deleted', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 9c. KPIs — UPDATE (PATCH)
-// ─────────────────────────────────────────────────────────────
-
-function openUpdateKPIModal(id) {
-  const kpi = STATE.activePlan?.kpis.find(k => k._id === id);
-  if (!kpi) return;
-  document.getElementById('kpi-edit-id').value     = kpi._id;
-  document.getElementById('kpi-edit-actual').value = kpi.actual || '';
-  document.getElementById('kpi-edit-target').value = kpi.target || '';
-  document.getElementById('kpi-edit-status').value = kpi.status || 'on-track';
-  document.getElementById('modal-kpi-edit-title').textContent = `Update: ${kpi.kpi}`;
-  openModal('modal-kpi-edit');
-  document.getElementById('kpi-edit-actual').focus();
-}
-
-/**
- * updateKPI()
- * PATCH /api/plans/:planId/kpis/:id
- * Updates actual, target, status. Status → 'behind'|'at-risk' triggers
- * a KPI alert email to the plan owner (server-side in routes.js).
- * Only updates STATE on confirmed server success.
- */
-async function updateKPI() {
-  const id     = document.getElementById('kpi-edit-id').value;
-  const actual = document.getElementById('kpi-edit-actual').value.trim();
-  const target = document.getElementById('kpi-edit-target').value.trim();
-  const status = document.getElementById('kpi-edit-status').value;
-  if (!id) return;
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/kpis/${id}`, {
-      method: 'PATCH',
-      body:   JSON.stringify({ actual, target, status }),
-    });
-    if (!res) return;
-    const data = await res.json();
-    const idx = STATE.activePlan.kpis.findIndex(k => k._id === id);
-    if (idx > -1) STATE.activePlan.kpis[idx] = data.item;
-    closeModal('modal-kpi-edit');
-    renderScorecard();
-    showToast('KPI updated', 'success');
-    if (['behind', 'at-risk'].includes(status)) {
-      showToast(`KPI status is "${status.replace('-',' ')}" — plan owner notified`, 'warning');
-    }
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 9d. INITIATIVES — UPDATE (PATCH) + DELETE
-// ─────────────────────────────────────────────────────────────
-
-function openUpdateInitiativeModal(id) {
-  const item = STATE.activePlan?.initiatives.find(i => i._id === id);
-  if (!item) return;
-  document.getElementById('init-edit-id').value       = item._id;
-  document.getElementById('init-edit-name').value     = item.name || '';
-  document.getElementById('init-edit-owner').value    = item.owner || '';
-  document.getElementById('init-edit-utilized').value = item.utilized ?? '';
-  document.getElementById('init-edit-progress').value = item.progress ?? '';
-  document.getElementById('init-edit-status').value   = item.status || 'on-track';
-  document.getElementById('modal-initiative-edit-title').textContent = `Update: ${item.name}`;
-  openModal('modal-initiative-edit');
-  document.getElementById('init-edit-name').focus();
-}
-
-/**
- * updateInitiative()
- * PATCH /api/plans/:planId/initiatives/:id
- * Only updates STATE on confirmed server success.
- */
-async function updateInitiative() {
-  const id       = document.getElementById('init-edit-id').value;
-  const name     = document.getElementById('init-edit-name').value.trim();
-  const owner    = document.getElementById('init-edit-owner').value.trim();
-  const utilized = parseFloat(document.getElementById('init-edit-utilized').value) || 0;
-  const progress = Math.min(100, Math.max(0, parseInt(document.getElementById('init-edit-progress').value) || 0));
-  const status   = document.getElementById('init-edit-status').value;
-  if (!name) { showToast('Initiative name is required', 'error'); return; }
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/initiatives/${id}`, {
-      method: 'PATCH',
-      body:   JSON.stringify({ name, owner, utilized, progress, status }),
-    });
-    if (!res) return;
-    const data = await res.json();
-    const idx = STATE.activePlan.initiatives.findIndex(i => i._id === id);
-    if (idx > -1) STATE.activePlan.initiatives[idx] = data.item;
-    closeModal('modal-initiative-edit');
-    renderInitiatives();
-    showToast('Initiative updated', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-/**
- * deleteInitiative(id)
- * DELETE /api/plans/:planId/initiatives/:id
- * Closes edit modal, then soft-deletes server-side.
- * Only removes from STATE on confirmed server success.
- */
-async function deleteInitiative(id) {
-  if (!id || !confirm('Delete this initiative? This cannot be undone.')) return;
-  closeModal('modal-initiative-edit');
-  try {
-    await apiFetch(`/plans/${STATE.activePlan._id}/initiatives/${id}`, { method: 'DELETE' });
-    STATE.activePlan.initiatives = STATE.activePlan.initiatives.filter(i => i._id !== id);
-    renderInitiatives();
-    showToast('Initiative deleted', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 9e. COMMENTS — ADD
-// ─────────────────────────────────────────────────────────────
-
-/**
- * openCommentModal(entityId, entityType, entityName)
- * Opens the add comment modal pre-filled with entity context.
- * Call from any entity card: SWOT, KPI, initiative, strategy.
- */
-function openCommentModal(entityId, entityType, entityName) {
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-  document.getElementById('comment-entity-id').value   = entityId;
-  document.getElementById('comment-entity-type').value = entityType;
-  document.getElementById('comment-entity-name').value = entityName;
-  document.getElementById('comment-context-label').textContent = `On ${entityType}: "${entityName}"`;
-  document.getElementById('comment-text').value = '';
-  openModal('modal-comment');
-  document.getElementById('comment-text').focus();
-}
-
-/**
- * addComment()
- * POST /api/plans/:planId/comments
- * Side-effects (server-side): notifies plan owner via WS + email,
- * broadcasts COMMENT_ADDED to all plan subscribers, creates notification.
- * Only pushes to STATE.activePlan.comments on server success.
- */
-async function addComment() {
-  const entityId   = document.getElementById('comment-entity-id').value;
-  const entityType = document.getElementById('comment-entity-type').value;
-  const entityName = document.getElementById('comment-entity-name').value;
-  const text       = document.getElementById('comment-text').value.trim();
-  if (!text)     { showToast('Comment cannot be empty', 'error'); return; }
-  if (!entityId) { showToast('No entity selected', 'error'); return; }
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/comments`, {
-      method: 'POST',
-      body:   JSON.stringify({ entityId, entityType, entityName, text }),
-    });
-    if (!res) return;
-    const data = await res.json();
-    STATE.activePlan.comments = STATE.activePlan.comments || [];
-    STATE.activePlan.comments.push(data.comment);
-    closeModal('modal-comment');
-    showToast('Comment posted', 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 10. NOTIFICATIONS
-// ─────────────────────────────────────────────────────────────
-
-async function initNotifications() {
-  try {
-    const res  = await apiFetch('/notifications');
-    if (!res) return;
-    const data = await res.json();
-    STATE.notifications = data.items || [];
-    STATE.unreadCount   = data.unread || 0;
-    renderNotifications();
-  } catch { /* non-critical */ }
-}
-
-function renderNotifications() {
-  const dot  = document.getElementById('notif-dot');
-  dot.style.display = STATE.unreadCount > 0 ? 'block' : 'none';
-
-  const nav = document.querySelector('.nav-item[data-page]'); // update if there's a notif nav badge
-  const list = document.getElementById('notif-list');
-  if (!STATE.notifications.length) {
-    list.innerHTML = `<div class="empty-state" style="padding:32px 20px"><div class="empty-state-icon">🔔</div><p>No notifications</p></div>`;
-    return;
-  }
-  list.innerHTML = STATE.notifications.map(n => `
-    <div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotificationRead('${esc(n._id)}')">
-      <div class="notif-item-title">${esc(n.title||'Notification')}</div>
-      <div class="notif-item-body">${esc(n.message||'')}</div>
-      <div class="notif-item-time">${formatDate(n.createdAt)}</div>
-    </div>
-  `).join('');
-}
-
-function toggleNotifications() {
-  const panel = document.getElementById('notif-panel');
-  const isOpen = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
-  document.getElementById('notif-btn').setAttribute('aria-expanded', String(!isOpen));
-}
-
-function closeNotifications() {
-  document.getElementById('notif-panel').classList.remove('open');
-  document.getElementById('notif-btn').setAttribute('aria-expanded', 'false');
-}
-
-async function markNotificationRead(id) {
-  try {
-    await apiFetch(`/notifications/${id}/read`, { method: 'PATCH' });
-    const n = STATE.notifications.find(n => n._id === id);
-    if (n && !n.read) { n.read = true; STATE.unreadCount = Math.max(0, STATE.unreadCount - 1); }
-    renderNotifications();
-  } catch { /* non-critical */ }
-}
-
-async function markAllNotificationsRead() {
-  try {
-    await apiFetch('/notifications/read-all', { method: 'PATCH' });
-    STATE.notifications.forEach(n => n.read = true);
-    STATE.unreadCount = 0;
-    renderNotifications();
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 11. ACTIVITY LOG
-// ─────────────────────────────────────────────────────────────
-
-async function initActivity() {
-  const container = document.getElementById('activity-list');
-  if (!STATE.activePlan) { container.innerHTML = `<div class="empty-state"><p>Select a plan to view activity</p></div>`; return; }
-
-  try {
-    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/activity`);
-    if (!res) return;
-    const data = await res.json();
-    const items = data.items || [];
-    if (!items.length) { container.innerHTML = `<div class="empty-state"><p>No activity recorded yet</p></div>`; return; }
-    container.innerHTML = items.map(a => `
-      <div class="glass-card" style="margin-bottom:10px;padding:14px 18px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div>
-            <span style="font-weight:500;font-size:13px">${esc(a.userName||'System')}</span>
-            <span style="font-size:13px;color:var(--text-secondary)"> ${esc(a.details||a.action)}</span>
-          </div>
-          <span style="font-size:11px;color:var(--text-tertiary);flex-shrink:0;margin-left:12px">${formatDate(a.createdAt)}</span>
-        </div>
-      </div>
-    `).join('');
-  } catch (err) {
-    container.innerHTML = `<div class="empty-state"><p>Failed to load activity: ${esc(err.message)}</p></div>`;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 12. TEMPLATES
-// ─────────────────────────────────────────────────────────────
-
-async function initTemplates() {
-  const grid = document.getElementById('templates-grid');
-  try {
-    const res  = await apiFetch('/templates');
-    if (!res) return;
-    const data = await res.json();
-    const all  = [...(data.public||[]), ...(data.my||[])];
-    if (!all.length) { grid.innerHTML = `<div class="empty-state"><p>No templates available</p></div>`; return; }
-    grid.innerHTML = all.map(t => `
-      <div class="glass-card" style="cursor:pointer" onclick="applyTemplate('${esc(t._id)}')">
-        <div style="font-size:24px;margin-bottom:10px">${t.emoji||'📋'}</div>
-        <div style="font-weight:600;margin-bottom:6px">${esc(t.name)}</div>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">${esc(t.description||'')}</div>
-        <span class="badge on-track" style="font-size:10px">${esc(t.industry)}</span>
-        ${t.isBuiltIn ? `<span class="badge complete" style="font-size:10px;margin-left:4px">Built-in</span>` : ''}
-      </div>
-    `).join('');
-  } catch (err) {
-    grid.innerHTML = `<div class="empty-state"><p>Failed to load templates: ${esc(err.message)}</p></div>`;
-  }
-}
-
-async function applyTemplate(templateId) {
-  const name = prompt('Enter name for the new plan:');
-  if (!name) return;
-  try {
-    const res  = await apiFetch('/plans', { method: 'POST', body: JSON.stringify({ name, templateId }) });
-    if (!res) return;
-    const data = await res.json();
-    showToast('Plan created from template', 'success');
-    await loadPlan(data.plan._id);
-    navigate('dashboard');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 13. TEAM — MEMBERS, INVITE, SHARE PLAN
-// ─────────────────────────────────────────────────────────────
-
-/**
- * initTeam()
- * ──────────
- * Renders the team page with:
- *   - Plan members (from STATE.activePlan.members loaded via GET /api/plans/:id)
- *   - Organisation selector refreshed from GET /api/orgs
- * The members array is already in STATE from loadPlan() so no extra
- * fetch is needed here — just render what we have.
- */
-async function initTeam() {
-  const container = document.getElementById('team-content');
-  if (!STATE.activePlan) {
-    container.innerHTML = `<div class="empty-state"><p>Select a plan to view team</p></div>`;
-    return;
-  }
-
-  const members = STATE.activePlan.members || [];
-  const canEdit = ['editor','admin'].includes(STATE.activePlan.role);
-
-  // Build member rows — user details are embedded by GET /api/plans/:id
-  const memberRows = members.length
-    ? members.map(m => `
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
-          <div style="width:36px;height:36px;border-radius:50%;background:${esc(m.user?.color||'var(--blue-600)')};
-               display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">
-            ${esc(m.user?.initials||'U')}
-          </div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-              ${esc(m.user ? `${m.user.firstName} ${m.user.lastName}` : 'Unknown user')}
-              ${m.userId === STATE.currentUser?._id
-                ? '<span style="font-size:10px;color:var(--text-tertiary);margin-left:6px">(you)</span>' : ''}
+            <div class="db-body">
+              <div class="db-header">
+                <div>
+                  <div class="db-label">Strategic Dashboard</div>
+                  <div class="db-plan-name">Q4 2025 Strategy</div>
+                </div>
+                <span class="on-track">On Track</span>
+              </div>
+              <div class="mini-grid">
+                <div class="mini-card">
+                  <div class="mini-card-label">SWOT Items</div>
+                  <div class="mini-card-value">24</div>
+                  <div class="mini-bar"><div class="mini-fill" style="width:75%; background:linear-gradient(90deg,#34D399,#10B981)"></div></div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-card-label">Strategies</div>
+                  <div class="mini-card-value">12</div>
+                  <div class="mini-bar"><div class="mini-fill" style="width:50%; background:linear-gradient(90deg,#818CF8,#6366F1)"></div></div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-card-label">KPIs</div>
+                  <div class="mini-card-value">18</div>
+                  <div class="mini-bar"><div class="mini-fill" style="width:65%; background:linear-gradient(90deg,#60A5FA,#2563EB)"></div></div>
+                </div>
+              </div>
+              <div class="systems-box">
+                <div class="systems-label">Systems Thinking Map</div>
+                <svg viewBox="0 0 280 100" width="100%" height="80" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="ng1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#10B981"/></linearGradient>
+                    <linearGradient id="ng2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818CF8"/><stop offset="100%" stop-color="#6366F1"/></linearGradient>
+                    <linearGradient id="ng3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FCD34D"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+                    <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#818CF8"/></linearGradient>
+                  </defs>
+                  <circle cx="46" cy="50" r="18" fill="url(#ng1)" opacity="0.85"/>
+                  <circle cx="140" cy="24" r="14" fill="url(#ng2)" opacity="0.85"/>
+                  <circle cx="140" cy="76" r="14" fill="url(#ng2)" opacity="0.85"/>
+                  <circle cx="234" cy="50" r="18" fill="url(#ng3)" opacity="0.85"/>
+                  <path d="M64 45 Q102 24 126 28" stroke="url(#lg1)" stroke-width="1.5" fill="none" opacity="0.65"/>
+                  <path d="M64 55 Q102 76 126 72" stroke="url(#lg1)" stroke-width="1.5" fill="none" opacity="0.65"/>
+                  <path d="M154 28 Q190 42 216 46" stroke="url(#lg1)" stroke-width="1.5" fill="none" opacity="0.65"/>
+                  <path d="M154 72 Q190 58 216 54" stroke="url(#lg1)" stroke-width="1.5" fill="none" opacity="0.65"/>
+                  <text x="46" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="700">S</text>
+                  <text x="140" y="28" text-anchor="middle" fill="white" font-size="7" font-weight="700">O</text>
+                  <text x="140" y="80" text-anchor="middle" fill="white" font-size="7" font-weight="700">T</text>
+                  <text x="234" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="700">SO</text>
+                </svg>
+              </div>
             </div>
-            <div style="font-size:11px;color:var(--text-secondary)">${esc(m.user?.email||'')}</div>
           </div>
-          <span class="badge ${m.role === 'admin' ? 'complete' : m.role === 'editor' ? 'on-track' : 'at-risk'}"
-                style="flex-shrink:0">${esc(m.role)}</span>
         </div>
-      `).join('')
-    : `<p style="font-size:13px;color:var(--text-secondary);padding:12px 0">No members yet — share this plan to add collaborators.</p>`;
-
-  container.innerHTML = `
-    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
-
-      <!-- Plan members card -->
-      <div class="glass-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <span style="font-size:13px;font-weight:600">Plan Members</span>
-          ${canEdit ? `<button class="btn-secondary" style="padding:4px 12px;font-size:11px"
-              onclick="openShareModal()">Share Plan</button>` : ''}
+        <!-- Floating badges -->
+        <div class="float-badge float-right" aria-hidden="true">
+          <div class="float-badge-icon" style="background:rgba(52,211,153,0.15)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div>
+            <div class="float-badge-title">AI Generated</div>
+            <div class="float-badge-sub">12 strategies</div>
+          </div>
         </div>
-        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
-          <strong>${esc(STATE.activePlan.name)}</strong>
-          &nbsp;·&nbsp; Your role:
-          <span class="badge ${STATE.activePlan.role === 'admin' ? 'complete' : 'on-track'}">
-            ${esc(STATE.activePlan.role||'viewer')}
-          </span>
-        </p>
-        <div>${memberRows}</div>
-      </div>
-
-      <!-- Org invite card -->
-      <div class="glass-card">
-        <div style="font-size:13px;font-weight:600;margin-bottom:12px">Invite to Organisation</div>
-        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">
-          Invite a colleague to your organisation. Once they accept they can be
-          given access to individual plans via Share Plan.
-        </p>
-        <button class="btn-primary" style="width:100%;justify-content:center"
-                onclick="openInviteModal()">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
-          </svg>
-          + Invite Member
-        </button>
+        <div class="float-badge float-left" aria-hidden="true">
+          <div class="float-badge-icon" style="background:rgba(129,140,248,0.15)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <div class="float-badge-title">Offline Ready</div>
+            <div class="float-badge-sub">PWA enabled</div>
+          </div>
+        </div>
       </div>
 
     </div>
-  `;
-}
+  </div>
 
-/**
- * openInviteModal()
- * ──────────────────
- * Loads the user's organisations from GET /api/orgs, populates the
- * dropdown, then opens the invite modal.
- * POST /api/orgs/:id/invite is called by sendInvite() below.
- */
-async function openInviteModal() {
-  const select = document.getElementById('invite-org-select');
-  select.innerHTML = '<option value="">Loading…</option>';
-  document.getElementById('invite-email').value = '';
-  document.getElementById('invite-role').value  = 'editor';
-
-  try {
-    const res  = await apiFetch('/orgs');
-    if (!res) return;
-    const { orgs = [] } = await res.json();
-
-    if (!orgs.length) {
-      select.innerHTML = '<option value="">No organisations — create one first</option>';
-    } else {
-      select.innerHTML = orgs
-        .map(o => `<option value="${esc(o._id)}">${esc(o.name)}</option>`)
-        .join('');
-    }
-    openModal('modal-invite');
-    document.getElementById('invite-email').focus();
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-/**
- * sendInvite()
- * ─────────────
- * POST /api/orgs/:orgId/invite  { email, role }
- *
- * Side-effects (server-side):
- *   - Inserts pending invitation record in invitations.db (7-day expiry)
- *   - Sends invite email via email.sendInviteToOrg()
- *   - Logs activity to activity_log.db
- *
- * No STATE mutation needed — invitations live in their own DB collection.
- */
-async function sendInvite() {
-  const orgId = document.getElementById('invite-org-select').value;
-  const email = document.getElementById('invite-email').value.trim();
-  const role  = document.getElementById('invite-role').value;
-
-  if (!orgId) { showToast('Please select an organisation', 'error'); return; }
-  if (!email) { showToast('Email address is required', 'error'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showToast('Please enter a valid email address', 'error'); return;
-  }
-
-  try {
-    const res = await apiFetch(`/orgs/${orgId}/invite`, {
-      method: 'POST',
-      body:   JSON.stringify({ email, role }),
-    });
-    if (!res) return;
-    closeModal('modal-invite');
-    showToast(`Invitation sent to ${email}`, 'success');
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-/**
- * openShareModal()
- * ─────────────────
- * Opens the share plan modal pre-labelled with the active plan name.
- * Checks the user has editor or admin access before showing the modal.
- */
-function openShareModal() {
-  if (!STATE.activePlan) { showToast('No active plan selected', 'error'); return; }
-  if (!['editor','admin'].includes(STATE.activePlan.role)) {
-    showToast('You need editor or admin access to share this plan', 'warning');
-    return;
-  }
-  document.getElementById('share-plan-label').textContent =
-    `Share "${STATE.activePlan.name}" with a team member by email.`;
-  document.getElementById('share-email').value      = '';
-  document.getElementById('share-permission').value = 'editor';
-  openModal('modal-share');
-  document.getElementById('share-email').focus();
-}
-
-/**
- * sharePlan()
- * ────────────
- * POST /api/plans/:planId/share  { email, permission }
- *
- * Side-effects (server-side):
- *   - Inserts or updates plan_members record in plan_members.db
- *   - Sends share email via email.sendSharePlan()
- *   - Creates notification for target user in notifications.db
- *   - WebSocket pushes NOTIFICATION to target user if they're online
- *
- * No STATE mutation needed — members are reloaded via initTeam()
- * which reads from STATE.activePlan.members (refreshed on next loadPlan).
- */
-async function sharePlan() {
-  const email      = document.getElementById('share-email').value.trim();
-  const permission = document.getElementById('share-permission').value;
-
-  if (!email) { showToast('Email address is required', 'error'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showToast('Please enter a valid email address', 'error'); return;
-  }
-  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
-
-  try {
-    const res = await apiFetch(`/plans/${STATE.activePlan._id}/share`, {
-      method: 'POST',
-      body:   JSON.stringify({ email, permission }),
-    });
-    if (!res) return;
-    closeModal('modal-share');
-    showToast(`Plan shared with ${email} as ${permission}`, 'success');
-
-    // Reload team page members list to show the new member
-    if (document.getElementById('page-team').classList.contains('active')) {
-      // Reload full plan to get updated members array, then re-render
-      await loadPlan(STATE.activePlan._id);
-    }
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 14. ADMIN
-// ─────────────────────────────────────────────────────────────
-
-async function initAdmin() {
-  if (STATE.currentUser?.role !== 'super_admin') {
-    document.getElementById('admin-content').innerHTML = `<div class="empty-state"><p>Access restricted to administrators</p></div>`;
-    return;
-  }
-  const container = document.getElementById('admin-content');
-  try {
-    const res  = await apiFetch('/admin/stats');
-    if (!res) return;
-    const data = await res.json();
-    container.innerHTML = `
-      <div class="metric-grid" style="margin-bottom:20px">
-        <div class="metric-card"><div class="metric-label">Users</div><div class="metric-value">${data.users||0}</div></div>
-        <div class="metric-card"><div class="metric-label">Plans</div><div class="metric-value">${data.plans||0}</div></div>
-        <div class="metric-card"><div class="metric-label">Organisations</div><div class="metric-value">${data.organizations||0}</div></div>
-        <div class="metric-card"><div class="metric-label">WS Connections</div><div class="metric-value">${data.ws?.totalConnections||0}</div></div>
-      </div>
-      <div class="glass-card">
-        <p style="font-size:13px;color:var(--text-secondary)">Server uptime: ${Math.floor((data.uptime||0)/60)} minutes</p>
-      </div>
-    `;
-  } catch (err) {
-    container.innerHTML = `<div class="empty-state"><p>Failed to load admin stats: ${esc(err.message)}</p></div>`;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 15. DASHBOARD
-// ─────────────────────────────────────────────────────────────
-
-function initDashboard() {
-  if (!STATE.activePlan) {
-    document.getElementById('dashboard-metrics').innerHTML = `
-      <div class="glass-card" style="grid-column:1/-1;text-align:center;padding:40px">
-        <div style="font-size:18px;font-weight:600;margin-bottom:10px">Welcome to Strat Planner Pro</div>
-        <p style="color:var(--text-secondary);margin-bottom:20px">Create your first strategic plan to get started</p>
-        <button class="btn-primary" onclick="openNewPlanModal()">+ Create Plan</button>
-      </div>`;
-    return;
-  }
-
-  const swot        = STATE.activePlan.swot || {};
-  const swotTotal   = Object.values(swot).flat().length;
-  const strategies  = STATE.activePlan.strategies?.length || 0;
-  const kpis        = STATE.activePlan.kpis?.length || 0;
-  const initiatives = STATE.activePlan.initiatives?.length || 0;
-
-  const onTrack = (STATE.activePlan.kpis||[]).filter(k => k.status === 'on-track').length;
-  const pctOnTrack = kpis ? Math.round((onTrack / kpis) * 100) : 0;
-
-  document.getElementById('dashboard-metrics').innerHTML = `
-    <div class="metric-card"><div class="metric-label">SWOT Items</div><div class="metric-value">${swotTotal}</div></div>
-    <div class="metric-card"><div class="metric-label">Strategies</div><div class="metric-value">${strategies}</div></div>
-    <div class="metric-card"><div class="metric-label">KPIs</div><div class="metric-value">${kpis}</div></div>
-    <div class="metric-card"><div class="metric-label">Initiatives</div><div class="metric-value">${initiatives}</div></div>
-    <div class="metric-card"><div class="metric-label">On Track</div><div class="metric-value" style="color:var(--emerald-500)">${pctOnTrack}%</div></div>
-  `;
-
-  renderDashboardCharts();
-}
-
-function renderDashboardCharts() {
-  const kpis = STATE.activePlan?.kpis || [];
-  const statusCounts = { 'on-track': 0, 'at-risk': 0, 'behind': 0, 'complete': 0 };
-  kpis.forEach(k => { if (statusCounts[k.status] !== undefined) statusCounts[k.status]++; });
-
-  const ctxProgress = document.getElementById('progressChart');
-  const ctxSwot     = document.getElementById('swotChart');
-
-  if (ctxProgress && window.Chart) {
-    if (ctxProgress._chart) ctxProgress._chart.destroy();
-    ctxProgress._chart = new Chart(ctxProgress, {
-      type: 'doughnut',
-      data: {
-        labels: ['On Track', 'At Risk', 'Behind', 'Complete'],
-        datasets: [{ data: Object.values(statusCounts), backgroundColor: ['#10B981','#F59E0B','#EF4444','#3B82F6'], borderWidth: 0 }],
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: 'rgba(255,255,255,0.6)', font: { size: 11 }, boxWidth: 10 } } } },
-    });
-  }
-
-  const swot = STATE.activePlan?.swot || {};
-  if (ctxSwot && window.Chart) {
-    if (ctxSwot._chart) ctxSwot._chart.destroy();
-    ctxSwot._chart = new Chart(ctxSwot, {
-      type: 'bar',
-      data: {
-        labels: ['Strengths', 'Weaknesses', 'Opportunities', 'Threats'],
-        datasets: [{ data: [swot.strengths?.length||0, swot.weaknesses?.length||0, swot.opportunities?.length||0, swot.threats?.length||0], backgroundColor: ['#10B981','#EF4444','#3B82F6','#F59E0B'], borderWidth: 0, borderRadius: 6 }],
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { display: false } }, y: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true } } },
-    });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// 16. REAL-TIME — WebSocket message handler
-// ─────────────────────────────────────────────────────────────
-
-/**
- * handleWsMessage(msg)
- * ─────────────────────
- * Dispatches incoming WebSocket messages to the appropriate handler.
- */
-function handleWsMessage(msg) {
-  switch (msg.type) {
-
-    case 'PLAN_UPDATED':
-      // Only apply if it's for the current plan
-      if (STATE.activePlan && msg.planId === STATE.activePlan._id) {
-        applyRemoteUpdate(msg.payload);
-      }
-      break;
-
-    case 'PRESENCE_UPDATE':
-      if (STATE.activePlan && msg.planId === STATE.activePlan._id) {
-        renderPresence(msg.payload.members || []);
-      }
-      break;
-
-    case 'COMMENT_ADDED':
-      if (STATE.activePlan && msg.planId === STATE.activePlan._id) {
-        STATE.activePlan.comments = STATE.activePlan.comments || [];
-        STATE.activePlan.comments.push(msg.payload.comment);
-      }
-      break;
-
-    case 'NOTIFICATION':
-      // Push notification into local state and re-render the panel
-      const n = { ...msg.payload, _id: `ws-${Date.now()}`, read: false, createdAt: new Date().toISOString() };
-      STATE.notifications.unshift(n);
-      STATE.unreadCount++;
-      renderNotifications();
-      showToast(msg.payload.message || 'New notification', 'info');
-      break;
-
-    case 'CONNECTED':
-      console.log('[App] WS confirmed connected, userId:', msg.payload?.userId);
-      break;
-
-    case 'CURSOR_UPDATE':
-      // Optional: render cursor positions for other users
-      break;
-
-    case 'PONG':
-      // Heartbeat reply — no action needed
-      break;
-
-    default:
-      console.log('[App] Unknown WS message type:', msg.type);
-  }
-}
-
-/**
- * applyRemoteUpdate(payload)
- * ──────────────────────────
- * Applies a PLAN_UPDATED diff from another user to local STATE
- * and re-renders the affected section without a full reload.
- *
- * payload: { section, action, item?, id? }
- */
-function applyRemoteUpdate(payload) {
-  const { section, action, item, id } = payload;
-
-  switch (section) {
-
-    case 'swot':
-      if (!STATE.activePlan.swot) STATE.activePlan.swot = {};
-      if (action === 'add' && item) {
-        if (!STATE.activePlan.swot[item.category]) STATE.activePlan.swot[item.category] = [];
-        // Only add if not already present (idempotent)
-        if (!STATE.activePlan.swot[item.category].find(i => i._id === item._id)) {
-          STATE.activePlan.swot[item.category].push(item);
-        }
-        if (document.getElementById('page-swot').classList.contains('active')) renderSwot();
-      } else if (action === 'update' && item) {
-        for (const cat of Object.keys(STATE.activePlan.swot)) {
-          const idx = STATE.activePlan.swot[cat].findIndex(i => i._id === item._id);
-          if (idx > -1) { STATE.activePlan.swot[cat][idx] = item; break; }
-        }
-        if (document.getElementById('page-swot').classList.contains('active')) renderSwot();
-      } else if (action === 'delete' && id) {
-        for (const cat of Object.keys(STATE.activePlan.swot)) {
-          STATE.activePlan.swot[cat] = STATE.activePlan.swot[cat].filter(i => i._id !== id);
-        }
-        if (document.getElementById('page-swot').classList.contains('active')) renderSwot();
-      }
-      break;
-
-    case 'strategies':
-      if (action === 'add' && item && !STATE.activePlan.strategies.find(s => s._id === item._id)) {
-        STATE.activePlan.strategies.push(item);
-      } else if (action === 'update' && item) {
-        const idx = STATE.activePlan.strategies.findIndex(s => s._id === item._id);
-        if (idx > -1) STATE.activePlan.strategies[idx] = item;
-      } else if (action === 'delete' && id) {
-        STATE.activePlan.strategies = STATE.activePlan.strategies.filter(s => s._id !== id);
-      }
-      if (document.getElementById('page-strategy').classList.contains('active')) renderStrategy();
-      break;
-
-    case 'kpis':
-      if (action === 'add' && item && !STATE.activePlan.kpis.find(k => k._id === item._id)) {
-        STATE.activePlan.kpis.push(item);
-      } else if (action === 'update' && item) {
-        const idx = STATE.activePlan.kpis.findIndex(k => k._id === item._id);
-        if (idx > -1) STATE.activePlan.kpis[idx] = item;
-      } else if (action === 'delete' && id) {
-        STATE.activePlan.kpis = STATE.activePlan.kpis.filter(k => k._id !== id);
-      }
-      if (document.getElementById('page-scorecard').classList.contains('active')) renderScorecard();
-      break;
-
-    case 'initiatives':
-      if (action === 'add' && item && !STATE.activePlan.initiatives.find(i => i._id === item._id)) {
-        STATE.activePlan.initiatives.push(item);
-      } else if (action === 'update' && item) {
-        const idx = STATE.activePlan.initiatives.findIndex(i => i._id === item._id);
-        if (idx > -1) STATE.activePlan.initiatives[idx] = item;
-      } else if (action === 'delete' && id) {
-        STATE.activePlan.initiatives = STATE.activePlan.initiatives.filter(i => i._id !== id);
-      }
-      if (document.getElementById('page-initiatives').classList.contains('active')) renderInitiatives();
-      break;
-  }
-
-  // Refresh dashboard metrics silently if it's open
-  if (document.getElementById('page-dashboard').classList.contains('active')) {
-    initDashboard();
-  }
-}
-
-/**
- * renderPresence(members)
- * ────────────────────────
- * Replaces the hardcoded avatar row in the top bar with live
- * collaborator data from a PRESENCE_UPDATE WebSocket message.
- *
- * Excludes the current user from the display (they know they're here).
- *
- * @param {Array<{userId, userName, initials, color}>} members
- */
-function renderPresence(members) {
-  const container = document.getElementById('presence-avatars');
-  const others = members.filter(m => m.userId !== STATE.currentUser?._id);
-
-  if (!others.length) {
-    container.innerHTML = '';
-    return;
-  }
-
-  container.innerHTML = others.map(m => `
-    <div class="presence-avatar" style="background:${esc(m.color||'#3B82F6')}" title="${esc(m.userName)}">
-      ${esc(m.initials||'U')}
-      <span class="presence-tooltip">${esc(m.userName)}</span>
+  <!-- Scroll indicator -->
+  <div style="position:absolute; bottom:28px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px;" aria-hidden="true">
+    <span style="font-size:11px; color:var(--text-tertiary)">Scroll to explore</span>
+    <div style="width:22px; height:36px; border-radius:11px; border:1.5px solid rgba(255,255,255,0.18); display:flex; justify-content:center; padding-top:6px;">
+      <div style="width:4px; height:10px; border-radius:2px; background:var(--emerald-400); animation:bob 1.6s ease-in-out infinite;"></div>
     </div>
-  `).join('');
-}
+  </div>
+</section>
 
-// ─────────────────────────────────────────────────────────────
-// 17. OFFLINE QUEUE
-// ─────────────────────────────────────────────────────────────
+<!-- ── Value props ── -->
+<section style="padding:72px 0; background:linear-gradient(to bottom, transparent, rgba(13,31,60,0.4), transparent)">
+  <div class="container">
+    <div class="text-center reveal">
+      <h2 class="section-title">From Complexity to Clarity</h2>
+      <p class="section-sub mx-auto">Four pillars that transform how strategy leaders diagnose, plan, and execute.</p>
+    </div>
+    <div class="cards-grid reveal" style="transition-delay:0.15s; grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(52,211,153,0.12); border:1px solid rgba(52,211,153,0.25)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
+        <h3>Diagnose Deeply</h3>
+        <p>Reveal systemic patterns, non-linear dynamics, and root causes—not just symptoms.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(129,140,248,0.12); border:1px solid rgba(129,140,248,0.25)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+        <h3>Plan with Precision</h3>
+        <p>Move from SWOT to strategy to scorecards and KPIs in a single guided flow.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.25)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+        <h3>Execute Confidently</h3>
+        <p>Track PAPs, budgets, and performance with a centralised real-time dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.28)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
+        <h3>Own Your Data</h3>
+        <p>Works offline as a PWA with local persistence—fast, secure, and always available.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-/**
- * queueOfflineChange(change)
- * ──────────────────────────
- * Writes a pending mutation to IndexedDB 'pending-changes' store
- * and registers a BackgroundSync tag so the service worker will
- * flush the queue when connectivity is restored.
- *
- * @param {object} change  { type, operation, planId, data }
- */
-async function queueOfflineChange(change) {
-  const token = sessionStorage.getItem('spp_access_token');
-  const record = {
-    clientId:  `local-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    timestamp: Date.now(),
-    token,       // embedded so SW can use it without reading sessionStorage
-    ...change,
-  };
+<!-- ── Features ── -->
+<section id="features">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-tag indigo">Powerful Features</div>
+      <h2 class="section-title">Everything You Need to Strategize</h2>
+      <p class="section-sub mx-auto">A comprehensive toolkit for strategy leaders who demand precision and results.</p>
+    </div>
+    <div class="cards-grid reveal" style="transition-delay:0.15s">
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><h3>MEL Dashboard</h3><p>Monitor, evaluate, and learn in one place with live status, progress, and insights.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div><h3>Structured Diagnostics</h3><p>Guided forms ensure complete, consistent SWOT analysis across all teams.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div><h3>AI SWOT Generation</h3><p>Transform raw inputs into clear, actionable SWOT statements—fast and bias-aware.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 10h6v10H4zM14 10h6v10h-6z"/></svg></div><h3>Systems Thinking</h3><p>Visualise non-linear relationships across SWOT elements to surface leverage points.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><h3>AI Strategy Generator</h3><p>Auto-derive SO, ST, WO, and WT strategic options aligned to your context.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(6,182,212,0.10);border:1px solid rgba(6,182,212,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg></div><h3>Balanced Scorecard</h3><p>Smart categorisation across four BSC perspectives with automated KPI suggestions.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,0.10);border:1px solid rgba(52,211,153,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></div><h3>PAPs Management</h3><p>Track Programs, Activities, and Projects with automated budget totalling.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(129,140,248,0.10);border:1px solid rgba(129,140,248,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><h3>Plan Generator</h3><p>Produce print-ready, professional reports for official documentation.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(139,92,246,0.10);border:1px solid rgba(139,92,246,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div><h3>Offline PWA</h3><p>Install on desktop or mobile, work offline, and sync when connected.</p></div>
+    </div>
+  </div>
+</section>
 
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open('strat-planner-db', 2);
-    req.onsuccess = () => {
-      const db  = req.result;
-      const tx  = db.transaction('pending-changes', 'readwrite');
-      const put = tx.objectStore('pending-changes').put(record);
-      put.onsuccess = () => {
-        STATE.pendingCount++;
-        updateOfflinePendingBadge();
-        // Register background sync
-        if ('serviceWorker' in navigator && 'SyncManager' in window) {
-          navigator.serviceWorker.ready
-            .then(sw => sw.sync.register('sync-plans'))
-            .catch(console.warn);
-        }
-        resolve(record);
-      };
-      put.onerror = () => reject(put.error);
-    };
-    req.onerror = () => reject(req.error);
+<!-- ── How it works ── -->
+<section id="how-it-works" style="background:linear-gradient(to bottom,transparent,rgba(13,31,60,0.35),transparent)">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-tag emerald">Simple Process</div>
+      <h2 class="section-title">From Input to Impact in 6 Steps</h2>
+      <p class="section-sub mx-auto">A guided journey from strategic context to actionable execution.</p>
+    </div>
+    <div class="steps-grid reveal" style="transition-delay:0.15s">
+      <div class="step-card">     <div class="step-num">1</div>     <h3>Capture Context</h3>     <p>Input SWOT and strategic intent using structured forms designed for completeness.</p></div>
+      <div class="step-card step-alt"><div class="step-num">2</div><h3>Map Dynamics</h3>     <p>Use systems thinking to connect drivers, constraints, and feedback loops.</p></div>
+      <div class="step-card">     <div class="step-num">3</div>     <h3>Generate Strategy</h3>  <p>Let AI propose SO/ST/WO/WT options—then refine and prioritise.</p></div>
+      <div class="step-card step-alt"><div class="step-num">4</div><h3>Align with BSC</h3>    <p>Auto-categorise objectives and receive KPI suggestions for each perspective.</p></div>
+      <div class="step-card">     <div class="step-num">5</div>     <h3>Operationalise</h3>   <p>Create PAPs, assign owners, set budgets, and track execution progress.</p></div>
+      <div class="step-card step-alt"><div class="step-num">6</div><h3>Report &amp; Learn</h3><p>Export professional strategic plans and monitor via MEL dashboard.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Audience ── -->
+<section>
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-tag" style="background:rgba(139,92,246,0.10);border:1px solid rgba(139,92,246,0.20);color:#A78BFA">Built For You</div>
+      <h2 class="section-title">Who Uses Strat Planner Pro</h2>
+      <p class="section-sub mx-auto">Trusted by strategy leaders across sectors who demand clarity and results.</p>
+    </div>
+    <div class="audience-grid reveal" style="transition-delay:0.15s">
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div><h3>Government &amp; Public Sector</h3><p>Strategy offices, MEL units, and programme teams driving policy outcomes.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><h3>Enterprises &amp; SMEs</h3><p>PMOs, transformation leaders, and business unit heads scaling operations.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div><h3>Education &amp; Nonprofits</h3><p>Strategy, accreditation, and impact measurement teams driving missions.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div><h3>Consultants</h3><p>Repeatable, client-ready workflows with print-ready outputs.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Benefits ── -->
+<section id="benefits" style="background:linear-gradient(to bottom,transparent,rgba(13,31,60,0.35),transparent)">
+  <div class="container">
+    <div class="benefits-grid">
+      <div class="reveal">
+        <div class="section-tag emerald">Why Choose Us</div>
+        <h2 class="section-title">Results That Speak for Themselves</h2>
+        <p style="font-size:16px;color:var(--text-secondary);margin-bottom:32px;line-height:1.65">Strat Planner Pro delivers measurable improvements in how organisations plan and execute strategy.</p>
+        <div class="benefit-list">
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(52,211,153,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></div><div><h3>Consistency at Scale</h3><p>Standardised frameworks reduce ambiguity and rework across teams.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(129,140,248,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><div><h3>Speed to Insight</h3><p>AI accelerates analysis without sacrificing rigour or depth.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(139,92,246,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div><div><h3>Execution Discipline</h3><p>Clear ownership, budgets, and KPIs keep plans moving forward.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(251,191,36,0.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><div><h3>Evidence-Based Decisions</h3><p>Systems maps and MEL dashboards reveal what's working—and why.</p></div></div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:0.2s">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-value">3×</div><p>Faster planning cycles</p></div>
+          <div class="stat-card"><div class="stat-value">85%</div><p>Less document rework</p></div>
+          <div class="stat-card"><div class="stat-value">100%</div><p>Offline capability</p></div>
+          <div class="stat-card"><div class="stat-value">∞</div><p>Print-ready exports</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section style="padding:72px 0 88px">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Ready to Transform Your Strategy Process?</h2>
+      <p>Join strategy leaders across government, enterprise, and education who've moved from complexity to clarity.</p>
+      <div class="cta-btns">
+        <a href="/login?mode=register" class="btn-primary btn-primary-lg">
+          Start Free Trial
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
+        </a>
+        <a href="https://asilvainnovations.github.io/website/#contact" class="btn-secondary">Schedule Demo</a>
+      </div>
+      <p class="cta-note">No credit card required &nbsp;·&nbsp; 14-day free trial &nbsp;·&nbsp; Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-top">
+      <div>
+        <a class="footer-logo-wrap" href="/">
+          <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="Strat Planner Pro logo" onerror="this.style.display='none'">
+          <span class="footer-logo-name">Strat Planner Pro</span>
+        </a>
+        <p class="footer-tagline">AI-powered strategic planning for organisations that demand excellence in execution.</p>
+      </div>
+      <div class="footer-powered">
+        <span>Powered by</span>
+        <img src="https://appimize.app/assets/apps/user_1097/images/e42a348ec295_487_1097.png" alt="ASilva Innovations" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="https://asilvainnovations.github.io/website/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy</a>
+        <a href="https://asilvainnovations.github.io/website/terms.html"          target="_blank" rel="noopener noreferrer">Terms</a>
+        <a href="https://asilvainnovations.github.io/website/contact.html"        target="_blank" rel="noopener noreferrer">Contact</a>
+        <a href="https://asilvainnovations.github.io/website/pricing.html">Pricing</a>
+      </nav>
+      <p class="footer-copy">© 2026 ASilva Innovations. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Smooth anchor scroll ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
   });
-}
 
-function processSyncComplete(data) {
-  STATE.pendingCount = Math.max(0, STATE.pendingCount - (data.applied || 0));
-  updateOfflinePendingBadge();
-  if (data.applied > 0) showToast(`${data.applied} offline change(s) synced`, 'success');
-  if (data.conflicts > 0) showToast(`${data.conflicts} conflict(s) — server version kept`, 'warning');
-
-  // Reload the current plan to pick up server-confirmed IDs
-  if (STATE.activePlan) loadPlan(STATE.activePlan._id);
-}
-
-function updateOfflinePendingBadge() {
-  const el = document.getElementById('offline-pending-count');
-  if (el) el.textContent = STATE.pendingCount > 0 ? ` (${STATE.pendingCount} pending)` : '';
-}
-
-// ─────────────────────────────────────────────────────────────
-// 18. ONLINE / OFFLINE HANDLERS
-// ─────────────────────────────────────────────────────────────
-
-function handleOnline() {
-  STATE.isOnline = true;
-  document.getElementById('offline-banner').classList.remove('show');
-
-  // Reconnect WebSocket if disconnected
-  if (!STATE.wsSocket || STATE.wsSocket.readyState !== WebSocket.OPEN) {
-    clearTimeout(_wsReconnectTimer);
-    connectWebSocket();
+  /* ── Mobile nav ── */
+  function openMobileNav() {
+    document.getElementById('mobileNav').classList.add('open');
+    document.getElementById('hamburger-btn').setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
   }
-
-  // Trigger sync if there are pending changes
-  if (STATE.pendingCount > 0 && navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage({ type: 'TRIGGER_SYNC' });
+  function closeMobileNav() {
+    document.getElementById('mobileNav').classList.remove('open');
+    document.getElementById('hamburger-btn').setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
   }
-}
-
-function handleOffline() {
-  STATE.isOnline = false;
-  document.getElementById('offline-banner').classList.add('show');
-}
-
-// ─────────────────────────────────────────────────────────────
-// 19. UI HELPERS
-// ─────────────────────────────────────────────────────────────
-
-/** DOMPurify-lite: escape HTML entities to prevent XSS */
-function esc(str) {
-  if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function showToast(message, type = 'info', duration = 4000) {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.textContent = message;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add('out');
-    setTimeout(() => toast.remove(), 250);
-  }, duration);
-}
-
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-  // Focus first focusable element inside modal
-  setTimeout(() => {
-    const first = document.getElementById(id).querySelector('input, select, textarea, button');
-    first?.focus();
-  }, 100);
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-function toggleUserMenu() {
-  const menu = document.getElementById('user-menu');
-  const isOpen = menu.classList.contains('open');
-  menu.classList.toggle('open', !isOpen);
-  document.getElementById('user-avatar-btn').setAttribute('aria-expanded', String(!isOpen));
-}
-
-function closeUserMenu() {
-  document.getElementById('user-menu').classList.remove('open');
-  document.getElementById('user-avatar-btn').setAttribute('aria-expanded', 'false');
-}
-
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const btn     = document.getElementById('hamburger-btn');
-  const isOpen  = sidebar.classList.toggle('mobile-open');
-  btn.setAttribute('aria-expanded', String(isOpen));
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return '';
-  const now  = Date.now();
-  const diff = now - d.getTime();
-  if (diff < 60000)    return 'just now';
-  if (diff < 3600000)  return `${Math.floor(diff / 60000)}m ago`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-  return d.toLocaleDateString();
-}
-
-function fmt(n) {
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
-  return String(Math.round(n));
-}
-
-// Stub for AI generation (requires /api/ai/swot route to be implemented)
-async function generateSwotAI() {
-  showToast('AI generation requires /api/ai/swot — add this route to routes.js', 'info');
-}
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileNav(); });
 </script>
 </body>
 </html>
