@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1A3A6B">
+    <meta name="description" content="Strat Planner Pro - AI-powered strategic planning PWA">
+    <title>Dashboard — Strat Planner Pro</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/icons/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body class="app-shell">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar">
+        <a href="/app/" class="sidebar-logo">
+            <img src="/icons/icon-192.png" alt="SPP Logo">
+            <span class="sidebar-logo-name">Strat Planner Pro</span>
+        </a>
+        
+        <nav class="nav-section">
+            <span class="nav-section-label">Planning</span>
+            <button class="nav-item active" data-page="dashboard" aria-label="Dashboard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </button>
+            <button class="nav-item" data-page="swot" aria-label="SWOT Analysis">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg>
+                SWOT Analysis
+            </button>
+            <button class="nav-item" data-page="strategies" aria-label="Strategies">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                Strategies
+            </button>
+            <button class="nav-item" data-page="scorecard" aria-label="Balanced Scorecard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 12L12 6M12 12l5 5M12 12l-5 5"/></svg>
+                Scorecard
+            </button>
+            <button class="nav-item" data-page="initiatives" aria-label="Initiatives">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Initiatives
+            </button>
+        </nav>
+        
+        <nav class="nav-section">
+            <span class="nav-section-label">Team</span>
+            <button class="nav-item" data-page="members" aria-label="Members">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Members
+            </button>
+            <button class="nav-item" data-page="activity" aria-label="Activity Log">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Activity Log
+            </button>
+        </nav>
+        
+        <div class="sidebar-bottom">
+            <button class="nav-item" data-page="settings" aria-label="Settings">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+            </button>
+            <button class="nav-item btn-danger-text" id="logout-btn" aria-label="Logout">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main id="main-content">
+        <header class="top-bar" style="position: sticky; top: 0; z-index: 90; background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: var(--header-height); display: flex; align-items: center; justify-content: space-between;">
+            <h1 class="page-title" id="page-title">Dashboard</h1>
+            <div class="top-actions" style="display: flex; gap: 12px; align-items: center;">
+                <!-- Presence Avatars -->
+                <div class="presence-container" id="presence-panel" style="display: flex; margin-right: 16px;">
+                    <div class="presence-avatar" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);" title="Me">ME</div>
+                </div>
+                
+                <!-- Notifications -->
+                <button class="icon-btn" id="notif-toggle" aria-label="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="notif-dot" id="notif-badge" style="display: none;"></span>
+                </button>
+                
+                <!-- Mobile Hamburger -->
+                <button class="hamburger icon-btn" id="sidebar-toggle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+            </div>
+        </header>
+        
+        <section id="page-area">
+            <!-- Pages Container -->
+            <article class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">Dashboard Overview</h2>
+                        <p class="page-subtitle">Track strategic progress across all initiatives</p>
+                    </div>
+                    <button class="btn-primary" id="new-plan-btn">New Plan +</button>
+                </div>
+                
+                <!-- Metrics Grid -->
+                <div class="metric-grid" style="margin-bottom: 32px;">
+                    <div class="metric-card">
+                        <div class="metric-label">Active Plans</div>
+                        <div class="metric-value" id="metric-plans">0</div>
+                        <div class="metric-sub">Total ongoing strategies</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">On Track KPIs</div>
+                        <div class="metric-value" id="metric-ontrack">0</div>
+                        <div class="metric-sub">% of goals achieving targets</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Active Initiatives</div>
+                        <div class="metric-value" id="metric-initiatives">0</div>
+                        <div class="metric-sub">Programs in execution</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Budget Utilization</div>
+                        <div class="metric-value" id="metric-budget">0%</div>
+                        <div class="metric-sub">% of allocated funds used</div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 32px;">
+                    <div class="glass-card">
+                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Progress Overview</h3>
+                        <div class="chart-wrap">
+                            <canvas id="progress-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Status Distribution</h3>
+                        <div class="chart-wrap">
+                            <canvas id="status-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="glass-card">
+                    <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Recent Activity</h3>
+                    <div id="activity-list">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <h3>No recent activity</h3>
+                            <p>Start collaborating on a plan to see activity here</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- SWOT Page -->
+            <article class="page" id="page-swot">
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">SWOT Analysis</h2>
+                        <p class="page-subtitle">Strengths, Weaknesses, Opportunities, Threats diagnostic</p>
+                    </div>
+                    <button class="btn-primary" id="add-swot-btn">Add Item +</button>
+                </div>
+                
+                <div class="swot-grid" id="swot-quadrants">
+                    <div class="swot-quadrant strengths">
+                        <div class="swot-quadrant-header">
+                            <span class="swot-quadrant-title">Strengths</span>
+                            <span class="badge program">S</span>
+                        </div>
+                        <div id="swot-strengths-list" style="min-height: 200px;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📌</div>
+                                <h3>No Strengths</h3>
+                                <p>Click Add to create internal advantages</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="swot-quadrant weaknesses">
+                        <div class="swot-quadrant-header">
+                            <span class="swot-quadrant-title">Weaknesses</span>
+                            <span class="badge activity">W</span>
+                        </div>
+                        <div id="swot-weaknesses-list" style="min-height: 200px;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">⚡</div>
+                                <h3>No Weaknesses</h3>
+                                <p>Click Add to identify internal gaps</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="swot-quadrant opportunities">
+                        <div class="swot-quadrant-header">
+                            <span class="swot-quadrant-title">Opportunities</span>
+                            <span class="badge project">O</span>
+                        </div>
+                        <div id="swot-opportunities-list" style="min-height: 200px;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">💡</div>
+                                <h3>No Opportunities</h3>
+                                <p>Click Add to capture external advantages</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="swot-quadrant threats">
+                        <div class="swot-quadrant-header">
+                            <span class="swot-quadrant-title">Threats</span>
+                            <span class="badge complete">T</span>
+                        </div>
+                        <div id="swot-threats-list" style="min-height: 200px;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">⚠️</div>
+                                <h3>No Threats</h3>
+                                <p>Click Add to identify external risks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Other pages (strategies, scorecard, initiatives, members, activity, settings) follow similar structure -->
+            
+        </section>
+    </main>
+    
+    <!-- Modals -->
+    <div class="modal-overlay" id="add-item-modal" style="display: none;">
+        <div class="modal">
+            <h3 class="modal-title">Add New Item</h3>
+            <form id="add-item-form">
+                <div class="field">
+                    <label class="field-label">Category</label>
+                    <select id="item-category" required>
+                        <option value="strengths">Strengths</option>
+                        <option value="weaknesses">Weaknesses</option>
+                        <option value="opportunities">Opportunities</option>
+                        <option value="threats">Threats</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label">Text</label>
+                    <textarea id="item-text" required rows="3" maxlength="500"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Evidence</label>
+                    <input type="text" id="item-evidence" placeholder="Supporting data source">
+                </div>
+                <div class="field">
+                    <label class="field-label">Impact</label>
+                    <select id="item-impact">
+                        <option value="high">High</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notifications Panel -->
+    <aside class="notif-panel" id="notif-panel">
+        <div class="notif-panel-header">
+            <span class="notif-panel-title">Notifications</span>
+            <button class="icon-btn" id="notif-close">×</button>
+        </div>
+        <div class="notif-list" id="notif-list">
+            <div class="empty-state">
+                <div class="empty-state-icon">🔔</div>
+                <h3>All caught up!</h3>
+                <p>No new notifications</p>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/app/main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {
+                    console.warn('Service worker registration failed');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
