@@ -1,0 +1,2551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Strat Planner Pro</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Condensed:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+
+</head>
+<body>
+
+<!-- Auth loading overlay — visible until /api/auth/me resolves -->
+<div id="auth-loading" role="status" aria-label="Loading application">
+  <div class="spinner-lg"></div>
+  <span style="font-size:13px;color:var(--text-secondary)">Loading…</span>
+</div>
+
+<!-- Offline banner -->
+<div id="offline-banner" role="alert" aria-live="polite">
+  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+  You're offline — changes will sync when connected
+  <span id="offline-pending-count" style="font-weight:600"></span>
+</div>
+
+<!-- Sidebar -->
+<nav id="sidebar" aria-label="Main navigation">
+  <a class="sidebar-logo" href="/">
+    <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="Strat Planner Pro" onerror="this.style.display='none'">
+    <span class="sidebar-logo-name">Strat Planner Pro</span>
+  </a>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Workspace</div>
+    <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')" aria-current="page">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 4a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm9 0a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-2-2V4zM2 13a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2H4a2 2 0 01-2-2v-3zm9 0a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-2-2v-3z"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" data-page="swot" onclick="navigate('swot')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 12H1v6a2 2 0 002 2h6v-8zM1 10h8V2H3a2 2 0 00-2 2v6zm10 10h6a2 2 0 002-2v-6h-8v8zm8-18h-6v8h8V4a2 2 0 00-2-2z"/></svg>
+      SWOT Analysis
+    </button>
+    <button class="nav-item" data-page="strategy" onclick="navigate('strategy')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+      Strategy Matrix
+    </button>
+    <button class="nav-item" data-page="scorecard" onclick="navigate('scorecard')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+      Balanced Scorecard
+    </button>
+    <button class="nav-item" data-page="initiatives" onclick="navigate('initiatives')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+      Initiatives (PAPs)
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Collaboration</div>
+    <button class="nav-item" data-page="team" onclick="navigate('team')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zm5 2a2 2 0 11-4 0 2 2 0 014 0zm-4 7a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zm10 10v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+      Team
+    </button>
+    <button class="nav-item" data-page="activity" onclick="navigate('activity')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+      Activity Log
+    </button>
+    <button class="nav-item" data-page="templates" onclick="navigate('templates')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+      Templates
+    </button>
+  </div>
+
+  <div class="nav-section" id="admin-nav-section" style="display:none">
+    <div class="nav-section-label">Admin</div>
+    <button class="nav-item" data-page="admin" onclick="navigate('admin')">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+      Admin Panel
+    </button>
+  </div>
+
+  <div class="sidebar-bottom">
+    <!-- Offline / sync status -->
+    <div id="sync-indicator" title="Syncing offline changes">
+      <div class="sync-dot"></div>
+      <span>Syncing…</span>
+    </div>
+  </div>
+</nav>
+
+<!-- Main content -->
+<div id="main-content">
+
+  <!-- Top bar -->
+  <header id="top-bar">
+    <div class="top-bar-left">
+      <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+      </button>
+      <!-- Plan selector -->
+      <button class="plan-selector" id="plan-selector-btn" onclick="openPlanSelector()" aria-haspopup="dialog" aria-label="Select strategic plan">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+        <span class="plan-selector-name" id="plan-selector-name">Select a plan…</span>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      </button>
+    </div>
+
+    <div class="top-bar-right">
+      <!-- Presence avatars (populated by PRESENCE_UPDATE) -->
+      <div id="presence-avatars" aria-label="Active collaborators" role="group"></div>
+
+      <!-- Notifications -->
+      <button class="icon-btn" id="notif-btn" onclick="toggleNotifications()" aria-label="Notifications" aria-expanded="false" aria-controls="notif-panel">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a2 2 0 01-2-2h4a2 2 0 01-2 2z"/></svg>
+        <span class="notif-dot" id="notif-dot" style="display:none" aria-hidden="true"></span>
+      </button>
+
+      <!-- User menu -->
+      <button class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()" aria-haspopup="menu" aria-expanded="false" aria-label="User menu" style="background:linear-gradient(135deg,#3B82F6,#06B6D4)">
+        <span id="user-initials">…</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- User menu dropdown -->
+  <div class="user-menu" id="user-menu" role="menu" aria-labelledby="user-avatar-btn">
+    <div class="user-menu-header">
+      <div class="user-menu-name"  id="user-menu-name">Loading…</div>
+      <div class="user-menu-email" id="user-menu-email"></div>
+    </div>
+    <button class="user-menu-item" role="menuitem" onclick="navigate('team'); closeUserMenu()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+      Profile
+    </button>
+    <button class="user-menu-item" role="menuitem" onclick="openNewPlanModal(); closeUserMenu()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+      New Plan
+    </button>
+    <button class="user-menu-item danger" role="menuitem" onclick="handleLogout()">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+      Sign Out
+    </button>
+  </div>
+
+  <!-- Notification panel -->
+  <aside class="notif-panel" id="notif-panel" aria-label="Notifications" role="complementary">
+    <div class="notif-panel-header">
+      <span class="notif-panel-title">Notifications</span>
+      <button class="btn-secondary" style="padding:4px 10px;font-size:12px" onclick="markAllNotificationsRead()">Mark all read</button>
+    </div>
+    <div class="notif-list" id="notif-list">
+      <div class="empty-state" style="padding:32px 20px">
+        <div class="empty-state-icon">🔔</div>
+        <p>No notifications yet</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Page area -->
+  <main id="page-area" role="main">
+
+    <!-- ── DASHBOARD ─────────────────────────────────── -->
+    <section class="page active" id="page-dashboard" aria-labelledby="dashboard-title">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="dashboard-title">Dashboard</h1>
+          <p class="page-subtitle" id="dashboard-plan-name">No plan selected</p>
+        </div>
+        <button class="btn-primary" onclick="openNewPlanModal()">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          New Plan
+        </button>
+      </div>
+      <div class="metric-grid" id="dashboard-metrics"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="glass-card">
+          <div style="font-size:13px;font-weight:600;margin-bottom:16px">Execution Progress</div>
+          <div style="position:relative;height:180px"><canvas id="progressChart"></canvas></div>
+        </div>
+        <div class="glass-card">
+          <div style="font-size:13px;font-weight:600;margin-bottom:16px">SWOT Distribution</div>
+          <div style="position:relative;height:180px"><canvas id="swotChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SWOT ───────────────────────────────────────── -->
+    <section class="page" id="page-swot" aria-labelledby="swot-title">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="swot-title">SWOT Analysis</h1>
+          <p class="page-subtitle">Identify strengths, weaknesses, opportunities, and threats</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-secondary" onclick="generateSwotAI()">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            AI Generate
+          </button>
+          <button class="btn-primary" onclick="openAddSwotModal()">+ Add Item</button>
+        </div>
+      </div>
+      <div class="swot-grid" id="swot-grid">
+        <div class="swot-quadrant strengths">
+          <div class="swot-quadrant-header">
+            <span class="swot-quadrant-title">Strengths</span>
+            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('strengths')">+ Add</button>
+          </div>
+          <div id="swot-strengths"></div>
+        </div>
+        <div class="swot-quadrant weaknesses">
+          <div class="swot-quadrant-header">
+            <span class="swot-quadrant-title">Weaknesses</span>
+            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('weaknesses')">+ Add</button>
+          </div>
+          <div id="swot-weaknesses"></div>
+        </div>
+        <div class="swot-quadrant opportunities">
+          <div class="swot-quadrant-header">
+            <span class="swot-quadrant-title">Opportunities</span>
+            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('opportunities')">+ Add</button>
+          </div>
+          <div id="swot-opportunities"></div>
+        </div>
+        <div class="swot-quadrant threats">
+          <div class="swot-quadrant-header">
+            <span class="swot-quadrant-title">Threats</span>
+            <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddSwotModal('threats')">+ Add</button>
+          </div>
+          <div id="swot-threats"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STRATEGY MATRIX ───────────────────────────── -->
+    <section class="page" id="page-strategy" aria-labelledby="strategy-title">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="strategy-title">Strategy Matrix</h1>
+          <p class="page-subtitle">SO · ST · WO · WT strategic options</p>
+        </div>
+        <button class="btn-primary" onclick="openAddStrategyModal()">+ Add Strategy</button>
+      </div>
+      <div id="strategy-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+    </section>
+
+    <!-- ── BALANCED SCORECARD ────────────────────────── -->
+    <section class="page" id="page-scorecard" aria-labelledby="scorecard-title">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="scorecard-title">Balanced Scorecard</h1>
+          <p class="page-subtitle">Financial · Customer · Internal · Learning & Growth</p>
+        </div>
+        <button class="btn-primary" onclick="openAddKPIModal()">+ Add KPI</button>
+      </div>
+      <div class="glass-card">
+        <table class="kpi-table" id="kpi-table">
+          <thead>
+            <tr>
+              <th>KPI</th><th>Perspective</th><th>Target</th>
+              <th>Actual</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="kpi-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── INITIATIVES ───────────────────────────────── -->
+    <section class="page" id="page-initiatives" aria-labelledby="initiatives-title">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="initiatives-title">Initiatives (PAPs)</h1>
+          <p class="page-subtitle">Programs, Activities, and Projects</p>
+        </div>
+        <button class="btn-primary" onclick="openAddInitiativeModal()">+ Add Initiative</button>
+      </div>
+      <div class="metric-grid" id="budget-metrics"></div>
+      <div id="initiatives-list"></div>
+    </section>
+
+    <!-- ── TEAM ──────────────────────────────────────── -->
+    <section class="page" id="page-team" aria-labelledby="team-title">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="team-title">Team</h1>
+          <p class="page-subtitle">Organisation members and plan collaborators</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-secondary" onclick="openShareModal()">Share Plan</button>
+          <button class="btn-primary" onclick="openInviteModal()">+ Invite Member</button>
+        </div>
+      </div>
+      <div id="team-content"></div>
+    </section>
+
+    <!-- ── ACTIVITY LOG ──────────────────────────────── -->
+    <section class="page" id="page-activity" aria-labelledby="activity-title">
+      <h1 class="page-title" id="activity-title" style="margin-bottom:20px">Activity Log</h1>
+      <div id="activity-list"></div>
+    </section>
+
+    <!-- ── TEMPLATES ─────────────────────────────────── -->
+    <section class="page" id="page-templates" aria-labelledby="templates-title">
+      <div class="page-header">
+        <h1 class="page-title" id="templates-title">Templates</h1>
+      </div>
+      <div id="templates-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
+    </section>
+
+    <!-- ── ADMIN ─────────────────────────────────────── -->
+    <section class="page" id="page-admin" aria-labelledby="admin-title">
+      <h1 class="page-title" id="admin-title" style="margin-bottom:20px">Admin Panel</h1>
+      <div id="admin-content"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+<!-- ── MODALS ─────────────────────────────────────────────── -->
+
+<!-- Add SWOT item -->
+<div class="modal-overlay" id="modal-swot" role="dialog" aria-modal="true" aria-labelledby="modal-swot-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-swot-title">Add SWOT Item</div>
+    <div class="field">
+      <label class="field-label" for="swot-category">Category</label>
+      <select id="swot-category">
+        <option value="strengths">Strength</option>
+        <option value="weaknesses">Weakness</option>
+        <option value="opportunities">Opportunity</option>
+        <option value="threats">Threat</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="swot-text">Statement</label>
+      <textarea id="swot-text" rows="3" placeholder="Describe this SWOT item…"></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label" for="swot-evidence">Evidence / Source</label>
+      <input type="text" id="swot-evidence" placeholder="Supporting data, study, or observation">
+    </div>
+    <div class="field">
+      <label class="field-label" for="swot-impact">Impact</label>
+      <select id="swot-impact">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-swot')">Cancel</button>
+      <button class="btn-primary" onclick="saveSwotItem()">Save Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add KPI -->
+<div class="modal-overlay" id="modal-kpi" role="dialog" aria-modal="true" aria-labelledby="modal-kpi-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-kpi-title">Add KPI</div>
+    <div class="field">
+      <label class="field-label" for="kpi-perspective">Perspective</label>
+      <select id="kpi-perspective">
+        <option value="financial">Financial</option>
+        <option value="customer">Customer</option>
+        <option value="internal">Internal Process</option>
+        <option value="learning">Learning & Growth</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="kpi-name">KPI Name</label>
+      <input type="text" id="kpi-name" placeholder="e.g. Revenue Growth Rate">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div class="field">
+        <label class="field-label" for="kpi-target">Target</label>
+        <input type="text" id="kpi-target" placeholder="e.g. 15%">
+      </div>
+      <div class="field">
+        <label class="field-label" for="kpi-actual">Actual</label>
+        <input type="text" id="kpi-actual" placeholder="e.g. 12%">
+      </div>
+      <div class="field">
+        <label class="field-label" for="kpi-unit">Unit</label>
+        <input type="text" id="kpi-unit" placeholder="%, ₱, days…">
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="kpi-status">Status</label>
+      <select id="kpi-status">
+        <option value="on-track">On Track</option>
+        <option value="at-risk">At Risk</option>
+        <option value="behind">Behind</option>
+        <option value="complete">Complete</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-kpi')">Cancel</button>
+      <button class="btn-primary" onclick="saveKPI()">Save KPI</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Initiative -->
+<div class="modal-overlay" id="modal-initiative" role="dialog" aria-modal="true" aria-labelledby="modal-initiative-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-initiative-title">Add Initiative</div>
+    <div class="field">
+      <label class="field-label" for="init-type">Type</label>
+      <select id="init-type">
+        <option value="program">Program</option>
+        <option value="activity">Activity</option>
+        <option value="project">Project</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="init-name">Name</label>
+      <input type="text" id="init-name" placeholder="Initiative name">
+    </div>
+    <div class="field">
+      <label class="field-label" for="init-owner">Owner / Department</label>
+      <input type="text" id="init-owner" placeholder="e.g. IT Department">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field">
+        <label class="field-label" for="init-budget">Budget (₱)</label>
+        <input type="number" id="init-budget" placeholder="0">
+      </div>
+      <div class="field">
+        <label class="field-label" for="init-due">Due Date</label>
+        <input type="date" id="init-due">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-initiative')">Cancel</button>
+      <button class="btn-primary" onclick="saveInitiative()">Save Initiative</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Plan -->
+<div class="modal-overlay" id="modal-new-plan" role="dialog" aria-modal="true" aria-labelledby="modal-new-plan-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-new-plan-title">Create New Plan</div>
+    <div class="field">
+      <label class="field-label" for="plan-name-input">Plan Name</label>
+      <input type="text" id="plan-name-input" placeholder="e.g. Q2 2025 Corporate Strategy">
+    </div>
+    <div class="field">
+      <label class="field-label" for="plan-period-input">Period</label>
+      <input type="text" id="plan-period-input" placeholder="e.g. January – June 2025">
+    </div>
+    <div class="field">
+      <label class="field-label" for="plan-desc-input">Description</label>
+      <textarea id="plan-desc-input" rows="2" placeholder="Brief description…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-new-plan')">Cancel</button>
+      <button class="btn-primary" onclick="createPlan()">Create Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Plan selector list -->
+<div class="modal-overlay" id="modal-plan-selector" role="dialog" aria-modal="true" aria-labelledby="modal-plan-selector-title">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title" id="modal-plan-selector-title">Select Plan</div>
+    <div id="plan-selector-list" style="max-height:400px;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-plan-selector')">Cancel</button>
+      <button class="btn-primary" onclick="openNewPlanModal()">+ New Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Strategy -->
+<div class="modal-overlay" id="modal-strategy" role="dialog" aria-modal="true" aria-labelledby="modal-strategy-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-strategy-title">Add Strategy</div>
+    <div class="field">
+      <label class="field-label" for="strategy-type">Type</label>
+      <select id="strategy-type">
+        <option value="so">SO — Use Strengths for Opportunities</option>
+        <option value="st">ST — Use Strengths to counter Threats</option>
+        <option value="wo">WO — Overcome Weaknesses via Opportunities</option>
+        <option value="wt">WT — Minimise Weaknesses, avoid Threats</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="strategy-text">Strategy Statement</label>
+      <textarea id="strategy-text" rows="3" placeholder="Describe the strategy…"></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label" for="strategy-priority">Priority</label>
+      <select id="strategy-priority">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-strategy')">Cancel</button>
+      <button class="btn-primary" onclick="saveStrategy()">Save Strategy</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Update KPI (PATCH) ──────────────────────────────────── -->
+<div class="modal-overlay" id="modal-kpi-edit" role="dialog" aria-modal="true" aria-labelledby="modal-kpi-edit-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-kpi-edit-title">Update KPI</div>
+    <input type="hidden" id="kpi-edit-id">
+    <div class="field">
+      <label class="field-label" for="kpi-edit-actual">Actual Value</label>
+      <input type="text" id="kpi-edit-actual" placeholder="e.g. 13%">
+    </div>
+    <div class="field">
+      <label class="field-label" for="kpi-edit-status">Status</label>
+      <select id="kpi-edit-status">
+        <option value="on-track">On Track</option>
+        <option value="at-risk">At Risk</option>
+        <option value="behind">Behind</option>
+        <option value="complete">Complete</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="kpi-edit-target">Target</label>
+      <input type="text" id="kpi-edit-target" placeholder="e.g. 15%">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-kpi-edit')">Cancel</button>
+      <button class="btn-primary" onclick="updateKPI()">Update KPI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Update Initiative (PATCH) ─────────────────────────── -->
+<div class="modal-overlay" id="modal-initiative-edit" role="dialog" aria-modal="true" aria-labelledby="modal-initiative-edit-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-initiative-edit-title">Update Initiative</div>
+    <input type="hidden" id="init-edit-id">
+    <div class="field">
+      <label class="field-label" for="init-edit-name">Name</label>
+      <input type="text" id="init-edit-name" placeholder="Initiative name">
+    </div>
+    <div class="field">
+      <label class="field-label" for="init-edit-owner">Owner / Department</label>
+      <input type="text" id="init-edit-owner" placeholder="e.g. IT Department">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field">
+        <label class="field-label" for="init-edit-utilized">Utilized (₱)</label>
+        <input type="number" id="init-edit-utilized" placeholder="0">
+      </div>
+      <div class="field">
+        <label class="field-label" for="init-edit-progress">Progress (%)</label>
+        <input type="number" id="init-edit-progress" min="0" max="100" placeholder="0">
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="init-edit-status">Status</label>
+      <select id="init-edit-status">
+        <option value="on-track">On Track</option>
+        <option value="at-risk">At Risk</option>
+        <option value="behind">Behind</option>
+        <option value="complete">Complete</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-initiative-edit')">Cancel</button>
+      <button class="btn-danger" onclick="deleteInitiative(document.getElementById('init-edit-id').value)" style="margin-right:auto">Delete</button>
+      <button class="btn-primary" onclick="updateInitiative()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add Comment ────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-comment" role="dialog" aria-modal="true" aria-labelledby="modal-comment-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-comment-title">Add Comment</div>
+    <input type="hidden" id="comment-entity-id">
+    <input type="hidden" id="comment-entity-type">
+    <input type="hidden" id="comment-entity-name">
+    <div class="field">
+      <label class="field-label" id="comment-context-label">On</label>
+    </div>
+    <div class="field">
+      <label class="field-label" for="comment-text">Comment</label>
+      <textarea id="comment-text" rows="4" placeholder="Write your comment…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-comment')">Cancel</button>
+      <button class="btn-primary" onclick="addComment()">Post Comment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Send Org Invite ────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-invite" role="dialog" aria-modal="true" aria-labelledby="modal-invite-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-invite-title">Invite Team Member</div>
+    <div class="field">
+      <label class="field-label" for="invite-org-select">Organisation</label>
+      <select id="invite-org-select">
+        <option value="">Loading organisations…</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="invite-email">Email Address</label>
+      <input type="email" id="invite-email" placeholder="colleague@organisation.com">
+    </div>
+    <div class="field">
+      <label class="field-label" for="invite-role">Role</label>
+      <select id="invite-role">
+        <option value="viewer">Viewer — read only</option>
+        <option value="editor" selected>Editor — can create and edit</option>
+        <option value="admin">Admin — full access + invite others</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-invite')">Cancel</button>
+      <button class="btn-primary" onclick="sendInvite()">Send Invitation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Share Plan ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-share" role="dialog" aria-modal="true" aria-labelledby="modal-share-title">
+  <div class="modal">
+    <div class="modal-title" id="modal-share-title">Share Plan</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px" id="share-plan-label">
+      Share this plan with a team member by email.
+    </p>
+    <div class="field">
+      <label class="field-label" for="share-email">Email Address</label>
+      <input type="email" id="share-email" placeholder="colleague@organisation.com">
+    </div>
+    <div class="field">
+      <label class="field-label" for="share-permission">Permission Level</label>
+      <select id="share-permission">
+        <option value="viewer">Viewer — read only</option>
+        <option value="editor" selected>Editor — can create and edit</option>
+        <option value="admin">Admin — full plan access</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-share')">Cancel</button>
+      <button class="btn-primary" onclick="sharePlan()">Share Plan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================================
+// STRAT PLANNER PRO — APP SHELL
+// public/app/index.html
+//
+// Sections:
+//  1.  Constants & State
+//  2.  Auth layer        — apiFetch, refreshAccessToken, handleLogout
+//  3.  Bootstrap         — DOMContentLoaded, service worker, WebSocket
+//  4.  Navigation        — navigate, PAGE_INIT dispatch table
+//  5.  Plan CRUD         — loadUserPlans, loadPlan, openPlanSelector, createPlan
+//  6.  SWOT              — initSwot, renderSwot, saveSwotItem, deleteSwotItem
+//  7.  Strategy Matrix   — initStrategy, renderStrategy, saveStrategy
+//  8.  Scorecard / KPIs  — initScorecard, renderScorecard, saveKPI, deleteKPI
+//  9.  Initiatives       — initInitiatives, renderInitiatives, saveInitiative
+//  9b. Strategy DELETE   — deleteStrategy
+//  9c. KPI UPDATE (PATCH)— openUpdateKPIModal, updateKPI
+//  9d. Initiative UPDATE/DELETE — openUpdateInitiativeModal, updateInitiative, deleteInitiative
+//  9e. Comments ADD      — openCommentModal, addComment
+//  9f. Team INVITE/SHARE — openInviteModal, sendInvite, openShareModal, sharePlan
+// 10.  Notifications     — initNotifications, renderNotifications, markRead
+// 11.  Activity Log      — initActivity
+// 12.  Templates         — initTemplates, applyTemplate
+// 13.  Team              — initTeam (full — members, invite card, share)
+// 14.  Admin             — initAdmin
+// 15.  Dashboard         — initDashboard, renderDashboardCharts
+// 16.  Real-time         — handleWsMessage, applyRemoteUpdate, renderPresence
+// 17.  Offline queue     — queueOfflineChange, processSyncComplete
+// 18.  Online/offline    — handleOnline, handleOffline
+// 19.  UI helpers        — esc, showToast, openModal, closeModal, formatDate, fmt
+// =============================================================
+
+// ─────────────────────────────────────────────────────────────
+// 1. CONSTANTS & STATE
+// ─────────────────────────────────────────────────────────────
+const API = '/api';
+
+/** Application state — single source of truth for rendered UI */
+const STATE = {
+  currentUser:   null,   // populated from GET /api/auth/me on load
+  activePlan:    null,   // populated from GET /api/plans/:id
+  plans:         [],     // populated from GET /api/plans
+  notifications: [],     // populated from GET /api/notifications
+  unreadCount:   0,
+  wsSocket:      null,   // active WebSocket instance
+  swrRegistered: false,  // service worker registered flag
+  isOnline:      navigator.onLine,
+  pendingCount:  0,      // offline changes queued
+};
+
+// ─────────────────────────────────────────────────────────────
+// 2. AUTH LAYER
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * apiFetch(path, options)
+ * ───────────────────────
+ * Shared fetch wrapper used by every API call in the app.
+ *
+ * - Always attaches Authorization: Bearer <token>
+ * - On 401: attempts one silent token refresh, then retries the
+ *   original request once. If refresh fails → redirects to /login.
+ * - Throws an Error with a user-readable message on HTTP errors.
+ *
+ * @param {string} path    API path, e.g. '/plans' (without /api prefix)
+ * @param {object} options fetch options (method, body, headers, etc.)
+ * @returns {Promise<Response>}
+ */
+let _refreshing = false;        // prevent concurrent refresh races
+let _refreshPromise = null;
+
+async function apiFetch(path, options = {}) {
+  const token = sessionStorage.getItem('spp_access_token');
+
+  const res = await fetch(API + path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    },
+  });
+
+  // Silent refresh on 401
+  if (res.status === 401) {
+    // Only attempt refresh if we actually have a refresh token
+    if (sessionStorage.getItem('spp_refresh_token')) {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        // Retry the original request exactly once with the new token
+        const newToken = sessionStorage.getItem('spp_access_token');
+        return fetch(API + path, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${newToken}`,
+            ...(options.headers || {}),
+          },
+        });
+      }
+    }
+    // Refresh failed or no refresh token — redirect to login
+    const redirect = encodeURIComponent(window.location.pathname + window.location.hash);
+    window.location.href = `/login?redirect=${redirect}`;
+    return;
+  }
+
+  if (!res.ok) {
+    let errMsg = `HTTP ${res.status}`;
+    try {
+      const data = await res.clone().json();
+      errMsg = data.error || data.message || errMsg;
+    } catch { /* response not JSON */ }
+    throw new Error(errMsg);
+  }
+
+  return res;
+}
+
+/**
+ * refreshAccessToken()
+ * ─────────────────────
+ * Calls POST /api/auth/refresh with the stored refresh token.
+ * Stores the new token pair in sessionStorage.
+ * Pushes the new access token to the service worker so background
+ * sync always has the latest token.
+ *
+ * Returns true on success, false on failure.
+ *
+ * @returns {Promise<boolean>}
+ */
+async function refreshAccessToken() {
+  // Deduplicate concurrent refresh attempts
+  if (_refreshing) return _refreshPromise;
+
+  _refreshing = true;
+  _refreshPromise = (async () => {
+    try {
+      const refreshToken = sessionStorage.getItem('spp_refresh_token');
+      if (!refreshToken) return false;
+
+      const res = await fetch(API + '/auth/refresh', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ refreshToken }),
+      });
+
+      if (!res.ok) return false;
+
+      const { accessToken, refreshToken: newRefresh } = await res.json();
+
+      sessionStorage.setItem('spp_access_token',  accessToken);
+      sessionStorage.setItem('spp_refresh_token', newRefresh);
+
+      // Push new token to service worker for background sync [SW-1]
+      pushTokenToServiceWorker(accessToken);
+
+      return true;
+    } catch {
+      return false;
+    } finally {
+      _refreshing     = false;
+      _refreshPromise = null;
+    }
+  })();
+
+  return _refreshPromise;
+}
+
+/**
+ * pushTokenToServiceWorker(token)
+ * ────────────────────────────────
+ * Sends the latest access token to the service worker via postMessage
+ * so syncPlans() can attach it to the /api/sync Authorization header.
+ */
+function pushTokenToServiceWorker(token) {
+  if (navigator.serviceWorker?.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'STORE_TOKEN', token });
+  }
+}
+
+/**
+ * handleLogout()
+ * ──────────────
+ * POST /api/auth/logout → clears session storage → redirects to /login.
+ */
+async function handleLogout() {
+  closeUserMenu();
+  try {
+    const refreshToken = sessionStorage.getItem('spp_refresh_token');
+    if (refreshToken) {
+      await apiFetch('/auth/logout', {
+        method: 'POST',
+        body:   JSON.stringify({ refreshToken }),
+      });
+    }
+  } catch { /* ignore logout API errors — we clear local state either way */ }
+
+  // Disconnect WebSocket cleanly
+  if (STATE.wsSocket) {
+    STATE.wsSocket.close(1000, 'User logged out');
+    STATE.wsSocket = null;
+  }
+
+  sessionStorage.removeItem('spp_access_token');
+  sessionStorage.removeItem('spp_refresh_token');
+  window.location.href = '/login';
+}
+
+// ─────────────────────────────────────────────────────────────
+// 3. BOOTSTRAP
+// ─────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // ── Step 1: Verify authentication ──────────────────────────
+  // Hide the page until we know who the user is
+  document.getElementById('auth-loading').classList.remove('hidden');
+
+  const token = sessionStorage.getItem('spp_access_token');
+  if (!token) {
+    // No token at all — go straight to login
+    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+    return;
+  }
+
+  try {
+    const res = await apiFetch('/auth/me');
+    if (!res) return; // apiFetch already redirected
+
+    const { user } = await res.json();
+    STATE.currentUser = user;
+
+    // Populate top-bar user elements
+    document.getElementById('user-initials').textContent   = user.initials || 'U';
+    document.getElementById('user-avatar-btn').style.background = user.color || 'linear-gradient(135deg,#3B82F6,#06B6D4)';
+    document.getElementById('user-menu-name').textContent  = `${user.firstName} ${user.lastName}`;
+    document.getElementById('user-menu-email').textContent = user.email;
+
+    // Show admin nav section for super_admin
+    if (user.role === 'super_admin') {
+      document.getElementById('admin-nav-section').style.display = 'block';
+    }
+
+  } catch {
+    // GET /api/auth/me failed for a non-401 reason — still redirect
+    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+    return;
+  }
+
+  // ── Step 2: Register service worker ────────────────────────
+  registerServiceWorker();
+
+  // ── Step 3: Connect WebSocket ───────────────────────────────
+  connectWebSocket();
+
+  // ── Step 4: Online/offline detection ───────────────────────
+  window.addEventListener('online',  handleOnline);
+  window.addEventListener('offline', handleOffline);
+  if (!navigator.onLine) handleOffline();
+
+  // ── Step 5: Load initial plan data ─────────────────────────
+  await loadUserPlans();
+
+  // ── Step 6: Navigate to initial page ───────────────────────
+  const hash = window.location.hash.slice(1);
+  navigate(hash || 'dashboard', false);
+
+  // ── Step 7: Remove auth loading overlay ────────────────────
+  document.getElementById('auth-loading').classList.add('hidden');
+
+  // ── Step 8: Load notifications ─────────────────────────────
+  initNotifications();
+
+  // ── Keyboard navigation ─────────────────────────────────────
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+      closeUserMenu();
+      closeNotifications();
+    }
+  });
+
+  // Close menus on outside click
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('user-menu').contains(e.target) &&
+        !document.getElementById('user-avatar-btn').contains(e.target)) {
+      closeUserMenu();
+    }
+    if (!document.getElementById('notif-panel').contains(e.target) &&
+        !document.getElementById('notif-btn').contains(e.target)) {
+      closeNotifications();
+    }
+  });
+});
+
+/**
+ * registerServiceWorker()
+ * ────────────────────────
+ * Registers sw.js scoped to /app/ — this single call activates
+ * offline mode, background sync, and push notifications.
+ */
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+
+  navigator.serviceWorker.register('/sw.js', { scope: '/app/' })
+    .then(registration => {
+      STATE.swrRegistered = true;
+      console.log('[App] Service worker registered, scope:', registration.scope);
+
+      // Push the current access token to the SW immediately
+      const token = sessionStorage.getItem('spp_access_token');
+      if (token) pushTokenToServiceWorker(token);
+
+      // Listen for SW update available
+      registration.addEventListener('updatefound', () => {
+        const newSW = registration.installing;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            showToast('App update available — refresh to apply', 'info');
+          }
+        });
+      });
+    })
+    .catch(err => console.warn('[App] Service worker registration failed:', err));
+
+  // Listen for messages from the service worker
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    const { type } = event.data || {};
+    switch (type) {
+      case 'SYNC_COMPLETE':
+        processSyncComplete(event.data);
+        break;
+    }
+  });
+}
+
+/**
+ * connectWebSocket()
+ * ───────────────────
+ * Opens a WebSocket connection authenticated via the JWT query param.
+ * Wires PLAN_UPDATED and PRESENCE_UPDATE to the render layer.
+ * Implements automatic reconnect with exponential backoff.
+ */
+let _wsReconnectDelay = 1000;
+let _wsReconnectTimer = null;
+
+function connectWebSocket() {
+  const token = sessionStorage.getItem('spp_access_token');
+  if (!token) return;
+
+  // Use wss:// in production (https), ws:// in development (http)
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const socket = new WebSocket(`${proto}://${location.host}/ws?token=${encodeURIComponent(token)}`);
+
+  socket.addEventListener('open', () => {
+    console.log('[App] WebSocket connected');
+    STATE.wsSocket = socket;
+    _wsReconnectDelay = 1000; // reset backoff on successful connection
+
+    // If a plan is already loaded, subscribe to its room immediately
+    if (STATE.activePlan?._id) {
+      socket.send(JSON.stringify({ type: 'SUBSCRIBE_PLAN', planId: STATE.activePlan._id }));
+    }
+
+    // Start keepalive ping every 25 seconds
+    socket._pingInterval = setInterval(() => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: 'PING' }));
+      }
+    }, 25000);
+  });
+
+  socket.addEventListener('message', (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      handleWsMessage(msg);
+    } catch { /* ignore malformed messages */ }
+  });
+
+  socket.addEventListener('close', (event) => {
+    clearInterval(socket._pingInterval);
+    STATE.wsSocket = null;
+
+    // Don't reconnect on intentional close (code 1000 = normal, 4001/4002 = auth failure)
+    if (event.code === 1000 || event.code === 4001 || event.code === 4002) return;
+
+    // Exponential backoff reconnect (max 30 seconds)
+    console.log(`[App] WebSocket closed (${event.code}), reconnecting in ${_wsReconnectDelay}ms`);
+    _wsReconnectTimer = setTimeout(() => {
+      _wsReconnectDelay = Math.min(_wsReconnectDelay * 2, 30000);
+      connectWebSocket();
+    }, _wsReconnectDelay);
+  });
+
+  socket.addEventListener('error', (err) => {
+    console.warn('[App] WebSocket error:', err);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// 4. NAVIGATION
+// ─────────────────────────────────────────────────────────────
+
+const PAGE_INIT = {
+  dashboard:   initDashboard,
+  swot:        initSwot,
+  strategy:    initStrategy,
+  scorecard:   initScorecard,
+  initiatives: initInitiatives,
+  team:        initTeam,
+  activity:    initActivity,
+  templates:   initTemplates,
+  admin:       initAdmin,
+};
+
+function navigate(page, updateHash = true) {
+  if (!PAGE_INIT[page]) page = 'dashboard';
+
+  // Update page visibility
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pageEl = document.getElementById(`page-${page}`);
+  if (pageEl) pageEl.classList.add('active');
+
+  // Update nav item active state
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    const isActive = btn.dataset.page === page;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-current', isActive ? 'page' : 'false');
+  });
+
+  // Update URL hash without pushing to history
+  if (updateHash) history.replaceState(null, '', `/app/#${page}`);
+
+  // Close mobile sidebar on navigate
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('hamburger-btn')?.setAttribute('aria-expanded', 'false');
+
+  // Send cursor location via WebSocket
+  if (STATE.wsSocket?.readyState === WebSocket.OPEN && STATE.activePlan?._id) {
+    STATE.wsSocket.send(JSON.stringify({
+      type: 'CURSOR_MOVE', planId: STATE.activePlan._id, payload: { section: page },
+    }));
+  }
+
+  // Run page initialiser
+  PAGE_INIT[page]();
+}
+
+// ─────────────────────────────────────────────────────────────
+// 5. PLAN CRUD
+// ─────────────────────────────────────────────────────────────
+
+async function loadUserPlans() {
+  try {
+    const res  = await apiFetch('/plans');
+    if (!res) return;
+    const data = await res.json();
+
+    STATE.plans = [...(data.owned || []), ...(data.shared || [])];
+
+    // Auto-load the first owned plan if none is active
+    const lastPlanId = sessionStorage.getItem('spp_last_plan_id');
+    const toLoad = (lastPlanId && STATE.plans.find(p => p._id === lastPlanId))
+      || (data.owned?.[0])
+      || null;
+
+    if (toLoad) await loadPlan(toLoad._id);
+    else {
+      document.getElementById('plan-selector-name').textContent = 'Select a plan…';
+    }
+  } catch (err) {
+    console.error('[App] loadUserPlans error:', err);
+  }
+}
+
+async function loadPlan(planId) {
+  try {
+    const res  = await apiFetch(`/plans/${planId}`);
+    if (!res) return;
+    const data = await res.json();
+
+    STATE.activePlan = {
+      ...data.plan,
+      role:        data.role,
+      swot:        groupSwot(data.swotItems || []),
+      strategies:  data.strategies || [],
+      kpis:        data.kpis || [],
+      initiatives: data.initiatives || [],
+      comments:    data.comments || [],
+      members:     data.members || [],
+    };
+
+    document.getElementById('plan-selector-name').textContent  = data.plan.name;
+    document.getElementById('dashboard-plan-name').textContent = data.plan.period || data.plan.name;
+
+    sessionStorage.setItem('spp_last_plan_id', planId);
+
+    // Subscribe WebSocket room
+    if (STATE.wsSocket?.readyState === WebSocket.OPEN) {
+      STATE.wsSocket.send(JSON.stringify({ type: 'SUBSCRIBE_PLAN', planId }));
+    }
+
+    // Re-render current page
+    const currentPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'dashboard';
+    if (PAGE_INIT[currentPage]) PAGE_INIT[currentPage]();
+
+  } catch (err) {
+    showToast(`Failed to load plan: ${err.message}`, 'error');
+  }
+}
+
+function groupSwot(items) {
+  const g = { strengths: [], weaknesses: [], opportunities: [], threats: [] };
+  for (const item of items) {
+    if (g[item.category]) g[item.category].push(item);
+  }
+  return g;
+}
+
+async function openPlanSelector() {
+  try {
+    const res  = await apiFetch('/plans');
+    if (!res) return;
+    const data = await res.json();
+    STATE.plans = [...(data.owned || []), ...(data.shared || [])];
+
+    const list = document.getElementById('plan-selector-list');
+    if (!STATE.plans.length) {
+      list.innerHTML = `<div class="empty-state"><p>No plans yet. Create your first plan!</p></div>`;
+    } else {
+      list.innerHTML = STATE.plans.map(p => `
+        <div class="swot-item" tabindex="0" role="button"
+             onclick="loadPlan('${esc(p._id)}'); closeModal('modal-plan-selector')"
+             onkeydown="if(event.key==='Enter') { loadPlan('${esc(p._id)}'); closeModal('modal-plan-selector'); }">
+          <div class="swot-item-text">${esc(p.name)}</div>
+          <div class="swot-item-meta">${esc(p.period || '')} · ${p.ownerId === STATE.currentUser?._id ? 'Owner' : 'Shared'}</div>
+        </div>
+      `).join('');
+    }
+    openModal('modal-plan-selector');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function openNewPlanModal() {
+  closeModal('modal-plan-selector');
+  document.getElementById('plan-name-input').value   = '';
+  document.getElementById('plan-period-input').value = '';
+  document.getElementById('plan-desc-input').value   = '';
+  openModal('modal-new-plan');
+}
+
+async function createPlan() {
+  const name   = document.getElementById('plan-name-input').value.trim();
+  const period = document.getElementById('plan-period-input').value.trim();
+  const desc   = document.getElementById('plan-desc-input').value.trim();
+  if (!name) { showToast('Plan name is required', 'error'); return; }
+
+  try {
+    const res  = await apiFetch('/plans', { method: 'POST', body: JSON.stringify({ name, period, description: desc }) });
+    if (!res) return;
+    const data = await res.json();
+    closeModal('modal-new-plan');
+    showToast('Plan created', 'success');
+    await loadPlan(data.plan._id);
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 6. SWOT
+// ─────────────────────────────────────────────────────────────
+
+function initSwot() {
+  if (!STATE.activePlan) {
+    renderSwotEmpty();
+    return;
+  }
+  renderSwot();
+}
+
+function renderSwotEmpty() {
+  ['strengths','weaknesses','opportunities','threats'].forEach(cat => {
+    document.getElementById(`swot-${cat}`).innerHTML =
+      `<div class="empty-state" style="padding:20px 0"><p>No items yet. Add your first ${cat.slice(0,-1)}.</p></div>`;
+  });
+}
+
+function renderSwot() {
+  const swot = STATE.activePlan?.swot || {};
+  ['strengths','weaknesses','opportunities','threats'].forEach(cat => {
+    const container = document.getElementById(`swot-${cat}`);
+    const items = swot[cat] || [];
+    if (!items.length) {
+      container.innerHTML = `<div style="font-size:12px;color:var(--text-tertiary);padding:8px 0">No items yet</div>`;
+      return;
+    }
+    container.innerHTML = items.map(item => `
+      <div class="swot-item" tabindex="0" role="button"
+           aria-label="${esc(item.text)}"
+           onclick="openSwotItemMenu('${esc(item._id)}')"
+           onkeydown="if(event.key==='Enter') openSwotItemMenu('${esc(item._id)}')">
+        <div class="swot-item-text">${esc(item.text)}</div>
+        ${item.evidence ? `<div class="swot-item-meta">📎 ${esc(item.evidence)}</div>` : ''}
+        <div class="swot-item-meta" style="margin-top:4px">
+          <span class="badge ${item.impact === 'high' ? 'behind' : item.impact === 'medium' ? 'at-risk' : 'complete'}"
+                style="font-size:10px;padding:1px 6px">${esc(item.impact || 'medium')}</span>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+
+function openAddSwotModal(category = 'strengths') {
+  document.getElementById('swot-category').value  = category;
+  document.getElementById('swot-text').value      = '';
+  document.getElementById('swot-evidence').value  = '';
+  document.getElementById('swot-impact').value    = 'medium';
+  openModal('modal-swot');
+  document.getElementById('swot-text').focus();
+}
+
+async function saveSwotItem() {
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+
+  const category = document.getElementById('swot-category').value;
+  const text     = document.getElementById('swot-text').value.trim();
+  const evidence = document.getElementById('swot-evidence').value.trim();
+  const impact   = document.getElementById('swot-impact').value;
+
+  if (!text) { showToast('Statement is required', 'error'); return; }
+
+  const payload = { category, text, evidence, impact };
+
+  try {
+    if (STATE.isOnline) {
+      const res  = await apiFetch(`/plans/${STATE.activePlan._id}/swot`, { method: 'POST', body: JSON.stringify(payload) });
+      if (!res) return;
+      const data = await res.json();
+      STATE.activePlan.swot[category].push(data.item);
+    } else {
+      // Queue for background sync
+      const localItem = { ...payload, _id: `local-${Date.now()}`, planId: STATE.activePlan._id };
+      STATE.activePlan.swot[category].push(localItem);
+      await queueOfflineChange({ type: 'swot', operation: 'upsert', planId: STATE.activePlan._id, data: localItem });
+    }
+    closeModal('modal-swot');
+    renderSwot();
+    showToast('SWOT item saved', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function deleteSwotItem(itemId, category) {
+  if (!confirm('Delete this SWOT item?')) return;
+  try {
+    if (STATE.isOnline) {
+      const res = await apiFetch(`/plans/${STATE.activePlan._id}/swot/${itemId}`, { method: 'DELETE' });
+      if (!res) return;
+    } else {
+      await queueOfflineChange({ type: 'swot', operation: 'delete', planId: STATE.activePlan._id, data: { _id: itemId } });
+    }
+    STATE.activePlan.swot[category] = STATE.activePlan.swot[category].filter(i => i._id !== itemId);
+    renderSwot();
+    showToast('Item deleted', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function openSwotItemMenu(itemId) {
+  // Find item across all categories
+  const allItems = Object.values(STATE.activePlan?.swot || {}).flat();
+  const item = allItems.find(i => i._id === itemId);
+  if (!item) return;
+  if (confirm(`Delete: "${item.text.slice(0, 60)}…"?`)) {
+    deleteSwotItem(item._id, item.category);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 7. STRATEGY MATRIX
+// ─────────────────────────────────────────────────────────────
+
+function initStrategy() {
+  const container = document.getElementById('strategy-grid');
+  if (!STATE.activePlan) {
+    container.innerHTML = `<div class="empty-state"><p>Select a plan to view strategies</p></div>`;
+    return;
+  }
+  renderStrategy();
+}
+
+function renderStrategy() {
+  const strategies = STATE.activePlan?.strategies || [];
+  const types = { so: 'SO Strategies', st: 'ST Strategies', wo: 'WO Strategies', wt: 'WT Strategies' };
+  const colors = { so: 'var(--emerald-500)', st: 'var(--blue-400)', wo: 'var(--warning)', wt: 'var(--danger)' };
+
+  const container = document.getElementById('strategy-grid');
+  container.innerHTML = Object.entries(types).map(([type, label]) => {
+    const items = strategies.filter(s => s.type === type);
+    return `
+      <div class="glass-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600;color:${colors[type]}">${label}</span>
+          <button class="btn-secondary" style="padding:4px 10px;font-size:11px" onclick="openAddStrategyModal('${type}')">+ Add</button>
+        </div>
+        ${items.length
+          ? items.map(s => `
+            <div class="swot-item" style="position:relative">
+              <div class="swot-item-text">${esc(s.text)}</div>
+              <div class="swot-item-meta" style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
+                <span class="badge ${s.priority === 'high' ? 'behind' : s.priority === 'medium' ? 'at-risk' : 'complete'}"
+                      style="font-size:10px;padding:1px 6px">${esc(s.priority)}</span>
+                <button class="btn-danger" style="padding:2px 8px;font-size:10px;border-radius:6px"
+                        onclick="deleteStrategy('${esc(s._id)}')">Delete</button>
+              </div>
+            </div>
+          `).join('')
+          : `<div style="font-size:12px;color:var(--text-tertiary)">No strategies yet</div>`
+        }
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddStrategyModal(type = 'so') {
+  document.getElementById('strategy-type').value     = type;
+  document.getElementById('strategy-text').value     = '';
+  document.getElementById('strategy-priority').value = 'medium';
+  openModal('modal-strategy');
+  document.getElementById('strategy-text').focus();
+}
+
+async function saveStrategy() {
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+  const type     = document.getElementById('strategy-type').value;
+  const text     = document.getElementById('strategy-text').value.trim();
+  const priority = document.getElementById('strategy-priority').value;
+  if (!text) { showToast('Strategy statement is required', 'error'); return; }
+
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/strategies`, { method: 'POST', body: JSON.stringify({ type, text, priority }) });
+    if (!res) return;
+    const data = await res.json();
+    STATE.activePlan.strategies.push(data.item);
+    closeModal('modal-strategy');
+    renderStrategy();
+    showToast('Strategy saved', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 8. SCORECARD / KPIs
+// ─────────────────────────────────────────────────────────────
+
+function initScorecard() {
+  const tbody = document.getElementById('kpi-tbody');
+  if (!STATE.activePlan) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>Select a plan to view KPIs</p></div></td></tr>`;
+    return;
+  }
+  renderScorecard();
+}
+
+function renderScorecard() {
+  const kpis = STATE.activePlan?.kpis || [];
+  const tbody = document.getElementById('kpi-tbody');
+  if (!kpis.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>No KPIs yet. Add your first KPI.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = kpis.map(k => `
+    <tr>
+      <td style="font-weight:500">${esc(k.kpi)}</td>
+      <td><span class="badge on-track" style="text-transform:capitalize">${esc(k.perspective)}</span></td>
+      <td>${esc(k.target)}</td>
+      <td>${esc(k.actual || '—')}</td>
+      <td><span class="badge ${k.status || 'on-track'}">${esc(k.status || 'on-track').replace('-',' ')}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn-secondary" style="padding:3px 10px;font-size:11px;margin-right:4px"
+                onclick="openUpdateKPIModal('${esc(k._id)}')">Edit</button>
+        <button class="btn-secondary" style="padding:3px 10px;font-size:11px"
+                onclick="deleteKPI('${esc(k._id)}')">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openAddKPIModal() {
+  ['kpi-name','kpi-target','kpi-actual','kpi-unit'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('kpi-perspective').value = 'financial';
+  document.getElementById('kpi-status').value      = 'on-track';
+  openModal('modal-kpi');
+  document.getElementById('kpi-name').focus();
+}
+
+async function saveKPI() {
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+  const kpi         = document.getElementById('kpi-name').value.trim();
+  const perspective = document.getElementById('kpi-perspective').value;
+  const target      = document.getElementById('kpi-target').value.trim();
+  const actual      = document.getElementById('kpi-actual').value.trim();
+  const unit        = document.getElementById('kpi-unit').value.trim();
+  const status      = document.getElementById('kpi-status').value;
+  if (!kpi || !target) { showToast('KPI name and target are required', 'error'); return; }
+
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/kpis`, { method: 'POST', body: JSON.stringify({ kpi, perspective, target, actual, unit, status }) });
+    if (!res) return;
+    const data = await res.json();
+    STATE.activePlan.kpis.push(data.item);
+    closeModal('modal-kpi');
+    renderScorecard();
+    showToast('KPI saved', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function deleteKPI(id) {
+  if (!confirm('Delete this KPI?')) return;
+  try {
+    await apiFetch(`/plans/${STATE.activePlan._id}/kpis/${id}`, { method: 'DELETE' });
+    STATE.activePlan.kpis = STATE.activePlan.kpis.filter(k => k._id !== id);
+    renderScorecard();
+    showToast('KPI deleted', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 9. INITIATIVES
+// ─────────────────────────────────────────────────────────────
+
+function initInitiatives() {
+  if (!STATE.activePlan) { document.getElementById('initiatives-list').innerHTML = `<div class="empty-state"><p>Select a plan to view initiatives</p></div>`; return; }
+  renderInitiatives();
+}
+
+function renderInitiatives() {
+  const items = STATE.activePlan?.initiatives || [];
+  const totalBudget   = items.reduce((s,i) => s + (i.budget || 0), 0);
+  const totalUtilized = items.reduce((s,i) => s + (i.utilized || 0), 0);
+
+  document.getElementById('budget-metrics').innerHTML = `
+    <div class="metric-card"><div class="metric-label">Total Budget</div><div class="metric-value">₱${fmt(totalBudget)}</div></div>
+    <div class="metric-card"><div class="metric-label">Utilized</div><div class="metric-value">₱${fmt(totalUtilized)}</div></div>
+    <div class="metric-card"><div class="metric-label">Remaining</div><div class="metric-value">₱${fmt(totalBudget - totalUtilized)}</div></div>
+    <div class="metric-card"><div class="metric-label">Initiatives</div><div class="metric-value">${items.length}</div></div>
+  `;
+
+  const list = document.getElementById('initiatives-list');
+  if (!items.length) { list.innerHTML = `<div class="empty-state"><p>No initiatives yet.</p></div>`; return; }
+  list.innerHTML = items.map(i => `
+    <div class="glass-card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <div style="font-weight:600;margin-bottom:4px">${esc(i.name)}</div>
+          <div style="font-size:12px;color:var(--text-secondary)">${esc(i.type)} · Owner: ${esc(i.owner||'—')} · Due: ${esc(i.dueDate||'—')}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:12px">
+          <span class="badge ${i.status||'on-track'}">${esc(i.status||'on-track').replace('-',' ')}</span>
+          <button class="btn-secondary" style="padding:3px 8px;font-size:11px"
+                  onclick="openUpdateInitiativeModal('${esc(i._id)}')">Edit</button>
+          <button class="btn-secondary" style="padding:3px 8px;font-size:11px"
+                  onclick="openCommentModal('${esc(i._id)}','initiative','${esc(i.name)}')">💬</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="prog-bar-bg" style="flex:1">
+          <div class="prog-bar-fg" style="width:${i.progress||0}%;background:linear-gradient(90deg,var(--blue-500),var(--cyan-500))"></div>
+        </div>
+        <span style="font-size:12px;color:var(--text-secondary);min-width:36px;text-align:right">${i.progress||0}%</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:8px">Budget: ₱${fmt(i.budget||0)} · Utilized: ₱${fmt(i.utilized||0)}</div>
+    </div>
+  `).join('');
+}
+
+function openAddInitiativeModal() {
+  ['init-name','init-owner'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('init-type').value   = 'program';
+  document.getElementById('init-budget').value = '';
+  document.getElementById('init-due').value    = '';
+  openModal('modal-initiative');
+  document.getElementById('init-name').focus();
+}
+
+async function saveInitiative() {
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+  const name   = document.getElementById('init-name').value.trim();
+  const type   = document.getElementById('init-type').value;
+  const owner  = document.getElementById('init-owner').value.trim();
+  const budget = parseFloat(document.getElementById('init-budget').value) || 0;
+  const due    = document.getElementById('init-due').value;
+  if (!name) { showToast('Initiative name is required', 'error'); return; }
+
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/initiatives`, { method: 'POST', body: JSON.stringify({ name, type, owner, budget, dueDate: due }) });
+    if (!res) return;
+    const data = await res.json();
+    STATE.activePlan.initiatives.push(data.item);
+    closeModal('modal-initiative');
+    renderInitiatives();
+    showToast('Initiative saved', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 9b. STRATEGY — DELETE
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * deleteStrategy(id)
+ * DELETE /api/plans/:planId/strategies/:id
+ * Only removes from STATE on confirmed server success.
+ */
+async function deleteStrategy(id) {
+  if (!confirm('Delete this strategy?')) return;
+  try {
+    await apiFetch(`/plans/${STATE.activePlan._id}/strategies/${id}`, { method: 'DELETE' });
+    STATE.activePlan.strategies = STATE.activePlan.strategies.filter(s => s._id !== id);
+    renderStrategy();
+    showToast('Strategy deleted', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 9c. KPIs — UPDATE (PATCH)
+// ─────────────────────────────────────────────────────────────
+
+function openUpdateKPIModal(id) {
+  const kpi = STATE.activePlan?.kpis.find(k => k._id === id);
+  if (!kpi) return;
+  document.getElementById('kpi-edit-id').value     = kpi._id;
+  document.getElementById('kpi-edit-actual').value = kpi.actual || '';
+  document.getElementById('kpi-edit-target').value = kpi.target || '';
+  document.getElementById('kpi-edit-status').value = kpi.status || 'on-track';
+  document.getElementById('modal-kpi-edit-title').textContent = `Update: ${kpi.kpi}`;
+  openModal('modal-kpi-edit');
+  document.getElementById('kpi-edit-actual').focus();
+}
+
+/**
+ * updateKPI()
+ * PATCH /api/plans/:planId/kpis/:id
+ * Updates actual, target, status. Status → 'behind'|'at-risk' triggers
+ * a KPI alert email to the plan owner (server-side in routes.js).
+ * Only updates STATE on confirmed server success.
+ */
+async function updateKPI() {
+  const id     = document.getElementById('kpi-edit-id').value;
+  const actual = document.getElementById('kpi-edit-actual').value.trim();
+  const target = document.getElementById('kpi-edit-target').value.trim();
+  const status = document.getElementById('kpi-edit-status').value;
+  if (!id) return;
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/kpis/${id}`, {
+      method: 'PATCH',
+      body:   JSON.stringify({ actual, target, status }),
+    });
+    if (!res) return;
+    const data = await res.json();
+    const idx = STATE.activePlan.kpis.findIndex(k => k._id === id);
+    if (idx > -1) STATE.activePlan.kpis[idx] = data.item;
+    closeModal('modal-kpi-edit');
+    renderScorecard();
+    showToast('KPI updated', 'success');
+    if (['behind', 'at-risk'].includes(status)) {
+      showToast(`KPI status is "${status.replace('-',' ')}" — plan owner notified`, 'warning');
+    }
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 9d. INITIATIVES — UPDATE (PATCH) + DELETE
+// ─────────────────────────────────────────────────────────────
+
+function openUpdateInitiativeModal(id) {
+  const item = STATE.activePlan?.initiatives.find(i => i._id === id);
+  if (!item) return;
+  document.getElementById('init-edit-id').value       = item._id;
+  document.getElementById('init-edit-name').value     = item.name || '';
+  document.getElementById('init-edit-owner').value    = item.owner || '';
+  document.getElementById('init-edit-utilized').value = item.utilized ?? '';
+  document.getElementById('init-edit-progress').value = item.progress ?? '';
+  document.getElementById('init-edit-status').value   = item.status || 'on-track';
+  document.getElementById('modal-initiative-edit-title').textContent = `Update: ${item.name}`;
+  openModal('modal-initiative-edit');
+  document.getElementById('init-edit-name').focus();
+}
+
+/**
+ * updateInitiative()
+ * PATCH /api/plans/:planId/initiatives/:id
+ * Only updates STATE on confirmed server success.
+ */
+async function updateInitiative() {
+  const id       = document.getElementById('init-edit-id').value;
+  const name     = document.getElementById('init-edit-name').value.trim();
+  const owner    = document.getElementById('init-edit-owner').value.trim();
+  const utilized = parseFloat(document.getElementById('init-edit-utilized').value) || 0;
+  const progress = Math.min(100, Math.max(0, parseInt(document.getElementById('init-edit-progress').value) || 0));
+  const status   = document.getElementById('init-edit-status').value;
+  if (!name) { showToast('Initiative name is required', 'error'); return; }
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/initiatives/${id}`, {
+      method: 'PATCH',
+      body:   JSON.stringify({ name, owner, utilized, progress, status }),
+    });
+    if (!res) return;
+    const data = await res.json();
+    const idx = STATE.activePlan.initiatives.findIndex(i => i._id === id);
+    if (idx > -1) STATE.activePlan.initiatives[idx] = data.item;
+    closeModal('modal-initiative-edit');
+    renderInitiatives();
+    showToast('Initiative updated', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * deleteInitiative(id)
+ * DELETE /api/plans/:planId/initiatives/:id
+ * Closes edit modal, then soft-deletes server-side.
+ * Only removes from STATE on confirmed server success.
+ */
+async function deleteInitiative(id) {
+  if (!id || !confirm('Delete this initiative? This cannot be undone.')) return;
+  closeModal('modal-initiative-edit');
+  try {
+    await apiFetch(`/plans/${STATE.activePlan._id}/initiatives/${id}`, { method: 'DELETE' });
+    STATE.activePlan.initiatives = STATE.activePlan.initiatives.filter(i => i._id !== id);
+    renderInitiatives();
+    showToast('Initiative deleted', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 9e. COMMENTS — ADD
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * openCommentModal(entityId, entityType, entityName)
+ * Opens the add comment modal pre-filled with entity context.
+ * Call from any entity card: SWOT, KPI, initiative, strategy.
+ */
+function openCommentModal(entityId, entityType, entityName) {
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+  document.getElementById('comment-entity-id').value   = entityId;
+  document.getElementById('comment-entity-type').value = entityType;
+  document.getElementById('comment-entity-name').value = entityName;
+  document.getElementById('comment-context-label').textContent = `On ${entityType}: "${entityName}"`;
+  document.getElementById('comment-text').value = '';
+  openModal('modal-comment');
+  document.getElementById('comment-text').focus();
+}
+
+/**
+ * addComment()
+ * POST /api/plans/:planId/comments
+ * Side-effects (server-side): notifies plan owner via WS + email,
+ * broadcasts COMMENT_ADDED to all plan subscribers, creates notification.
+ * Only pushes to STATE.activePlan.comments on server success.
+ */
+async function addComment() {
+  const entityId   = document.getElementById('comment-entity-id').value;
+  const entityType = document.getElementById('comment-entity-type').value;
+  const entityName = document.getElementById('comment-entity-name').value;
+  const text       = document.getElementById('comment-text').value.trim();
+  if (!text)     { showToast('Comment cannot be empty', 'error'); return; }
+  if (!entityId) { showToast('No entity selected', 'error'); return; }
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/comments`, {
+      method: 'POST',
+      body:   JSON.stringify({ entityId, entityType, entityName, text }),
+    });
+    if (!res) return;
+    const data = await res.json();
+    STATE.activePlan.comments = STATE.activePlan.comments || [];
+    STATE.activePlan.comments.push(data.comment);
+    closeModal('modal-comment');
+    showToast('Comment posted', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 10. NOTIFICATIONS
+// ─────────────────────────────────────────────────────────────
+
+async function initNotifications() {
+  try {
+    const res  = await apiFetch('/notifications');
+    if (!res) return;
+    const data = await res.json();
+    STATE.notifications = data.items || [];
+    STATE.unreadCount   = data.unread || 0;
+    renderNotifications();
+  } catch { /* non-critical */ }
+}
+
+function renderNotifications() {
+  const dot  = document.getElementById('notif-dot');
+  dot.style.display = STATE.unreadCount > 0 ? 'block' : 'none';
+
+  const nav = document.querySelector('.nav-item[data-page]'); // update if there's a notif nav badge
+  const list = document.getElementById('notif-list');
+  if (!STATE.notifications.length) {
+    list.innerHTML = `<div class="empty-state" style="padding:32px 20px"><div class="empty-state-icon">🔔</div><p>No notifications</p></div>`;
+    return;
+  }
+  list.innerHTML = STATE.notifications.map(n => `
+    <div class="notif-item${n.read ? '' : ' unread'}" onclick="markNotificationRead('${esc(n._id)}')">
+      <div class="notif-item-title">${esc(n.title||'Notification')}</div>
+      <div class="notif-item-body">${esc(n.message||'')}</div>
+      <div class="notif-item-time">${formatDate(n.createdAt)}</div>
+    </div>
+  `).join('');
+}
+
+function toggleNotifications() {
+  const panel = document.getElementById('notif-panel');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  document.getElementById('notif-btn').setAttribute('aria-expanded', String(!isOpen));
+}
+
+function closeNotifications() {
+  document.getElementById('notif-panel').classList.remove('open');
+  document.getElementById('notif-btn').setAttribute('aria-expanded', 'false');
+}
+
+async function markNotificationRead(id) {
+  try {
+    await apiFetch(`/notifications/${id}/read`, { method: 'PATCH' });
+    const n = STATE.notifications.find(n => n._id === id);
+    if (n && !n.read) { n.read = true; STATE.unreadCount = Math.max(0, STATE.unreadCount - 1); }
+    renderNotifications();
+  } catch { /* non-critical */ }
+}
+
+async function markAllNotificationsRead() {
+  try {
+    await apiFetch('/notifications/read-all', { method: 'PATCH' });
+    STATE.notifications.forEach(n => n.read = true);
+    STATE.unreadCount = 0;
+    renderNotifications();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 11. ACTIVITY LOG
+// ─────────────────────────────────────────────────────────────
+
+async function initActivity() {
+  const container = document.getElementById('activity-list');
+  if (!STATE.activePlan) { container.innerHTML = `<div class="empty-state"><p>Select a plan to view activity</p></div>`; return; }
+
+  try {
+    const res  = await apiFetch(`/plans/${STATE.activePlan._id}/activity`);
+    if (!res) return;
+    const data = await res.json();
+    const items = data.items || [];
+    if (!items.length) { container.innerHTML = `<div class="empty-state"><p>No activity recorded yet</p></div>`; return; }
+    container.innerHTML = items.map(a => `
+      <div class="glass-card" style="margin-bottom:10px;padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <span style="font-weight:500;font-size:13px">${esc(a.userName||'System')}</span>
+            <span style="font-size:13px;color:var(--text-secondary)"> ${esc(a.details||a.action)}</span>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);flex-shrink:0;margin-left:12px">${formatDate(a.createdAt)}</span>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><p>Failed to load activity: ${esc(err.message)}</p></div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 12. TEMPLATES
+// ─────────────────────────────────────────────────────────────
+
+async function initTemplates() {
+  const grid = document.getElementById('templates-grid');
+  try {
+    const res  = await apiFetch('/templates');
+    if (!res) return;
+    const data = await res.json();
+    const all  = [...(data.public||[]), ...(data.my||[])];
+    if (!all.length) { grid.innerHTML = `<div class="empty-state"><p>No templates available</p></div>`; return; }
+    grid.innerHTML = all.map(t => `
+      <div class="glass-card" style="cursor:pointer" onclick="applyTemplate('${esc(t._id)}')">
+        <div style="font-size:24px;margin-bottom:10px">${t.emoji||'📋'}</div>
+        <div style="font-weight:600;margin-bottom:6px">${esc(t.name)}</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">${esc(t.description||'')}</div>
+        <span class="badge on-track" style="font-size:10px">${esc(t.industry)}</span>
+        ${t.isBuiltIn ? `<span class="badge complete" style="font-size:10px;margin-left:4px">Built-in</span>` : ''}
+      </div>
+    `).join('');
+  } catch (err) {
+    grid.innerHTML = `<div class="empty-state"><p>Failed to load templates: ${esc(err.message)}</p></div>`;
+  }
+}
+
+async function applyTemplate(templateId) {
+  const name = prompt('Enter name for the new plan:');
+  if (!name) return;
+  try {
+    const res  = await apiFetch('/plans', { method: 'POST', body: JSON.stringify({ name, templateId }) });
+    if (!res) return;
+    const data = await res.json();
+    showToast('Plan created from template', 'success');
+    await loadPlan(data.plan._id);
+    navigate('dashboard');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 13. TEAM — MEMBERS, INVITE, SHARE PLAN
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * initTeam()
+ * ──────────
+ * Renders the team page with:
+ *   - Plan members (from STATE.activePlan.members loaded via GET /api/plans/:id)
+ *   - Organisation selector refreshed from GET /api/orgs
+ * The members array is already in STATE from loadPlan() so no extra
+ * fetch is needed here — just render what we have.
+ */
+async function initTeam() {
+  const container = document.getElementById('team-content');
+  if (!STATE.activePlan) {
+    container.innerHTML = `<div class="empty-state"><p>Select a plan to view team</p></div>`;
+    return;
+  }
+
+  const members = STATE.activePlan.members || [];
+  const canEdit = ['editor','admin'].includes(STATE.activePlan.role);
+
+  // Build member rows — user details are embedded by GET /api/plans/:id
+  const memberRows = members.length
+    ? members.map(m => `
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="width:36px;height:36px;border-radius:50%;background:${esc(m.user?.color||'var(--blue-600)')};
+               display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">
+            ${esc(m.user?.initials||'U')}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+              ${esc(m.user ? `${m.user.firstName} ${m.user.lastName}` : 'Unknown user')}
+              ${m.userId === STATE.currentUser?._id
+                ? '<span style="font-size:10px;color:var(--text-tertiary);margin-left:6px">(you)</span>' : ''}
+            </div>
+            <div style="font-size:11px;color:var(--text-secondary)">${esc(m.user?.email||'')}</div>
+          </div>
+          <span class="badge ${m.role === 'admin' ? 'complete' : m.role === 'editor' ? 'on-track' : 'at-risk'}"
+                style="flex-shrink:0">${esc(m.role)}</span>
+        </div>
+      `).join('')
+    : `<p style="font-size:13px;color:var(--text-secondary);padding:12px 0">No members yet — share this plan to add collaborators.</p>`;
+
+  container.innerHTML = `
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
+
+      <!-- Plan members card -->
+      <div class="glass-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <span style="font-size:13px;font-weight:600">Plan Members</span>
+          ${canEdit ? `<button class="btn-secondary" style="padding:4px 12px;font-size:11px"
+              onclick="openShareModal()">Share Plan</button>` : ''}
+        </div>
+        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
+          <strong>${esc(STATE.activePlan.name)}</strong>
+          &nbsp;·&nbsp; Your role:
+          <span class="badge ${STATE.activePlan.role === 'admin' ? 'complete' : 'on-track'}">
+            ${esc(STATE.activePlan.role||'viewer')}
+          </span>
+        </p>
+        <div>${memberRows}</div>
+      </div>
+
+      <!-- Org invite card -->
+      <div class="glass-card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">Invite to Organisation</div>
+        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">
+          Invite a colleague to your organisation. Once they accept they can be
+          given access to individual plans via Share Plan.
+        </p>
+        <button class="btn-primary" style="width:100%;justify-content:center"
+                onclick="openInviteModal()">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
+          </svg>
+          + Invite Member
+        </button>
+      </div>
+
+    </div>
+  `;
+}
+
+/**
+ * openInviteModal()
+ * ──────────────────
+ * Loads the user's organisations from GET /api/orgs, populates the
+ * dropdown, then opens the invite modal.
+ * POST /api/orgs/:id/invite is called by sendInvite() below.
+ */
+async function openInviteModal() {
+  const select = document.getElementById('invite-org-select');
+  select.innerHTML = '<option value="">Loading…</option>';
+  document.getElementById('invite-email').value = '';
+  document.getElementById('invite-role').value  = 'editor';
+
+  try {
+    const res  = await apiFetch('/orgs');
+    if (!res) return;
+    const { orgs = [] } = await res.json();
+
+    if (!orgs.length) {
+      select.innerHTML = '<option value="">No organisations — create one first</option>';
+    } else {
+      select.innerHTML = orgs
+        .map(o => `<option value="${esc(o._id)}">${esc(o.name)}</option>`)
+        .join('');
+    }
+    openModal('modal-invite');
+    document.getElementById('invite-email').focus();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * sendInvite()
+ * ─────────────
+ * POST /api/orgs/:orgId/invite  { email, role }
+ *
+ * Side-effects (server-side):
+ *   - Inserts pending invitation record in invitations.db (7-day expiry)
+ *   - Sends invite email via email.sendInviteToOrg()
+ *   - Logs activity to activity_log.db
+ *
+ * No STATE mutation needed — invitations live in their own DB collection.
+ */
+async function sendInvite() {
+  const orgId = document.getElementById('invite-org-select').value;
+  const email = document.getElementById('invite-email').value.trim();
+  const role  = document.getElementById('invite-role').value;
+
+  if (!orgId) { showToast('Please select an organisation', 'error'); return; }
+  if (!email) { showToast('Email address is required', 'error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid email address', 'error'); return;
+  }
+
+  try {
+    const res = await apiFetch(`/orgs/${orgId}/invite`, {
+      method: 'POST',
+      body:   JSON.stringify({ email, role }),
+    });
+    if (!res) return;
+    closeModal('modal-invite');
+    showToast(`Invitation sent to ${email}`, 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+/**
+ * openShareModal()
+ * ─────────────────
+ * Opens the share plan modal pre-labelled with the active plan name.
+ * Checks the user has editor or admin access before showing the modal.
+ */
+function openShareModal() {
+  if (!STATE.activePlan) { showToast('No active plan selected', 'error'); return; }
+  if (!['editor','admin'].includes(STATE.activePlan.role)) {
+    showToast('You need editor or admin access to share this plan', 'warning');
+    return;
+  }
+  document.getElementById('share-plan-label').textContent =
+    `Share "${STATE.activePlan.name}" with a team member by email.`;
+  document.getElementById('share-email').value      = '';
+  document.getElementById('share-permission').value = 'editor';
+  openModal('modal-share');
+  document.getElementById('share-email').focus();
+}
+
+/**
+ * sharePlan()
+ * ────────────
+ * POST /api/plans/:planId/share  { email, permission }
+ *
+ * Side-effects (server-side):
+ *   - Inserts or updates plan_members record in plan_members.db
+ *   - Sends share email via email.sendSharePlan()
+ *   - Creates notification for target user in notifications.db
+ *   - WebSocket pushes NOTIFICATION to target user if they're online
+ *
+ * No STATE mutation needed — members are reloaded via initTeam()
+ * which reads from STATE.activePlan.members (refreshed on next loadPlan).
+ */
+async function sharePlan() {
+  const email      = document.getElementById('share-email').value.trim();
+  const permission = document.getElementById('share-permission').value;
+
+  if (!email) { showToast('Email address is required', 'error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid email address', 'error'); return;
+  }
+  if (!STATE.activePlan) { showToast('No active plan', 'error'); return; }
+
+  try {
+    const res = await apiFetch(`/plans/${STATE.activePlan._id}/share`, {
+      method: 'POST',
+      body:   JSON.stringify({ email, permission }),
+    });
+    if (!res) return;
+    closeModal('modal-share');
+    showToast(`Plan shared with ${email} as ${permission}`, 'success');
+
+    // Reload team page members list to show the new member
+    if (document.getElementById('page-team').classList.contains('active')) {
+      // Reload full plan to get updated members array, then re-render
+      await loadPlan(STATE.activePlan._id);
+    }
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 14. ADMIN
+// ─────────────────────────────────────────────────────────────
+
+async function initAdmin() {
+  if (STATE.currentUser?.role !== 'super_admin') {
+    document.getElementById('admin-content').innerHTML = `<div class="empty-state"><p>Access restricted to administrators</p></div>`;
+    return;
+  }
+  const container = document.getElementById('admin-content');
+  try {
+    const res  = await apiFetch('/admin/stats');
+    if (!res) return;
+    const data = await res.json();
+    container.innerHTML = `
+      <div class="metric-grid" style="margin-bottom:20px">
+        <div class="metric-card"><div class="metric-label">Users</div><div class="metric-value">${data.users||0}</div></div>
+        <div class="metric-card"><div class="metric-label">Plans</div><div class="metric-value">${data.plans||0}</div></div>
+        <div class="metric-card"><div class="metric-label">Organisations</div><div class="metric-value">${data.organizations||0}</div></div>
+        <div class="metric-card"><div class="metric-label">WS Connections</div><div class="metric-value">${data.ws?.totalConnections||0}</div></div>
+      </div>
+      <div class="glass-card">
+        <p style="font-size:13px;color:var(--text-secondary)">Server uptime: ${Math.floor((data.uptime||0)/60)} minutes</p>
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><p>Failed to load admin stats: ${esc(err.message)}</p></div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 15. DASHBOARD
+// ─────────────────────────────────────────────────────────────
+
+function initDashboard() {
+  if (!STATE.activePlan) {
+    document.getElementById('dashboard-metrics').innerHTML = `
+      <div class="glass-card" style="grid-column:1/-1;text-align:center;padding:40px">
+        <div style="font-size:18px;font-weight:600;margin-bottom:10px">Welcome to Strat Planner Pro</div>
+        <p style="color:var(--text-secondary);margin-bottom:20px">Create your first strategic plan to get started</p>
+        <button class="btn-primary" onclick="openNewPlanModal()">+ Create Plan</button>
+      </div>`;
+    return;
+  }
+
+  const swot        = STATE.activePlan.swot || {};
+  const swotTotal   = Object.values(swot).flat().length;
+  const strategies  = STATE.activePlan.strategies?.length || 0;
+  const kpis        = STATE.activePlan.kpis?.length || 0;
+  const initiatives = STATE.activePlan.initiatives?.length || 0;
+
+  const onTrack = (STATE.activePlan.kpis||[]).filter(k => k.status === 'on-track').length;
+  const pctOnTrack = kpis ? Math.round((onTrack / kpis) * 100) : 0;
+
+  document.getElementById('dashboard-metrics').innerHTML = `
+    <div class="metric-card"><div class="metric-label">SWOT Items</div><div class="metric-value">${swotTotal}</div></div>
+    <div class="metric-card"><div class="metric-label">Strategies</div><div class="metric-value">${strategies}</div></div>
+    <div class="metric-card"><div class="metric-label">KPIs</div><div class="metric-value">${kpis}</div></div>
+    <div class="metric-card"><div class="metric-label">Initiatives</div><div class="metric-value">${initiatives}</div></div>
+    <div class="metric-card"><div class="metric-label">On Track</div><div class="metric-value" style="color:var(--emerald-500)">${pctOnTrack}%</div></div>
+  `;
+
+  renderDashboardCharts();
+}
+
+function renderDashboardCharts() {
+  const kpis = STATE.activePlan?.kpis || [];
+  const statusCounts = { 'on-track': 0, 'at-risk': 0, 'behind': 0, 'complete': 0 };
+  kpis.forEach(k => { if (statusCounts[k.status] !== undefined) statusCounts[k.status]++; });
+
+  const ctxProgress = document.getElementById('progressChart');
+  const ctxSwot     = document.getElementById('swotChart');
+
+  if (ctxProgress && window.Chart) {
+    if (ctxProgress._chart) ctxProgress._chart.destroy();
+    ctxProgress._chart = new Chart(ctxProgress, {
+      type: 'doughnut',
+      data: {
+        labels: ['On Track', 'At Risk', 'Behind', 'Complete'],
+        datasets: [{ data: Object.values(statusCounts), backgroundColor: ['#10B981','#F59E0B','#EF4444','#3B82F6'], borderWidth: 0 }],
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: 'rgba(255,255,255,0.6)', font: { size: 11 }, boxWidth: 10 } } } },
+    });
+  }
+
+  const swot = STATE.activePlan?.swot || {};
+  if (ctxSwot && window.Chart) {
+    if (ctxSwot._chart) ctxSwot._chart.destroy();
+    ctxSwot._chart = new Chart(ctxSwot, {
+      type: 'bar',
+      data: {
+        labels: ['Strengths', 'Weaknesses', 'Opportunities', 'Threats'],
+        datasets: [{ data: [swot.strengths?.length||0, swot.weaknesses?.length||0, swot.opportunities?.length||0, swot.threats?.length||0], backgroundColor: ['#10B981','#EF4444','#3B82F6','#F59E0B'], borderWidth: 0, borderRadius: 6 }],
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { display: false } }, y: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true } } },
+    });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 16. REAL-TIME — WebSocket message handler
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * handleWsMessage(msg)
+ * ─────────────────────
+ * Dispatches incoming WebSocket messages to the appropriate handler.
+ */
+function handleWsMessage(msg) {
+  switch (msg.type) {
+
+    case 'PLAN_UPDATED':
+      // Only apply if it's for the current plan
+      if (STATE.activePlan && msg.planId === STATE.activePlan._id) {
+        applyRemoteUpdate(msg.payload);
+      }
+      break;
+
+    case 'PRESENCE_UPDATE':
+      if (STATE.activePlan && msg.planId === STATE.activePlan._id) {
+        renderPresence(msg.payload.members || []);
+      }
+      break;
+
+    case 'COMMENT_ADDED':
+      if (STATE.activePlan && msg.planId === STATE.activePlan._id) {
+        STATE.activePlan.comments = STATE.activePlan.comments || [];
+        STATE.activePlan.comments.push(msg.payload.comment);
+      }
+      break;
+
+    case 'NOTIFICATION':
+      // Push notification into local state and re-render the panel
+      const n = { ...msg.payload, _id: `ws-${Date.now()}`, read: false, createdAt: new Date().toISOString() };
+      STATE.notifications.unshift(n);
+      STATE.unreadCount++;
+      renderNotifications();
+      showToast(msg.payload.message || 'New notification', 'info');
+      break;
+
+    case 'CONNECTED':
+      console.log('[App] WS confirmed connected, userId:', msg.payload?.userId);
+      break;
+
+    case 'CURSOR_UPDATE':
+      // Optional: render cursor positions for other users
+      break;
+
+    case 'PONG':
+      // Heartbeat reply — no action needed
+      break;
+
+    default:
+      console.log('[App] Unknown WS message type:', msg.type);
+  }
+}
+
+/**
+ * applyRemoteUpdate(payload)
+ * ──────────────────────────
+ * Applies a PLAN_UPDATED diff from another user to local STATE
+ * and re-renders the affected section without a full reload.
+ *
+ * payload: { section, action, item?, id? }
+ */
+function applyRemoteUpdate(payload) {
+  const { section, action, item, id } = payload;
+
+  switch (section) {
+
+    case 'swot':
+      if (!STATE.activePlan.swot) STATE.activePlan.swot = {};
+      if (action === 'add' && item) {
+        if (!STATE.activePlan.swot[item.category]) STATE.activePlan.swot[item.category] = [];
+        // Only add if not already present (idempotent)
+        if (!STATE.activePlan.swot[item.category].find(i => i._id === item._id)) {
+          STATE.activePlan.swot[item.category].push(item);
+        }
+        if (document.getElementById('page-swot').classList.contains('active')) renderSwot();
+      } else if (action === 'update' && item) {
+        for (const cat of Object.keys(STATE.activePlan.swot)) {
+          const idx = STATE.activePlan.swot[cat].findIndex(i => i._id === item._id);
+          if (idx > -1) { STATE.activePlan.swot[cat][idx] = item; break; }
+        }
+        if (document.getElementById('page-swot').classList.contains('active')) renderSwot();
+      } else if (action === 'delete' && id) {
+        for (const cat of Object.keys(STATE.activePlan.swot)) {
+          STATE.activePlan.swot[cat] = STATE.activePlan.swot[cat].filter(i => i._id !== id);
+        }
+        if (document.getElementById('page-swot').classList.contains('active')) renderSwot();
+      }
+      break;
+
+    case 'strategies':
+      if (action === 'add' && item && !STATE.activePlan.strategies.find(s => s._id === item._id)) {
+        STATE.activePlan.strategies.push(item);
+      } else if (action === 'update' && item) {
+        const idx = STATE.activePlan.strategies.findIndex(s => s._id === item._id);
+        if (idx > -1) STATE.activePlan.strategies[idx] = item;
+      } else if (action === 'delete' && id) {
+        STATE.activePlan.strategies = STATE.activePlan.strategies.filter(s => s._id !== id);
+      }
+      if (document.getElementById('page-strategy').classList.contains('active')) renderStrategy();
+      break;
+
+    case 'kpis':
+      if (action === 'add' && item && !STATE.activePlan.kpis.find(k => k._id === item._id)) {
+        STATE.activePlan.kpis.push(item);
+      } else if (action === 'update' && item) {
+        const idx = STATE.activePlan.kpis.findIndex(k => k._id === item._id);
+        if (idx > -1) STATE.activePlan.kpis[idx] = item;
+      } else if (action === 'delete' && id) {
+        STATE.activePlan.kpis = STATE.activePlan.kpis.filter(k => k._id !== id);
+      }
+      if (document.getElementById('page-scorecard').classList.contains('active')) renderScorecard();
+      break;
+
+    case 'initiatives':
+      if (action === 'add' && item && !STATE.activePlan.initiatives.find(i => i._id === item._id)) {
+        STATE.activePlan.initiatives.push(item);
+      } else if (action === 'update' && item) {
+        const idx = STATE.activePlan.initiatives.findIndex(i => i._id === item._id);
+        if (idx > -1) STATE.activePlan.initiatives[idx] = item;
+      } else if (action === 'delete' && id) {
+        STATE.activePlan.initiatives = STATE.activePlan.initiatives.filter(i => i._id !== id);
+      }
+      if (document.getElementById('page-initiatives').classList.contains('active')) renderInitiatives();
+      break;
+  }
+
+  // Refresh dashboard metrics silently if it's open
+  if (document.getElementById('page-dashboard').classList.contains('active')) {
+    initDashboard();
+  }
+}
+
+/**
+ * renderPresence(members)
+ * ────────────────────────
+ * Replaces the hardcoded avatar row in the top bar with live
+ * collaborator data from a PRESENCE_UPDATE WebSocket message.
+ *
+ * Excludes the current user from the display (they know they're here).
+ *
+ * @param {Array<{userId, userName, initials, color}>} members
+ */
+function renderPresence(members) {
+  const container = document.getElementById('presence-avatars');
+  const others = members.filter(m => m.userId !== STATE.currentUser?._id);
+
+  if (!others.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = others.map(m => `
+    <div class="presence-avatar" style="background:${esc(m.color||'#3B82F6')}" title="${esc(m.userName)}">
+      ${esc(m.initials||'U')}
+      <span class="presence-tooltip">${esc(m.userName)}</span>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// 17. OFFLINE QUEUE
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * queueOfflineChange(change)
+ * ──────────────────────────
+ * Writes a pending mutation to IndexedDB 'pending-changes' store
+ * and registers a BackgroundSync tag so the service worker will
+ * flush the queue when connectivity is restored.
+ *
+ * @param {object} change  { type, operation, planId, data }
+ */
+async function queueOfflineChange(change) {
+  const token = sessionStorage.getItem('spp_access_token');
+  const record = {
+    clientId:  `local-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    timestamp: Date.now(),
+    token,       // embedded so SW can use it without reading sessionStorage
+    ...change,
+  };
+
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('strat-planner-db', 2);
+    req.onsuccess = () => {
+      const db  = req.result;
+      const tx  = db.transaction('pending-changes', 'readwrite');
+      const put = tx.objectStore('pending-changes').put(record);
+      put.onsuccess = () => {
+        STATE.pendingCount++;
+        updateOfflinePendingBadge();
+        // Register background sync
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+          navigator.serviceWorker.ready
+            .then(sw => sw.sync.register('sync-plans'))
+            .catch(console.warn);
+        }
+        resolve(record);
+      };
+      put.onerror = () => reject(put.error);
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function processSyncComplete(data) {
+  STATE.pendingCount = Math.max(0, STATE.pendingCount - (data.applied || 0));
+  updateOfflinePendingBadge();
+  if (data.applied > 0) showToast(`${data.applied} offline change(s) synced`, 'success');
+  if (data.conflicts > 0) showToast(`${data.conflicts} conflict(s) — server version kept`, 'warning');
+
+  // Reload the current plan to pick up server-confirmed IDs
+  if (STATE.activePlan) loadPlan(STATE.activePlan._id);
+}
+
+function updateOfflinePendingBadge() {
+  const el = document.getElementById('offline-pending-count');
+  if (el) el.textContent = STATE.pendingCount > 0 ? ` (${STATE.pendingCount} pending)` : '';
+}
+
+// ─────────────────────────────────────────────────────────────
+// 18. ONLINE / OFFLINE HANDLERS
+// ─────────────────────────────────────────────────────────────
+
+function handleOnline() {
+  STATE.isOnline = true;
+  document.getElementById('offline-banner').classList.remove('show');
+
+  // Reconnect WebSocket if disconnected
+  if (!STATE.wsSocket || STATE.wsSocket.readyState !== WebSocket.OPEN) {
+    clearTimeout(_wsReconnectTimer);
+    connectWebSocket();
+  }
+
+  // Trigger sync if there are pending changes
+  if (STATE.pendingCount > 0 && navigator.serviceWorker?.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'TRIGGER_SYNC' });
+  }
+}
+
+function handleOffline() {
+  STATE.isOnline = false;
+  document.getElementById('offline-banner').classList.add('show');
+}
+
+// ─────────────────────────────────────────────────────────────
+// 19. UI HELPERS
+// ─────────────────────────────────────────────────────────────
+
+/** DOMPurify-lite: escape HTML entities to prevent XSS */
+function esc(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function showToast(message, type = 'info', duration = 4000) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('out');
+    setTimeout(() => toast.remove(), 250);
+  }, duration);
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  // Focus first focusable element inside modal
+  setTimeout(() => {
+    const first = document.getElementById(id).querySelector('input, select, textarea, button');
+    first?.focus();
+  }, 100);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function toggleUserMenu() {
+  const menu = document.getElementById('user-menu');
+  const isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open', !isOpen);
+  document.getElementById('user-avatar-btn').setAttribute('aria-expanded', String(!isOpen));
+}
+
+function closeUserMenu() {
+  document.getElementById('user-menu').classList.remove('open');
+  document.getElementById('user-avatar-btn').setAttribute('aria-expanded', 'false');
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const btn     = document.getElementById('hamburger-btn');
+  const isOpen  = sidebar.classList.toggle('mobile-open');
+  btn.setAttribute('aria-expanded', String(isOpen));
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return '';
+  const now  = Date.now();
+  const diff = now - d.getTime();
+  if (diff < 60000)    return 'just now';
+  if (diff < 3600000)  return `${Math.floor(diff / 60000)}m ago`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  return d.toLocaleDateString();
+}
+
+function fmt(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
+  return String(Math.round(n));
+}
+
+// Stub for AI generation (requires /api/ai/swot route to be implemented)
+async function generateSwotAI() {
+  showToast('AI generation requires /api/ai/swot — add this route to routes.js', 'info');
+}
+</script>
+</body>
+</html>
