@@ -1,1167 +1,2141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strat Planner Pro - User Manual</title>
-    <style>
-        :root {
-            --primary: #0EA5E9;
-            --secondary: #6366F1;
-            --accent: #8B5CF6;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --slate-50: '#F8FAFC';
-            --slate-100: '#F1F5F9';
-            --slate-200: '#E2E8F0';
-            --slate-300: '#CBD5E1';
-            --slate-400: '#94A3B8';
-            --slate-500: '#64748B';
-            --slate-600: '#475569';
-            --slate-700: '#334155';
-            --slate-800: '#1E293B';
-            --slate-900: '#0F172A';
-            --gradient-primary: linear-gradient(135deg, #0EA5E9 0%, #6366F1 100%);
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strat Planner Pro — User Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Condensed:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+/* ============================================================
+   DESIGN TOKENS — mirroring Strat Planner Pro PWA
+   ============================================================ */
+:root {
+  --blue-950: #030712;
+  --blue-900: #0A1628;
+  --blue-850: #0D1F3C;
+  --blue-800: #0F2952;
+  --blue-700: #1A3A6B;
+  --blue-600: #1E4D9B;
+  --blue-500: #2563EB;
+  --blue-400: #3B82F6;
+  --blue-300: #60A5FA;
+  --blue-200: #93C5FD;
+  --blue-100: #BFDBFE;
+  --blue-50:  #EFF6FF;
+  --cyan-500: #06B6D4;
+  --cyan-400: #22D3EE;
+  --sky-500:  #0EA5E9;
+  --indigo-500: #6366F1;
+  --indigo-400: #818CF8;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger:  #EF4444;
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--slate-800);
-            background: linear-gradient(135deg, var(--slate-50) 0%, var(--slate-100) 100%);
-        }
+  --glass-bg:           rgba(255,255,255,0.07);
+  --glass-bg-hover:     rgba(255,255,255,0.11);
+  --glass-border:       rgba(255,255,255,0.13);
+  --glass-border-strong:rgba(255,255,255,0.22);
+  --glass-shadow:       0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
+  --glass-inset:        inset 0 1px 0 rgba(255,255,255,0.14);
 
-        /* Header */
-        .header {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+  --font-display: 'Poppins', sans-serif;
+  --font-ui:      'Inter', sans-serif;
+  --font-data:    'Roboto Condensed', sans-serif;
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="%23ffffff" fill-opacity="0.05" fill-rule="evenodd"><path d="M0 40L40 0H20L0 20M40 40V20L20 40"/></g></svg>');
-        }
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
 
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
+  --text-primary:   rgba(255,255,255,0.95);
+  --text-secondary: rgba(255,255,255,0.65);
+  --text-tertiary:  rgba(255,255,255,0.38);
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
+  --sidebar-w: 280px;
+  --header-h:  64px;
+}
 
-        .version-info {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            display: inline-block;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            backdrop-filter: blur(10px);
-        }
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
-        /* Table of Contents */
-        .toc {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-        }
+body {
+  font-family: var(--font-ui);
+  background: var(--blue-900);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-        .toc h2 {
-            font-size: 1.8rem;
-            color: var(--slate-800);
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
+/* ============================================================
+   ANIMATED BACKGROUND (identical to PWA)
+   ============================================================ */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.14;
+  animation: orb-drift 22s ease-in-out infinite;
+}
+.bg-orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, #1E4D9B, transparent); top: -250px; left: -200px; animation-delay: 0s; }
+.bg-orb-2 { width: 560px; height: 560px; background: radial-gradient(circle, #06B6D4, transparent); top: 35%; right: -160px; animation-delay: -8s; }
+.bg-orb-3 { width: 480px; height: 480px; background: radial-gradient(circle, #6366F1, transparent); bottom: -120px; left: 32%; animation-delay: -16s; }
+.bg-orb-4 { width: 320px; height: 320px; background: radial-gradient(circle, #0EA5E9, transparent); top: 60%; left: 10%; animation-delay: -4s; }
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+@keyframes orb-drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%      { transform: translate(28px,-24px) scale(1.08); }
+  66%      { transform: translate(-18px,18px) scale(0.93); }
+}
 
-        .toc ol {
-            counter-reset: toc-counter;
-            list-style: none;
-            padding: 0;
-        }
+/* ============================================================
+   FIXED HEADER
+   ============================================================ */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  background: rgba(10,22,40,0.88);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 28px rgba(0,0,0,0.28);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-img {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.18);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.22), 0 4px 12px rgba(0,0,0,0.3);
+  object-fit: cover;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  background: linear-gradient(135deg, #fff 0%, var(--blue-200) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.3px;
+}
+.logo-badge {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--blue-500);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.header-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.manual-badge {
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-tertiary);
+}
+.manual-badge span {
+  color: var(--blue-300);
+  margin: 0 6px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.version-chip {
+  padding: 5px 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-family: var(--font-data);
+  color: var(--text-secondary);
+  backdrop-filter: blur(12px);
+}
+.btn-print {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius-full);
+  color: white;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.38);
+}
+.btn-print:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37,99,235,0.48);
+}
 
-        .toc ol li {
-            counter-increment: toc-counter;
-            margin-bottom: 1rem;
-        }
+/* ============================================================
+   LAYOUT: SIDEBAR + CONTENT
+   ============================================================ */
+.layout {
+  display: flex;
+  padding-top: var(--header-h);
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
 
-        .toc ol li a {
-            text-decoration: none;
-            color: var(--primary);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
+/* ============================================================
+   SIDEBAR TOC
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: rgba(10,22,40,0.78);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border-right: 1px solid var(--glass-border);
+  padding-bottom: 24px;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
 
-        .toc ol li a:hover {
-            background: var(--slate-50);
-            transform: translateX(5px);
-        }
+.sidebar-top {
+  padding: 20px 16px 10px;
+}
+.sidebar-heading {
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+}
 
-        .toc ol li a::before {
-            content: counter(toc-counter);
-            background: var(--gradient-primary);
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
+.toc-section { margin-bottom: 6px; }
+.toc-section-label {
+  padding: 6px 16px 4px;
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-tertiary);
+}
+.toc-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  margin: 1px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  user-select: none;
+}
+.toc-link:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+.toc-link.active {
+  background: linear-gradient(135deg, rgba(37,99,235,0.22), rgba(6,182,212,0.08));
+  color: white;
+  border: 1px solid rgba(37,99,235,0.28);
+  box-shadow: 0 2px 12px rgba(37,99,235,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.toc-link .toc-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--blue-300);
+}
+.toc-link.active .toc-num {
+  background: var(--blue-600);
+  border-color: transparent;
+  color: white;
+}
+.toc-link .toc-icon { font-size: 13px; flex-shrink: 0; }
 
-        /* Main Content */
-        .content {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+.progress-track {
+  margin: 16px 16px 0;
+  padding: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+.progress-label {
+  font-size: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.progress-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-500), var(--cyan-500));
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
 
-        section {
-            background: white;
-            padding: 2.5rem;
-            margin: 2rem 0;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            scroll-margin-top: 2rem;
-        }
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.content {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 48px 48px 80px;
+  max-width: calc(100% - var(--sidebar-w));
+}
 
-        section:nth-child(even) {
-            background: var(--slate-50);
-        }
+/* ============================================================
+   HERO BANNER
+   ============================================================ */
+.hero {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: 52px 48px;
+  margin-bottom: 40px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(15,41,82,0.9) 0%, rgba(37,99,235,0.25) 50%, rgba(6,182,212,0.15) 100%);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(37,99,235,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(6,182,212,0.12) 0%, transparent 50%);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-500), var(--cyan-500), var(--indigo-500));
+}
+.hero-inner { position: relative; z-index: 1; }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: rgba(37,99,235,0.2);
+  border: 1px solid rgba(37,99,235,0.35);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blue-300);
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #fff 0%, var(--blue-100) 60%, var(--cyan-400) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.hero-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 640px;
+  margin-bottom: 28px;
+}
+.hero-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-family: var(--font-data);
+  color: var(--text-secondary);
+}
+.hero-meta-item .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--blue-400);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.75); }
+}
+.hero-logo {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.15);
+  box-shadow:
+    0 0 0 8px rgba(37,99,235,0.12),
+    0 0 0 16px rgba(37,99,235,0.06),
+    0 16px 48px rgba(0,0,0,0.4);
+  object-fit: cover;
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(-50%) translateY(0); }
+  50% { transform: translateY(-50%) translateY(-8px); }
+}
 
-        h2 {
-            color: var(--slate-800);
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--primary);
-        }
+/* ============================================================
+   SECTION WRAPPER
+   ============================================================ */
+.section {
+  margin-bottom: 48px;
+  scroll-margin-top: 88px;
+  animation: section-in 0.5s ease both;
+}
+@keyframes section-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-        h3 {
-            color: var(--slate-700);
-            font-size: 1.4rem;
-            margin: 1.5rem 0 1rem;
-        }
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.section-num {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+}
+.section-title-block {}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, white, var(--blue-200));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.section-subtitle {
+  font-size: 12px;
+  font-family: var(--font-data);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-        h4 {
-            color: var(--slate-600);
-            font-size: 1.1rem;
-            margin: 1rem 0 0.5rem;
-        }
+/* ============================================================
+   GLASS CARDS
+   ============================================================ */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+  margin-bottom: 16px;
+  transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.38), var(--glass-inset);
+}
+.glass-card.accent-top { position: relative; }
+.glass-card.accent-top::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent, linear-gradient(90deg, var(--blue-500), var(--cyan-500)));
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
 
-        p {
-            margin-bottom: 1rem;
-            color: var(--slate-600);
-        }
+.card-h3 {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-h3 .ch-icon {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
 
-        ul, ol {
-            margin: 1rem 0;
-            padding-left: 1.5rem;
-        }
+/* ============================================================
+   PROSE — paragraphs, lists
+   ============================================================ */
+.prose p {
+  font-size: 14px;
+  line-height: 1.78;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.prose p strong { color: var(--text-primary); font-weight: 600; }
+.prose p a { color: var(--blue-300); text-decoration: none; border-bottom: 1px solid rgba(96,165,250,0.3); transition: border-color 0.2s ease; }
+.prose p a:hover { border-color: var(--blue-300); }
 
-        li {
-            margin-bottom: 0.5rem;
-            color: var(--slate-600);
-        }
+.prose ol, .prose ul {
+  margin: 8px 0 16px;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.prose ol { counter-reset: ol-cnt; }
+.prose ol li, .prose ul li {
+  position: relative;
+  padding: 9px 14px 9px 42px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius-md);
+  transition: background 0.18s ease;
+}
+.prose ol li:hover, .prose ul li:hover { background: rgba(255,255,255,0.06); }
+.prose ol li strong, .prose ul li strong { color: var(--text-primary); font-weight: 600; }
 
-        /* Code Blocks & Examples */
-        .code-block {
-            background: var(--slate-800);
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.9rem;
-        }
+.prose ol li::before {
+  counter-increment: ol-cnt;
+  content: counter(ol-cnt);
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--blue-600);
+  color: white;
+  font-size: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prose ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 14px;
+  top: 10px;
+  color: var(--blue-400);
+  font-size: 11px;
+}
 
-        .example-box {
-            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
-            border-left: 4px solid var(--primary);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
+/* nested lists */
+.prose ol li ol, .prose ol li ul,
+.prose ul li ol, .prose ul li ul {
+  margin: 8px 0 0;
+  padding-left: 0;
+}
+.prose ol li ol li, .prose ol li ul li,
+.prose ul li ol li, .prose ul li ul li {
+  background: rgba(255,255,255,0.02);
+  border-color: transparent;
+  padding: 6px 10px 6px 34px;
+  font-size: 12.5px;
+}
+.prose ol li ol li::before { width: 16px; height: 16px; font-size: 9px; background: var(--blue-700); }
+.prose ol li ul li::before { left: 12px; top: 8px; }
 
-        /* Callout Boxes */
-        .callout {
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border-left: 4px solid;
-        }
+/* h3 / h4 inside prose */
+.prose h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 24px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.prose h3::before {
+  content: '';
+  display: block;
+  width: 4px; height: 16px;
+  background: linear-gradient(180deg, var(--blue-400), var(--cyan-500));
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.prose h4 {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue-300);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin: 18px 0 8px;
+  font-family: var(--font-data);
+}
 
-        .callout-info {
-            background: var(--slate-50);
-            border-color: var(--primary);
-        }
+/* ============================================================
+   CALLOUT BOXES
+   ============================================================ */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  margin: 16px 0;
+  border: 1px solid;
+}
+.callout-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.callout-body { flex: 1; }
+.callout-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.callout-text {
+  font-size: 13px;
+  line-height: 1.65;
+}
+.callout-text strong { font-weight: 600; }
+.callout-text ul { margin: 6px 0 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.callout-text ul li { position: relative; padding-left: 16px; font-size: 13px; line-height: 1.6; background: none; border: none; border-radius: 0; }
+.callout-text ul li::before { content: '•'; position: absolute; left: 0; top: 0; }
 
-        .callout-warning {
-            background: #fffbeb;
-            border-color: var(--warning);
-        }
+.callout-info    { background: rgba(37,99,235,0.08);  border-color: rgba(37,99,235,0.3);  }
+.callout-info    .callout-title { color: var(--blue-300); }
+.callout-info    .callout-text, .callout-info .callout-text li::before { color: var(--blue-200); }
 
-        .callout-success {
-            background: #ecfdf5;
-            border-color: var(--success);
-        }
+.callout-success { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+.callout-success .callout-title { color: #34D399; }
+.callout-success .callout-text, .callout-success .callout-text li::before { color: #6EE7B7; }
 
-        .callout-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+.callout-warning { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+.callout-warning .callout-title { color: #FBBF24; }
+.callout-warning .callout-text, .callout-warning .callout-text li::before { color: #FCD34D; }
 
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
+.callout-ai {
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(6,182,212,0.05));
+  border-color: rgba(99,102,241,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.callout-ai::before {
+  content: '✦';
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 32px;
+  opacity: 0.06;
+}
+.callout-ai .callout-title { color: var(--indigo-400); }
+.callout-ai .callout-text, .callout-ai .callout-text li::before { color: rgba(196,181,253,0.85); }
 
-        th {
-            background: var(--slate-800);
-            color: white;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-        }
+/* ============================================================
+   EXAMPLE BOX
+   ============================================================ */
+.example-box {
+  background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(6,182,212,0.04));
+  border-left: 3px solid var(--blue-500);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 14px 16px;
+  margin: 14px 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.example-box strong { color: var(--blue-300); font-weight: 600; }
 
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--slate-200);
-        }
+/* ============================================================
+   TOWS / STRATEGY TABLE
+   ============================================================ */
+.tows-table {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  margin: 16px 0;
+}
+.tows-table th, .tows-table td {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.tows-table thead th {
+  background: rgba(15,41,82,0.8);
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--blue-300);
+}
+.tows-table thead th:first-child { background: rgba(10,22,40,0.5); color: var(--text-tertiary); }
+.tows-table tbody tr:first-child td:first-child { font-weight: 700; color: var(--text-primary); font-size: 12px; font-family: var(--font-data); text-transform: uppercase; letter-spacing: 0.5px; background: rgba(10,22,40,0.3); }
+.tows-table tbody tr:last-child  td:first-child { font-weight: 700; color: var(--text-primary); font-size: 12px; font-family: var(--font-data); text-transform: uppercase; letter-spacing: 0.5px; background: rgba(10,22,40,0.3); }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+.tows-so { background: rgba(16,185,129,0.09); }
+.tows-st { background: rgba(37,99,235,0.09); }
+.tows-wo { background: rgba(6,182,212,0.09); }
+.tows-wt { background: rgba(245,158,11,0.09); }
+.tows-table td { color: var(--text-secondary); line-height: 1.6; }
+.tows-table td strong { color: var(--text-primary); display: block; margin-bottom: 4px; font-size: 13px; }
+.tows-table td span { font-size: 12px; opacity: 0.8; }
 
-        tr:hover td {
-            background: var(--slate-50);
-        }
+/* ============================================================
+   KPI STATUS BADGES
+   ============================================================ */
+.status-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+}
+.badge-green   { background: rgba(16,185,129,0.12); color: #34D399; border-color: rgba(16,185,129,0.3); }
+.badge-yellow  { background: rgba(245,158,11,0.12); color: #FBBF24; border-color: rgba(245,158,11,0.3); }
+.badge-red     { background: rgba(239,68,68,0.12);  color: #FC8181; border-color: rgba(239,68,68,0.3); }
+.badge-blue    { background: rgba(37,99,235,0.12);  color: #93C5FD; border-color: rgba(37,99,235,0.3); }
 
-        /* Status Indicators */
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-right: 0.5rem;
-        }
+/* ============================================================
+   GRID LAYOUTS
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 
-        .status-green { background: #d1fae5; color: #065f46; }
-        .status-yellow { background: #fef3c7; color: #92400e; }
-        .status-red { background: #fee2e2; color: #991b1b; }
-        .status-blue { background: #dbeafe; color: #1e40af; }
+/* ============================================================
+   QUICK REFERENCE CARD GRID
+   ============================================================ */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 16px 0;
+}
+.qr-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+.qr-card:hover { background: var(--glass-bg-hover); transform: translateY(-2px); }
+.qr-label {
+  font-size: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.qr-label::before {
+  content: '';
+  display: block;
+  width: 3px; height: 12px;
+  background: var(--card-color, var(--blue-500));
+  border-radius: 2px;
+}
+.qr-value {
+  font-family: var(--font-data);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+.qr-sub {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 3px;
+}
 
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+.faq-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.faq-item.open { border-color: rgba(37,99,235,0.3); }
+.faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  user-select: none;
+  transition: background 0.18s ease;
+}
+.faq-q:hover { background: var(--glass-bg-hover); }
+.faq-chevron {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: transform 0.25s ease, background 0.18s ease;
+  flex-shrink: 0;
+  color: var(--blue-300);
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); background: var(--blue-600); border-color: transparent; }
+.faq-a {
+  display: none;
+  padding: 0 18px 16px;
+  font-size: 13px;
+  line-height: 1.72;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 14px;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-a ol { margin: 8px 0; padding-left: 0; list-style: none; counter-reset: faq-cnt; display: flex; flex-direction: column; gap: 4px; }
+.faq-a ol li { counter-increment: faq-cnt; position: relative; padding: 6px 10px 6px 32px; font-size: 13px; color: var(--text-secondary); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); }
+.faq-a ol li::before { content: counter(faq-cnt); position: absolute; left: 8px; top: 7px; width: 16px; height: 16px; background: var(--blue-700); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-family: var(--font-data); font-weight: 700; color: white; }
 
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-        }
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  position: relative;
+  z-index: 1;
+  background: rgba(10,22,40,0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: 40px 48px;
+  margin-left: var(--sidebar-w);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.footer-col-title {
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+.footer-col p, .footer-col a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  display: block;
+  text-decoration: none;
+  transition: color 0.18s;
+}
+.footer-col a:hover { color: var(--blue-300); }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  background: linear-gradient(135deg, white, var(--blue-300));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.footer-copy {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-family: var(--font-data);
+}
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
+/* ============================================================
+   SCROLL PROGRESS BAR (top)
+   ============================================================ */
+.scroll-progress {
+  position: fixed;
+  top: var(--header-h);
+  left: var(--sidebar-w);
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue-500), var(--cyan-500), var(--indigo-400));
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 999;
+  transition: transform 0.1s linear;
+}
 
-        .btn-outline {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+.back-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 999;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.22s ease;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.back-top.visible { opacity: 1; pointer-events: all; }
+.back-top:hover {
+  background: var(--blue-600);
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.4);
+}
 
-        /* Footer */
-        footer {
-            background: var(--slate-800);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            margin-top: 3rem;
-        }
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
 
-        footer p {
-            color: var(--slate-400);
-        }
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { transform: translateX(-280px); }
+  .content { margin-left: 0; padding: 32px 20px 60px; max-width: 100%; }
+  .footer { margin-left: 0; padding: 32px 20px; }
+  .footer-grid, .grid-2, .grid-3, .qr-grid { grid-template-columns: 1fr; }
+  .hero-logo { display: none; }
+  .scroll-progress { left: 0; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
 
-        /* Print Styles */
-        @media print {
-            .no-print {
-                display: none !important;
-            }
+@media print {
+  .sidebar, .top-bar, .back-top, .scroll-progress { display: none !important; }
+  .content { margin-left: 0; padding: 0; }
+  .footer { margin-left: 0; }
+  .section { break-inside: avoid; }
+  .glass-card { box-shadow: none; border: 1px solid #ddd; background: #f9fafb; }
+  body { background: white; color: #1a1a2e; }
+  .section-title, .card-h3, .prose h3 { -webkit-text-fill-color: #0F2952; }
+}
 
-            body {
-                background: white;
-            }
-
-            section {
-                break-inside: avoid;
-                box-shadow: none;
-                margin: 1rem 0;
-                padding: 1rem;
-            }
-
-            a {
-                color: black;
-                text-decoration: underline;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-
-            section {
-                padding: 1.5rem;
-            }
-
-            h2 {
-                font-size: 1.5rem;
-            }
-
-            th, td {
-                padding: 0.5rem;
-            }
-        }
-    </style>
+/* Utility */
+.mt-4  { margin-top: 16px; }
+.mb-4  { margin-bottom: 16px; }
+.mb-6  { margin-bottom: 24px; }
+</style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <h1>📘 Strat Planner Pro User Manual</h1>
-        <p>AI-Powered Strategic Planning Platform for Organizations</p>
-        <div class="version-info">
-            Version 1.0 | Web App: https://strategy-ai-planner.deploypad.app/ | Last Updated: April 2026
+
+<!-- Animated Background -->
+<div class="app-bg">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+  <div class="bg-orb bg-orb-4"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Back to Top -->
+<div class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</div>
+
+<!-- ====== TOP BAR ====== -->
+<header class="top-bar">
+  <a class="logo" href="#">
+    <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" class="logo-img" alt="Strat Planner Pro">
+    <div>
+      <div class="logo-text">Strat Planner Pro</div>
+    </div>
+    <span class="logo-badge">PRO</span>
+  </a>
+  <div class="header-center">
+    <span class="manual-badge">User Manual <span>·</span> v1.0</span>
+  </div>
+  <div class="header-right">
+    <div class="version-chip">📅 April 2026</div>
+    <button class="btn-print" onclick="window.print()">🖨️ Print Manual</button>
+  </div>
+</header>
+
+<!-- ====== LAYOUT ====== -->
+<div class="layout">
+
+  <!-- ====== SIDEBAR TOC ====== -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-heading">Table of Contents</div>
+    </div>
+
+    <div class="toc-section">
+      <a class="toc-link active" href="#welcome" onclick="setActive(this)">
+        <span class="toc-num">1</span>
+        <span class="toc-icon">👋</span>
+        Welcome
+      </a>
+    </div>
+
+    <div class="toc-section">
+      <a class="toc-link" href="#getting-started" onclick="setActive(this)">
+        <span class="toc-num">2</span>
+        <span class="toc-icon">🚀</span>
+        Getting Started
+      </a>
+    </div>
+
+    <div class="toc-section">
+      <a class="toc-link" href="#first-plan" onclick="setActive(this)">
+        <span class="toc-num">3</span>
+        <span class="toc-icon">📋</span>
+        Your First Plan
+      </a>
+    </div>
+
+    <div class="toc-section">
+      <div class="toc-section-label">Core Modules</div>
+      <a class="toc-link" href="#swot" onclick="setActive(this)">
+        <span class="toc-num">4</span>
+        <span class="toc-icon">🔍</span>
+        SWOT Analysis
+      </a>
+      <a class="toc-link" href="#systems-thinking" onclick="setActive(this)">
+        <span class="toc-num">5</span>
+        <span class="toc-icon">🔄</span>
+        Systems Thinking
+      </a>
+      <a class="toc-link" href="#strategy-formulation" onclick="setActive(this)">
+        <span class="toc-num">6</span>
+        <span class="toc-icon">⚡</span>
+        Strategy Matrix
+      </a>
+      <a class="toc-link" href="#balanced-scorecard" onclick="setActive(this)">
+        <span class="toc-num">7</span>
+        <span class="toc-icon">🎯</span>
+        Balanced Scorecard
+      </a>
+      <a class="toc-link" href="#initiatives" onclick="setActive(this)">
+        <span class="toc-num">8</span>
+        <span class="toc-icon">📊</span>
+        Initiatives
+      </a>
+    </div>
+
+    <div class="toc-section">
+      <div class="toc-section-label">Team & Output</div>
+      <a class="toc-link" href="#collaboration" onclick="setActive(this)">
+        <span class="toc-num">9</span>
+        <span class="toc-icon">👥</span>
+        Collaboration
+      </a>
+      <a class="toc-link" href="#reporting" onclick="setActive(this)">
+        <span class="toc-num">10</span>
+        <span class="toc-icon">📄</span>
+        Reports & MEL
+      </a>
+      <a class="toc-link" href="#templates" onclick="setActive(this)">
+        <span class="toc-num">11</span>
+        <span class="toc-icon">📚</span>
+        Templates
+      </a>
+      <a class="toc-link" href="#settings" onclick="setActive(this)">
+        <span class="toc-num">12</span>
+        <span class="toc-icon">⚙️</span>
+        Settings & Admin
+      </a>
+      <a class="toc-link" href="#faq" onclick="setActive(this)">
+        <span class="toc-num">13</span>
+        <span class="toc-icon">❓</span>
+        FAQ
+      </a>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-label">
+        <span>Reading Progress</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="sidebarProgress" style="width:0%"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====== CONTENT ====== -->
+  <main class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" class="hero-logo" alt="">
+      <div class="hero-inner">
+        <div class="hero-eyebrow">📘 Official Documentation</div>
+        <h1 class="hero-title">Strat Planner Pro<br>User Manual</h1>
+        <p class="hero-subtitle">
+          The complete guide to AI-powered strategic planning — from your first SWOT to print-ready board reports.
+          Designed for leaders who demand precision and results.
+        </p>
+        <div class="hero-meta">
+          <div class="hero-meta-item"><div class="dot"></div> Version 1.0.0</div>
+          <div class="hero-meta-item"><div class="dot"></div> Last updated April 17, 2026</div>
+          <div class="hero-meta-item"><div class="dot"></div> 13 Sections · 60+ Features</div>
+          <div class="hero-meta-item">
+            <div class="dot"></div>
+            <a href="https://strategy-ai-planner.deploypad.app/" style="color:var(--blue-300); text-decoration:none;">strategy-ai-planner.deploypad.app</a>
+          </div>
         </div>
-        <br>
-        <a href="#getting-started" class="btn btn-primary">Start Reading</a>
+      </div>
     </div>
 
-    <!-- Table of Contents -->
-    <div class="toc">
-        <h2>Table of Contents</h2>
+    <!-- =============== SECTION 1: WELCOME =============== -->
+    <section class="section" id="welcome">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title-block">
+          <div class="section-title">Welcome to Strat Planner Pro</div>
+          <div class="section-subtitle">Strategic Planning Platform for Organizations</div>
+        </div>
+      </div>
+
+      <div class="callout callout-success">
+        <div class="callout-icon">✓</div>
+        <div class="callout-body">
+          <div class="callout-title">What You Can Accomplish</div>
+          <div class="callout-text">
+            <ul>
+              <li><strong>Diagnose</strong> your environment with guided AI-assisted SWOT analysis</li>
+              <li><strong>Visualize</strong> complex systemic relationships using Causal Loop Diagrams and Systems Archetypes</li>
+              <li><strong>Formulate</strong> robust SO, ST, WO, and WT strategies from your SWOT</li>
+              <li><strong>Track</strong> execution through Balanced Scorecard KPIs and initiative management</li>
+              <li><strong>Collaborate</strong> in real-time with your team — with comments, presence indicators, and activity logs</li>
+              <li><strong>Generate</strong> print-ready strategic plan documents for boards and official submissions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card accent-top" style="--card-accent: linear-gradient(90deg,#10B981,#06B6D4)">
+          <div class="card-h3">
+            <div class="ch-icon" style="background:rgba(16,185,129,0.15);">✦</div>
+            AI-Assisted Planning
+          </div>
+          <div class="prose">
+            <p>Get intelligent suggestions for SWOT items and strategic options powered by Claude AI or OpenAI GPT-4. The AI is bias-aware and context-sensitive — feed it your annual reports, meeting notes, or survey data for tailored analysis.</p>
+          </div>
+        </div>
+        <div class="glass-card accent-top" style="--card-accent: linear-gradient(90deg,#3B82F6,#6366F1)">
+          <div class="card-h3">
+            <div class="ch-icon" style="background:rgba(37,99,235,0.15);">📡</div>
+            Real-Time Collaboration
+          </div>
+          <div class="prose">
+            <p>See your team's edits instantly via WebSocket presence indicators. Comment on any SWOT item, KPI, or initiative. Full audit trail keeps every stakeholder accountable.</p>
+          </div>
+        </div>
+        <div class="glass-card accent-top" style="--card-accent: linear-gradient(90deg,#F59E0B,#EF4444)">
+          <div class="card-h3">
+            <div class="ch-icon" style="background:rgba(245,158,11,0.15);">📶</div>
+            Offline Resilience
+          </div>
+          <div class="prose">
+            <p>Continue working without internet. Changes are saved locally via IndexedDB, and sync automatically via background sync when you reconnect. A banner indicates offline mode.</p>
+          </div>
+        </div>
+        <div class="glass-card accent-top" style="--card-accent: linear-gradient(90deg,#06B6D4,#3B82F6)">
+          <div class="card-h3">
+            <div class="ch-icon" style="background:rgba(6,182,212,0.15);">📚</div>
+            Industry Templates
+          </div>
+          <div class="prose">
+            <p>Start quickly with pre-built templates for Government/LGU, Healthcare, Education, Technology, Digital Transformation, and more — complete with sample SWOT items and KPIs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 2: GETTING STARTED =============== -->
+    <section class="section" id="getting-started">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title-block">
+          <div class="section-title">Getting Started</div>
+          <div class="section-subtitle">Account creation, login, and dashboard overview</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Creating Your Account</h3>
         <ol>
-            <li><a href="#welcome">Welcome to Strat Planner Pro</a></li>
-            <li><a href="#getting-started">Getting Started</a></li>
-            <li><a href="#first-plan">Your First Strategic Plan</a></li>
-            <li><a href="#swot">Phase 1: Environmental Diagnosis (SWOT)</a></li>
-            <li><a href="#systems-thinking">Phase 2: Systems Thinking</a></li>
-            <li><a href="#strategy-formulation">Phase 3: Strategy Formulation</a></li>
-            <li><a href="#balanced-scorecard">Phase 4: Balanced Scorecard</a></li>
-            <li><a href="#initiatives">Phase 5: Initiatives & Execution</a></li>
-            <li><a href="#collaboration">Collaboration & Team Management</a></li>
-            <li><a href="#reporting">Monitoring, Evaluation & Reporting</a></li>
-            <li><a href="#templates">Templates & Reuse</a></li>
-            <li><a href="#settings">Account Settings & Administration</a></li>
-            <li><a href="#faq">Frequently Asked Questions</a></li>
+          <li>Navigate to <strong>https://strategy-ai-planner.deploypad.app/login</strong></li>
+          <li>Click <strong>"Register"</strong> if you don't have an account</li>
+          <li>Enter your email address, create a secure password (minimum 8 characters), and provide your first and last name</li>
+          <li>Click <strong>"Create Account"</strong></li>
+          <li>Check your email for a welcome message — check spam if not received within 5 minutes</li>
         </ol>
+
+        <h3>Logging In</h3>
+        <ol>
+          <li>Go to <strong>https://strategy-ai-planner.deploypad.app/login</strong></li>
+          <li>Enter your email and password, then click <strong>"Sign In"</strong></li>
+          <li>You'll land on your personal Strategic Planning Dashboard</li>
+        </ol>
+      </div>
+
+      <div class="glass-card accent-top mb-4" style="--card-accent:linear-gradient(90deg,var(--blue-500),var(--cyan-500))">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(37,99,235,0.15);">📊</div>
+          Dashboard Overview
+        </div>
+        <div class="qr-grid">
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#3B82F6">My Plans</div>
+            <div class="qr-value">Plans you own or are invited to</div>
+            <div class="qr-sub">Owned + shared plans listed here</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#10B981">Organization</div>
+            <div class="qr-value">Shared organizational plans</div>
+            <div class="qr-sub">Team workspace with shared templates</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#06B6D4">Notifications</div>
+            <div class="qr-value">Bell icon with red badge</div>
+            <div class="qr-sub">Invites, comments, KPI alerts</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#6366F1">Templates</div>
+            <div class="qr-value">Pre-built industry templates</div>
+            <div class="qr-sub">Government, Healthcare, Tech, Edu</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#F59E0B">Sync Status</div>
+            <div class="qr-value">Green dot = Synced</div>
+            <div class="qr-sub">Real-time cloud synchronization</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#EF4444">Profile</div>
+            <div class="qr-value">Avatar menu (top right)</div>
+            <div class="qr-sub">Settings, org management, logout</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 3: FIRST PLAN =============== -->
+    <section class="section" id="first-plan">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title-block">
+          <div class="section-title">Your First Strategic Plan</div>
+          <div class="section-subtitle">Creating, configuring, and navigating the plan workspace</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Creating a New Plan</h3>
+        <ol>
+          <li>From the dashboard, click <strong>"Create New Plan"</strong></li>
+          <li>Choose your starting point: <strong>Blank Plan</strong>, a pre-built <strong>Template</strong>, or <strong>Duplicate</strong> an existing plan</li>
+          <li>Fill in the plan details — Plan Name, Planning Period, Organization, and Description</li>
+          <li>Click <strong>"Create Plan"</strong> to enter the workspace</li>
+        </ol>
+
+        <h3>Understanding the Plan Workspace</h3>
+        <p>Once inside a plan, the sidebar provides structured navigation through five strategic phases:</p>
+      </div>
+
+      <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,#6366F1,#06B6D4)">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(99,102,241,0.15);">🗺</div>
+          The Five Planning Phases
+        </div>
+        <div class="grid-3" style="gap:12px; margin-top:4px;">
+          <div style="padding:14px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:var(--radius-md);">
+            <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#34D399; margin-bottom:6px;">Phase 1</div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🔍 Diagnostics</div>
+            <div style="font-size:12px; color:var(--text-secondary);">SWOT Analysis + Systems Thinking</div>
+          </div>
+          <div style="padding:14px; background:rgba(37,99,235,0.08); border:1px solid rgba(37,99,235,0.2); border-radius:var(--radius-md);">
+            <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#93C5FD; margin-bottom:6px;">Phase 2</div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">⚡ Strategy</div>
+            <div style="font-size:12px; color:var(--text-secondary);">SO, ST, WO, WT Matrix</div>
+          </div>
+          <div style="padding:14px; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2); border-radius:var(--radius-md);">
+            <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#67E8F9; margin-bottom:6px;">Phase 3</div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🎯 Scorecard</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Balanced Scorecard KPIs</div>
+          </div>
+          <div style="padding:14px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:var(--radius-md);">
+            <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#FBBF24; margin-bottom:6px;">Phase 4</div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">⚙️ Execution</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Initiatives & Projects (PAP)</div>
+          </div>
+          <div style="padding:14px; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:var(--radius-md);">
+            <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#A5B4FC; margin-bottom:6px;">Phase 5</div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">📄 Reports</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Print-ready PDF documents</div>
+          </div>
+          <div style="padding:14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-md);">
+            <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-tertiary); margin-bottom:6px;">Header</div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🔔 Top Bar</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Share, Presence, Notifications</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 4: SWOT =============== -->
+    <section class="section" id="swot">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title-block">
+          <div class="section-title">Phase 1: Environmental Diagnosis (SWOT)</div>
+          <div class="section-subtitle">Guided forms ensure complete, consistent SWOT analysis</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Manual SWOT Entry</h3>
+        <ol>
+          <li>Navigate to <strong>Diagnostics → SWOT Analysis</strong></li>
+          <li>You'll see four quadrants — <strong>Strengths</strong> (green, internal positive), <strong>Weaknesses</strong> (red, internal negative), <strong>Opportunities</strong> (blue, external positive), <strong>Threats</strong> (orange, external negative)</li>
+          <li>Click <strong>"+ Add Item"</strong> in the appropriate quadrant, enter a clear specific statement, add Evidence and set Impact Level (High / Medium / Low), then click <strong>"Save"</strong></li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <strong>Best Practice:</strong> Be specific rather than generic. Instead of "Good team," write: <em>"Experienced data science team with 15+ years combined industry experience, validated by a 94% client retention rate in 2024."</em>
+      </div>
+
+      <div class="prose">
+        <h3>AI-Assisted SWOT Generation</h3>
+        <ol>
+          <li>Click the <strong>"AI Assist"</strong> button in the SWOT header</li>
+          <li>Provide context — describe your organization, market position, current challenges, and paste relevant data (annual reports, survey results, meeting notes)</li>
+          <li>Select which quadrants to generate and click <strong>"Generate SWOT Analysis"</strong></li>
+          <li>Review AI-generated items: <strong>"Add to Plan"</strong> to include, <strong>"Edit"</strong> to modify, or <strong>"Discard"</strong> to reject</li>
+        </ol>
+      </div>
+
+      <div class="callout callout-warning">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <div class="callout-title">Always Review AI Suggestions</div>
+          <div class="callout-text">AI suggestions are intelligent starting points, not final answers. Always verify accuracy, add organization-specific evidence, and adjust language before finalizing your SWOT.</div>
+        </div>
+      </div>
+
+      <div class="callout callout-ai">
+        <div class="callout-icon">✦</div>
+        <div class="callout-body">
+          <div class="callout-title">AI Suggest Button</div>
+          <div class="callout-text">While viewing any section, click the <strong>✦ AI Suggest</strong> button in the top-right of the section to get context-aware recommendations — new SWOT items, strategic options, or KPI targets — based on your current plan data and industry.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 5: SYSTEMS THINKING =============== -->
+    <section class="section" id="systems-thinking">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title-block">
+          <div class="section-title">Phase 2: Systems Thinking</div>
+          <div class="section-subtitle">Visualize non-linear relationships across SWOT variables</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Causal Loop Diagrams (CLDs)</h3>
+        <p>CLDs reveal how different strategic factors influence each other through feedback loops, surfacing hidden leverage points that linear analysis misses.</p>
+        <ol>
+          <li>Go to <strong>Systems Thinking → Causal Loop Diagram Builder</strong></li>
+          <li>Add <strong>Nodes</strong> — double-click the canvas to create a variable, label it (e.g., "Employee Training," "Customer Satisfaction"), and categorize it as a SWOT type (Strength, Weakness, Opportunity, Threat)</li>
+          <li>Create <strong>Links</strong> — drag from one node to another. Set polarity: <strong>+ (positive)</strong> means "if A increases, B increases"; <strong>− (negative)</strong> means "if A increases, B decreases"</li>
+          <li>Use <strong>Auto Layout</strong> to organize nodes radially, then drag to customize</li>
+          <li>Review the <strong>Loop Analysis</strong> panel — Reinforcing loops (R) amplify change; Balancing loops (B) resist change</li>
+          <li>Check <strong>Leverage Points</strong> — variables driving the most loops are your highest-impact intervention targets</li>
+        </ol>
+
+        <h3>Systems Archetypes</h3>
+        <p>Apply pre-built archetype templates to recognize common strategic patterns in your context:</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(16,185,129,0.15);">📈</div> Limits to Growth</div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">A reinforcing process builds results until hitting constraints that slow growth. <em>Intervention: remove or weaken the constraint before it limits progress.</em></p>
+        </div>
+        <div class="glass-card">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(245,158,11,0.15);">⚖️</div> Shifting the Burden</div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">Short-term fixes relieve symptoms but undermine fundamental solutions. <em>Intervention: invest in the root-cause solution before symptoms become entrenched.</em></p>
+        </div>
+        <div class="glass-card">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(239,68,68,0.15);">🔺</div> Escalation</div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">Two parties reinforce each other's aggressive actions, creating an arms race. <em>Intervention: unilateral de-escalation or negotiated agreement.</em></p>
+        </div>
+        <div class="glass-card">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(99,102,241,0.15);">🔧</div> Fixes that Fail</div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">A fix creates delayed side effects that worsen the original problem. <em>Intervention: map delayed consequences before implementing any solution.</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 6: STRATEGY MATRIX =============== -->
+    <section class="section" id="strategy-formulation">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-title-block">
+          <div class="section-title">Phase 3: Strategy Formulation</div>
+          <div class="section-subtitle">TOWS methodology — SO, ST, WO, WT strategic options</div>
+        </div>
+      </div>
+
+      <table class="tows-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Opportunities (External)</th>
+            <th>Threats (External)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Strengths (Internal)</td>
+            <td class="tows-so"><strong>SO Strategies</strong> <span>(Maxi-Maxi) — Use strengths to seize opportunities</span></td>
+            <td class="tows-st"><strong>ST Strategies</strong> <span>(Maxi-Mini) — Use strengths to counter threats</span></td>
+          </tr>
+          <tr>
+            <td>Weaknesses (Internal)</td>
+            <td class="tows-wo"><strong>WO Strategies</strong> <span>(Mini-Maxi) — Overcome weaknesses via opportunities</span></td>
+            <td class="tows-wt"><strong>WT Strategies</strong> <span>(Mini-Mini) — Minimize weaknesses and avoid threats</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="prose">
+        <h3>Building Your Strategy Matrix</h3>
+        <ol>
+          <li>Navigate to <strong>Strategy → Strategy Matrix</strong></li>
+          <li>Click <strong>"+ Add Strategy"</strong> in the appropriate quadrant and write a clear statement linking specific SWOT elements</li>
+          <li>Set Priority (High / Medium / Low) and link to specific SWOT items for traceability</li>
+          <li>Use <strong>✦ AI Generate Strategies</strong> — select focus area (e.g., Market Expansion, Digital Transformation) and time horizon, then review and apply AI suggestions</li>
+        </ol>
+
+        <h4>Example SO Strategy</h4>
+      </div>
+      <div class="example-box">
+        <strong>SO:</strong> "Leverage our strong brand recognition (S1) to capture government digitalization contracts (O2) through a dedicated public sector business development team by Q3 2025."
+      </div>
+    </section>
+
+    <!-- =============== SECTION 7: BALANCED SCORECARD =============== -->
+    <section class="section" id="balanced-scorecard">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div class="section-title-block">
+          <div class="section-title">Phase 4: Balanced Scorecard</div>
+          <div class="section-subtitle">Smart KPI categorization across four perspectives</div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-4">
+        <div class="glass-card" style="border-left:3px solid var(--blue-500);">
+          <div class="card-h3">💰 Financial</div>
+          <p style="font-size:13px; color:var(--text-secondary);">How do we look to shareholders? Revenue, cost reduction, ROI, EBITDA margin.</p>
+        </div>
+        <div class="glass-card" style="border-left:3px solid var(--success);">
+          <div class="card-h3">👥 Customer</div>
+          <p style="font-size:13px; color:var(--text-secondary);">How do customers see us? Satisfaction (NPS), retention rate, market share, new acquisitions.</p>
+        </div>
+        <div class="glass-card" style="border-left:3px solid var(--cyan-500);">
+          <div class="card-h3">⚙️ Internal Process</div>
+          <p style="font-size:13px; color:var(--text-secondary);">What must we excel at? Process automation, cycle time reduction, quality metrics, IT modernization.</p>
+        </div>
+        <div class="glass-card" style="border-left:3px solid var(--indigo-400);">
+          <div class="card-h3">🌱 Learning & Growth</div>
+          <p style="font-size:13px; color:var(--text-secondary);">How can we sustain improvement? Employee satisfaction, training hours, innovation index, capability development.</p>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Creating KPIs</h3>
+        <ol>
+          <li>Go to <strong>Scorecard → Balanced Scorecard</strong> and select a perspective tab</li>
+          <li>Click <strong>"+ Add KPI"</strong> and define: KPI Name, Target, Unit (%, ₱, days, score), Weight (0–1.0), Actual value, and Status</li>
+          <li>Click <strong>"Save KPI"</strong> — the system tracks variance automatically</li>
+        </ol>
+
+        <h3>KPI Status & Automated Alerts</h3>
+      </div>
+
+      <div class="status-badges">
+        <span class="status-badge badge-green">🟢 On Track — meeting or exceeding target</span>
+        <span class="status-badge badge-yellow">🟡 At Risk — within 10% of missing target → email alert triggered</span>
+        <span class="status-badge badge-red">🔴 Behind — missing target by &gt;10% → email alert triggered</span>
+        <span class="status-badge badge-blue">✅ Complete — target achieved</span>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <div class="callout-title">Automated KPI Alerts</div>
+          <div class="callout-text">When a KPI is updated to "At Risk" or "Behind," the plan owner automatically receives an email notification with the KPI name, target, actual value, and a direct link to the Scorecard. Configure alert preferences under <strong>Settings → Notifications</strong>.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 8: INITIATIVES =============== -->
+    <section class="section" id="initiatives">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div class="section-title-block">
+          <div class="section-title">Phase 5: Initiatives & Execution</div>
+          <div class="section-subtitle">Programs, Activities, and Projects with automated budget totaling</div>
+        </div>
+      </div>
+
+      <div class="glass-card accent-top mb-4" style="--card-accent:linear-gradient(90deg,var(--warning),var(--danger))">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(245,158,11,0.15);">🏗</div>
+          Initiative Hierarchy
+        </div>
+        <div class="grid-3">
+          <div style="text-align:center; padding:14px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--blue-400);margin:0 auto 8px;"></div>
+            <div style="font-weight:700; font-size:13px; margin-bottom:4px;">Programs</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Large-scale, long-term — e.g., "Digital Transformation Program"</div>
+          </div>
+          <div style="text-align:center; padding:14px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--indigo-400);margin:0 auto 8px;"></div>
+            <div style="font-weight:700; font-size:13px; margin-bottom:4px;">Projects</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Discrete deliverables — e.g., "CRM Implementation"</div>
+          </div>
+          <div style="text-align:center; padding:14px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--cyan-400);margin:0 auto 8px;"></div>
+            <div style="font-weight:700; font-size:13px; margin-bottom:4px;">Activities</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Specific tasks or events — e.g., "Staff Training Workshop"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Creating Initiatives</h3>
+        <ol>
+          <li>Navigate to <strong>Execution → Initiatives</strong> and click <strong>"+ New Initiative"</strong></li>
+          <li>Complete: Name, Type (Program/Project/Activity), Owner, Budget (₱), Utilized (₱), Progress (0–100%), Status, and Due Date</li>
+          <li>Link to Strategy — select which strategy(ies) this initiative supports</li>
+          <li>Click <strong>"Save Initiative"</strong></li>
+        </ol>
+
+        <h3>Budget Tracking</h3>
+        <p>The system <strong>automatically calculates</strong> Total Budget, Total Utilized, Remaining, and Burn Rate from all initiatives — no manual summation required. The stats panel at the top of the Initiatives page updates in real-time as you add or edit initiatives.</p>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 9: COLLABORATION =============== -->
+    <section class="section" id="collaboration">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div class="section-title-block">
+          <div class="section-title">Collaboration & Team Management</div>
+          <div class="section-subtitle">Real-time presence, comments, permissions, and org management</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Sharing a Plan</h3>
+        <ol>
+          <li>Open the plan and click the <strong>"Share"</strong> button (top right)</li>
+          <li>Enter your colleague's email address</li>
+          <li>Set permission level: <strong>Viewer</strong> (read-only — for boards and consultants), <strong>Editor</strong> (add/edit but not delete plan or manage sharing), or <strong>Admin</strong> (full control)</li>
+          <li>Add an optional context message, then click <strong>"Send Invitation"</strong></li>
+          <li>The recipient receives an email notification with a direct link to the plan</li>
+        </ol>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <div class="callout-title">Account Required</div>
+          <div class="callout-text">Recipients must have a Strat Planner Pro account to access shared plans. Registration is free. Email invitations include a registration link for new users.</div>
+        </div>
+      </div>
+
+      <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,#10B981,#3B82F6)">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(16,185,129,0.15);">🟢</div>
+          Real-Time Collaboration Features
+        </div>
+        <div class="prose">
+          <ul>
+            <li><strong>Live Presence Indicators:</strong> Colored avatars in the top bar show who is currently online and viewing the plan</li>
+            <li><strong>Live Cursors:</strong> See where teammates are working within the same section</li>
+            <li><strong>Instant Updates:</strong> Changes appear immediately on everyone's screen via WebSocket — no refresh needed</li>
+            <li><strong>Comment Threads:</strong> Click the 💬 icon on any SWOT item, KPI, or initiative to start a threaded discussion — tagged members receive email notifications</li>
+            <li><strong>Activity Log:</strong> Full audit trail showing who changed what and when, accessible from the Collaboration menu</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Organization Management</h3>
+        <ol>
+          <li>Go to <strong>Profile → Organizations</strong> and click <strong>"Create Organization"</strong></li>
+          <li>Enter organization name and type (Corporation, Government Agency, NGO, Academic Institution)</li>
+          <li>Invite team members via <strong>"Invite Members"</strong> — set role (Viewer, Editor, or Admin) and expiration (invitations expire in 7 days for security)</li>
+        </ol>
+
+        <h4>Organization vs. Plan Permissions</h4>
+      </div>
+      <div class="example-box">
+        <strong>Org Membership</strong> gives access to the organization's template library and shared resources.<br>
+        <strong>Plan Sharing</strong> gives specific access to individual strategic plans — a user can be in your org but only have Viewer access to specific plans.
+      </div>
+    </section>
+
+    <!-- =============== SECTION 10: REPORTING =============== -->
+    <section class="section" id="reporting">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-title-block">
+          <div class="section-title">Monitoring, Evaluation & Reporting</div>
+          <div class="section-subtitle">Dashboard insights and print-ready professional reports</div>
+        </div>
+      </div>
+
+      <div class="glass-card accent-top mb-4" style="--card-accent:linear-gradient(90deg,var(--blue-500),var(--indigo-500))">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(37,99,235,0.15);">📊</div>
+          MEL Dashboard — Monitor, Evaluate, Learn
+        </div>
+        <div class="prose">
+          <ul>
+            <li><strong>Overall Progress:</strong> Percentage of initiatives on track vs. at risk</li>
+            <li><strong>Budget Burn Chart:</strong> Visual utilization vs. timeline</li>
+            <li><strong>KPI Health Traffic Light:</strong> Green/Yellow/Red summary across all four scorecard perspectives</li>
+            <li><strong>SWOT Balance Radar:</strong> Weighted internal vs. external factor balance</li>
+            <li><strong>Milestone Tracker:</strong> Upcoming deadlines with progress bars</li>
+            <li><strong>Recent Activity:</strong> Latest team updates and comments</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Generating Reports</h3>
+        <ol>
+          <li>Go to <strong>Reports → Plan Generator</strong></li>
+          <li>Enter Plan Title, Organization, and Reporting Period</li>
+          <li>Select sections to include — Executive Summary, SWOT Analysis, Strategy Matrix, Balanced Scorecard, Initiative Plan</li>
+          <li>Click <strong>"Generate Preview"</strong> to see the report in-browser</li>
+          <li>Click <strong>"🖨️ Print / Export PDF"</strong> to open the print dialog — use "Save as PDF" in your browser</li>
+        </ol>
+        <p>Reports include professional formatting with your organization branding, page numbers, color-coded status indicators, and a footer with generation date.</p>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 11: TEMPLATES =============== -->
+    <section class="section" id="templates">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <div class="section-title-block">
+          <div class="section-title">Templates & Reuse</div>
+          <div class="section-subtitle">Pre-built industry templates and custom template library</div>
+        </div>
+      </div>
+
+      <div class="glass-card accent-top mb-4" style="--card-accent:linear-gradient(90deg,var(--cyan-500),var(--blue-400))">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(6,182,212,0.15);">📚</div>
+          Built-In Industry Templates
+        </div>
+        <div class="grid-2" style="margin-top:8px;">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(37,99,235,0.08);border-radius:var(--radius-md);border:1px solid rgba(37,99,235,0.2);">
+              <span>🏛</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">Government / LGU</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">Citizen-centric KPIs, PGS-aligned</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(16,185,129,0.08);border-radius:var(--radius-md);border:1px solid rgba(16,185,129,0.2);">
+              <span>🏥</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">Healthcare</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">Patient outcome metrics, PhilHealth</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(99,102,241,0.08);border-radius:var(--radius-md);border:1px solid rgba(99,102,241,0.2);">
+              <span>💻</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">Technology Startup</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">Burn rate, MRR, Series A readiness</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(245,158,11,0.08);border-radius:var(--radius-md);border:1px solid rgba(245,158,11,0.2);">
+              <span>🎓</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">Higher Education</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">CHED-aligned, enrollment & research</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(6,182,212,0.08);border-radius:var(--radius-md);border:1px solid rgba(6,182,212,0.2);">
+              <span>🔄</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">Digital Transformation</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">Cloud, automation, upskilling</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(16,185,129,0.08);border-radius:var(--radius-md);border:1px solid rgba(16,185,129,0.2);">
+              <span>💊</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">Pharmaceutical</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">Market expansion, compliance</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(99,102,241,0.08);border-radius:var(--radius-md);border:1px solid rgba(99,102,241,0.2);">
+              <span>📋</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">National Agency</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">PGS-aligned, performance governance</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(245,158,11,0.08);border-radius:var(--radius-md);border:1px solid rgba(245,158,11,0.2);">
+              <span>📚</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;">K-12 School</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">DepEd MATATAG curriculum-aligned</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <h3>Creating Custom Templates</h3>
+        <ol>
+          <li>Open a completed plan, go to <strong>Settings → Save as Template</strong></li>
+          <li>Name the template and select what to include (SWOT items, strategies, KPI structure, initiatives)</li>
+          <li>Set visibility: <strong>Private</strong> (only you), <strong>Organization</strong> (all org members), or <strong>Public</strong> (all platform users, subject to approval)</li>
+          <li>Click <strong>"Create Template"</strong> — it appears in the Template Library under "My Templates"</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 12: SETTINGS =============== -->
+    <section class="section" id="settings">
+      <div class="section-header">
+        <div class="section-num">12</div>
+        <div class="section-title-block">
+          <div class="section-title">Account Settings & Administration</div>
+          <div class="section-subtitle">Profile management, notifications, and admin functions</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(37,99,235,0.15);">👤</div> Profile Management</div>
+          <div class="prose">
+            <ul>
+              <li>Click your <strong>avatar (top right) → Profile Settings</strong></li>
+              <li>Update personal info, change password (current password required), set notification preferences, and change avatar color</li>
+              <li>To reset password: use <strong>"Forgot Password"</strong> on the login page — link valid for 1 hour</li>
+            </ul>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(245,158,11,0.15);">🔔</div> Notification Settings</div>
+          <div class="prose">
+            <ul>
+              <li><strong>KPI Alerts:</strong> When scorecard items go At Risk or Behind</li>
+              <li><strong>Comments:</strong> When someone comments on items you created</li>
+              <li><strong>Shares:</strong> When a plan is shared with you</li>
+              <li><strong>Invitations:</strong> Org and plan collaboration invites</li>
+              <li><strong>Digest Mode:</strong> Daily summary instead of immediate alerts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-ai">
+        <div class="callout-icon">👑</div>
+        <div class="callout-body">
+          <div class="callout-title">Admin Dashboard — admin@asilvainnovations.com</div>
+          <div class="callout-text">Super-admin users access a dedicated Admin Dashboard showing: Total Users, Active Plans, Organizations, AI API Calls, System Health (Database uptime, API response time, PWA cache hit rate, Email delivery rate), and full User Management (change roles, deactivate accounts, view login activity). The Admin Audit Log provides a complete timestamped history of all platform actions for governance and compliance.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== SECTION 13: FAQ =============== -->
+    <section class="section" id="faq">
+      <div class="section-header">
+        <div class="section-num">13</div>
+        <div class="section-title-block">
+          <div class="section-title">Frequently Asked Questions</div>
+          <div class="section-subtitle">Common questions and troubleshooting</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-tertiary); margin-bottom:12px;">General Usage</div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Can I use Strat Planner Pro on my mobile device? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">Yes. The app is fully responsive and installable as a PWA (Progressive Web App) on both Android and iOS. For best results when editing complex Causal Loop Diagrams, use landscape mode on tablets. The app also works offline — changes sync automatically when you reconnect.</div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Is my data secure? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">Yes. All connections use HTTPS/TLS encryption. Passwords are hashed using bcrypt (12-round cost factor). Data is stored in secure databases with automated backups. JWT tokens expire after 7 days and refresh tokens rotate to prevent reuse. Your OpenAI API key is stored locally in your browser — it is never transmitted to or stored on our servers.</div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What happens if I lose internet connection? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">The app operates in offline mode via a Service Worker and IndexedDB local storage. An "⚠ You're offline" banner appears at the bottom of the screen. All changes are saved locally. When you reconnect, a background sync process automatically pushes changes to the server with last-write-wins conflict resolution — or prompts you to resolve conflicts manually.</div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Can I export my data? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">Yes. Go to <strong>Plan Settings → Export Data</strong> to download your complete plan in JSON format. For human-readable documents, use the Plan Generator to produce print-ready PDF reports. Organization admins can export all organizational data from the Admin Dashboard.</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-tertiary); margin-bottom:12px;">Collaboration</div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">How many people can collaborate on one plan? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">There is no hard technical limit. For optimal WebSocket performance, we recommend a maximum of 20 simultaneous editors per plan. Unlimited viewers are supported. For very large teams, consider using the comment-and-discuss workflow to coordinate who edits which section at any given time.</div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What if two people edit the same item simultaneously? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">The system uses "last-write-wins" with a conflict detection layer. If conflicts are detected (e.g., after offline sync), the platform prompts you to choose: keep your local version, accept the server version, or merge both (which unions items without duplicating by ID). Presence indicators showing active cursors help teams avoid editing the same item at the same time.</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-tertiary); margin-bottom:12px;">Technical Issues</div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">The page isn't loading or is showing an error. <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">
+            Try these steps in order:
+            <ol>
+              <li>Refresh the browser (F5 or Ctrl+R / Cmd+R)</li>
+              <li>Clear browser cache and cookies for strategy-ai-planner.deploypad.app</li>
+              <li>Log out and log back in</li>
+              <li>Try a different browser (Chrome, Firefox, Edge, Safari)</li>
+              <li>Contact support@deploypad.app if the issue persists — include your browser version and a screenshot</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">I didn't receive my invitation email. <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">Check your spam/junk folder first. If not found, verify the email address was typed correctly. Invitations expire after 7 days — ask the sender to resend if yours has expired. Also check that your email provider isn't filtering emails from noreply@asilvainnovations.com — add it to your safe senders list.</div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">How do I reset my password? <div class="faq-chevron">▾</div></div>
+          <div class="faq-a">On the login page, click "Forgot Password." Enter your registered email address and click Submit. You'll receive a password reset link valid for 1 hour. For security, resetting your password logs you out of all active sessions on all devices. Contact support if you no longer have access to your registered email.</div>
+        </div>
+      </div>
+
+      <!-- Quick Reference Card -->
+      <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,var(--indigo-500),var(--cyan-500))">
+        <div class="card-h3">
+          <div class="ch-icon" style="background:rgba(99,102,241,0.15);">⚡</div>
+          Quick Reference Card
+        </div>
+        <div class="qr-grid">
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#3B82F6">Keyboard Shortcuts</div>
+            <div class="qr-value">Ctrl+S — Save<br>Esc — Close modal<br>? — Help</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#10B981">Status Colors</div>
+            <div class="qr-value">🟢 On Track<br>🟡 At Risk<br>🔴 Behind<br>✅ Complete</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#F59E0B">Plan Lifecycle</div>
+            <div class="qr-value">Draft → Review<br>→ Approved → Archived</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#6366F1">AI Features</div>
+            <div class="qr-value">✦ AI Suggest — any section<br>SWOT Generator<br>Strategy Generator</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#EF4444">Email Triggers</div>
+            <div class="qr-value">KPI At Risk / Behind<br>Plan shared with you<br>Comment on watched item<br>Org invitation</div>
+          </div>
+          <div class="qr-card">
+            <div class="qr-label" style="--card-color:#06B6D4">Support</div>
+            <div class="qr-value">support@deploypad.app<br>Mon–Fri 9AM–6PM GMT+8<br>~4hr response time</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-col-title">Support</div>
+      <a href="mailto:support@deploypad.app">support@deploypad.app</a>
+      <p>Monday – Friday</p>
+      <p>9:00 AM – 6:00 PM GMT+8</p>
+      <p>~4 hour response time</p>
     </div>
-
-    <!-- Main Content -->
-    <div class="content">
-        <!-- Welcome Section -->
-        <section id="welcome">
-            <h2>1. Welcome to Strat Planner Pro</h2>
-            
-            <div class="callout callout-info">
-                <div class="callout-title">ℹ️ What You Can Accomplish</div>
-                <ul>
-                    <li><strong>Diagnose</strong> your organizational environment using guided SWOT analysis with AI assistance</li>
-                    <li><strong>Visualize</strong> complex systemic relationships using causal loop diagrams</li>
-                    <li><strong>Formulate</strong> robust strategies aligned with your strengths and opportunities</li>
-                    <li><strong>Track</strong> execution through Balanced Scorecard KPIs and initiative management</li>
-                    <li><strong>Collaborate</strong> in real-time with your team, complete with comments and presence indicators</li>
-                    <li><strong>Generate</strong> print-ready strategic plan documents for board presentations and official submissions</li>
-                </ul>
-            </div>
-
-            <div class="callout callout-success">
-                <div class="callout-title">✓ Key Benefits</div>
-                <ul>
-                    <li><strong>AI-Assisted Planning:</strong> Get intelligent suggestions for SWOT items and strategic options</li>
-                    <li><strong>Real-Time Collaboration:</strong> See your team's edits instantly, with full audit trails</li>
-                    <li><strong>Offline Resilience:</strong> Continue working without internet; changes sync automatically when reconnected</li>
-                    <li><strong>Industry Templates:</strong> Start quickly with pre-built templates for Government, Healthcare, Education, and Technology sectors</li>
-                    <li><strong>Print-Ready Reports:</strong> Export professional strategic plan documents with one click</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Getting Started -->
-        <section id="getting-started">
-            <h2>2. Getting Started</h2>
-
-            <h3>Creating Your Account</h3>
-            <ol>
-                <li>Navigate to <strong>https://strategy-ai-planner.deploypad.app/login</strong></li>
-                <li>Click <strong>"Register"</strong> if you don't have an account</li>
-                <li>Enter your email address, create a secure password (minimum 8 characters), and provide your first and last name</li>
-                <li>Click <strong>"Create Account"</strong></li>
-                <li>Check your email for a welcome message (check spam folders if not received within 5 minutes)</li>
-            </ol>
-
-            <h3>Logging In</h3>
-            <ol>
-                <li>Go to <strong>https://strategy-ai-planner.deploypad.app/login</strong></li>
-                <li>Enter your email and password</li>
-                <li>Click <strong>"Sign In"</strong></li>
-                <li>You'll be taken to your personal dashboard</li>
-            </ol>
-
-            <h3>Dashboard Overview</h3>
-            <p>After logging in, you'll see your <strong>Strategic Planning Dashboard</strong>:</p>
-            <ul>
-                <li><strong>My Plans:</strong> Shows strategic plans you own or have been invited to collaborate on</li>
-                <li><strong>Organization Space:</strong> If you're part of an organization, see shared organizational plans</li>
-                <li><strong>Templates:</strong> Access pre-built industry templates or custom templates shared by your team</li>
-                <li><strong>Notifications:</strong> Bell icon shows invitations, comments, and alerts (red badge indicates unread items)</li>
-                <li><strong>Profile Menu:</strong> Access account settings, organization management, or logout</li>
-            </ul>
-        </section>
-
-        <!-- First Plan -->
-        <section id="first-plan">
-            <h2>3. Your First Strategic Plan</h2>
-
-            <h3>Creating a New Plan</h3>
-            <ol>
-                <li>From the dashboard, click <strong>"Create New Plan"</strong> (big blue button)</li>
-                <li>Choose your starting point:
-                    <ul>
-                        <li><strong>Blank Plan:</strong> Start from scratch with a clean canvas</li>
-                        <li><strong>Template:</strong> Select from industry-specific templates (see Templates section)</li>
-                        <li><strong>Duplicate:</strong> Copy an existing plan (if available)</li>
-                    </ul>
-                </li>
-                <li>Fill in the plan details:
-                    <ul>
-                        <li><strong>Plan Name:</strong> e.g., "Q2 2025 Corporate Strategy" or "Digital Transformation Roadmap 2025-2027"</li>
-                        <li><strong>Planning Period:</strong> The timeframe your plan covers (e.g., "January – December 2025" or "FY 2025-2026")</li>
-                        <li><strong>Organization:</strong> Select which organization this plan belongs to (or leave as personal)</li>
-                        <li><strong>Description:</strong> Brief overview of the plan's purpose (optional but recommended)</li>
-                    </ul>
-                </li>
-                <li>Click <strong>"Create Plan"</strong></li>
-            </ol>
-
-            <h3>Understanding the Plan Workspace</h3>
-            <p>Once inside a plan, you'll see a navigation sidebar with five main phases:</p>
-            <ol>
-                <li><strong>📊 Diagnostics</strong> (SWOT & Systems Thinking)</li>
-                <li><strong>🎯 Strategy</strong> (Strategy Matrix)</li>
-                <li><strong>📈 Scorecard</strong> (Balanced Scorecard KPIs)</li>
-                <li><strong>⚙️ Execution</strong> (Initiatives & Projects)</li>
-                <li><strong>📄 Reports</strong> (Print-ready documents)</li>
-            </ol>
-
-            <h4>Top Bar Features:</h4>
-            <ul>
-                <li><strong>Plan Title:</strong> Click to edit the plan name or period anytime</li>
-                <li><strong>Share Button:</strong> Invite team members to view or edit</li>
-                <li><strong>Presence Indicators:</strong> Avatars showing who's currently viewing the plan</li>
-                <li><strong>Comments:</strong> Threaded discussions on specific items</li>
-                <li><strong>Activity Log:</strong> See recent changes made by team members</li>
-            </ul>
-        </section>
-
-        <!-- SWOT -->
-        <section id="swot">
-            <h2>4. Phase 1: Environmental Diagnosis (SWOT)</h2>
-
-            <p>The SWOT module helps you systematically analyze your organization's <strong>S</strong>trengths, <strong>W</strong>eaknesses, <strong>O</strong>pportunities, and <strong>T</strong>hreats.</p>
-
-            <h3>Manual SWOT Entry</h3>
-            <ol>
-                <li>Navigate to <strong>Diagnostics → SWOT Analysis</strong></li>
-                <li>You'll see four quadrants:
-                    <ul>
-                        <li><strong>Top Left (Green):</strong> Internal Strengths</li>
-                        <li><strong>Top Right (Red):</strong> Internal Weaknesses</li>
-                        <li><strong>Bottom Left (Blue):</strong> External Opportunities</li>
-                        <li><strong>Bottom Right (Orange):</strong> External Threats</li>
-                    </ul>
-                </li>
-                <li>To add an item:
-                    <ul>
-                        <li>Click <strong>"+ Add Item"</strong> in the appropriate quadrant</li>
-                        <li>Enter a clear, specific statement (e.g., "Strong brand recognition in Southeast Asian markets")</li>
-                        <li>Provide <strong>Evidence</strong> (optional but recommended): Supporting data or source (e.g., "Brand tracking study Q1 2025")</li>
-                        <li>Set <strong>Impact Level</strong>: High, Medium, or Low</li>
-                        <li>Click <strong>"Save"</strong></li>
-                    </ul>
-                </li>
-            </ol>
-
-            <div class="example-box">
-                <strong>Best Practice:</strong> Be specific rather than generic. Instead of "Good team," write "Experienced data science team with 15+ years combined industry experience."
-            </div>
-
-            <h3>AI-Assisted SWOT Generation</h3>
-            <p>To accelerate your analysis using AI:</p>
-            <ol>
-                <li>Click the <strong>"AI Assist"</strong> button in the SWOT header</li>
-                <li>Provide context in the text box:
-                    <ul>
-                        <li>Describe your organization, market position, and current challenges</li>
-                        <li>Include relevant industry trends or recent changes</li>
-                        <li>Paste recent annual reports, survey results, or meeting notes</li>
-                    </ul>
-                </li>
-                <li>Select which quadrants to generate (Strengths, Weaknesses, Opportunities, Threats)</li>
-                <li>Click <strong>"Generate SWOT Analysis"</strong></li>
-                <li>Review AI-generated items:
-                    <ul>
-                        <li>Click <strong>"Add to Plan"</strong> to include suggested items</li>
-                        <li>Click <strong>"Edit"</strong> to modify before adding</li>
-                        <li>Click <strong>"Discard"</strong> to reject suggestions</li>
-                    </ul>
-                </li>
-            </ol>
-
-            <div class="callout callout-warning">
-                <div class="callout-title">⚠️ Important:</div>
-                <p>AI suggestions are starting points. Always review for accuracy and add specific evidence before finalizing.</p>
-            </div>
-
-            <h3>Managing SWOT Items</h3>
-            <ul>
-                <li><strong>Edit:</strong> Click the pencil icon on any item to modify text, evidence, or impact</li>
-                <li><strong>Delete:</strong> Click the trash icon to remove (items are soft-deleted and can be restored by administrators)</li>
-                <li><strong>Comment:</strong> Click the comment bubble to start a discussion thread about specific SWOT items</li>
-                <li><strong>Filter:</strong> Use the filter dropdown to show only High-impact items or specific categories</li>
-            </ul>
-        </section>
-
-        <!-- Systems Thinking -->
-        <section id="systems-thinking">
-            <h2>5. Phase 2: Systems Thinking</h2>
-
-            <p>This advanced module helps you visualize complex relationships between variables in your strategic environment.</p>
-
-            <h3>Causal Loop Diagrams (CLDs)</h3>
-            <p>CLDs show how different factors influence each other through feedback loops.</p>
-
-            <p><strong>Creating a Diagram:</strong></p>
-            <ol>
-                <li>Go to <strong>Diagnostics → Systems Thinking</strong></li>
-                <li>Click <strong>"New Diagram"</strong></li>
-                <li>Add <strong>Nodes</strong> (variables):
-                    <ul>
-                        <li>Double-click on the canvas to create a node</li>
-                        <li>Label it clearly (e.g., "Employee Training," "Customer Satisfaction," "Revenue")</li>
-                        <li>Categorize: Strength, Weakness, Opportunity, Threat, or Neutral</li>
-                    </ul>
-                </li>
-                <li>Create <strong>Links</strong> (relationships):
-                    <ul>
-                        <li>Click and drag from one node to another</li>
-                        <li>Indicate relationship type:
-                            <ul>
-                                <li><strong>Positive (+)</strong>: If A increases, B increases (same direction)</li>
-                                <li><strong>Negative (-)</strong>: If A increases, B decreases (opposite direction)</li>
-                            </ul>
-                        </li>
-                        <li>Add delay indicators if the effect takes time to manifest</li>
-                    </ul>
-                </li>
-                <li>Identify <strong>Loops</strong>:
-                    <ul>
-                        <li>The system automatically highlights feedback loops</li>
-                        <li><strong>Reinforcing Loops</strong> (R): Vicious or virtuous cycles that amplify change (marked with "R")</li>
-                        <li><strong>Balancing Loops</strong> (B): Stabilizing mechanisms that resist change (marked with "B")</li>
-                    </ul>
-                </li>
-            </ol>
-
-            <h3>Systems Archetypes (Templates)</h3>
-            <p>Apply pre-built system archetypes to common strategic challenges:</p>
-            <ol>
-                <li>Click <strong>"Apply Archetype"</strong></li>
-                <li>Select from five patterns:
-                    <ul>
-                        <li><strong>Limits to Growth:</strong> Rapid growth hits constraints</li>
-                        <li><strong>Shifting the Burden:</strong> Symptom solutions undermine fundamental fixes</li>
-                        <li><strong>Escalation:</strong> Competitive dynamics spiral out of control</li>
-                        <li><strong>Fixes that Fail:</strong> Quick fixes create unintended consequences</li>
-                        <li><strong>Tragedy of the Commons:</strong> Individual optimization harms collective resources</li>
-                    </ul>
-                </li>
-                <li>The template loads a starter diagram relevant to your situation</li>
-                <li>Customize nodes and links to match your specific context</li>
-            </ol>
-
-            <div class="example-box">
-                <strong>Use Case:</strong> If you're experiencing rapid growth but sense impending constraints, apply "Limits to Growth" to identify where bottlenecks will emerge.
-            </div>
-        </section>
-
-        <!-- Strategy Formulation -->
-        <section id="strategy-formulation">
-            <h2>6. Phase 3: Strategy Formulation</h2>
-
-            <p>The Strategy Matrix translates your SWOT analysis into actionable strategic initiatives using the TOWS methodology.</p>
-
-            <h3>Understanding the Strategy Matrix</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th><strong>Opportunities (External)</strong></th>
-                        <th><strong>Threats (External)</strong></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Strengths (Internal)</strong></td>
-                        <td><strong>SO Strategies</strong><br>(Maxi-Maxi):<br>Use strengths to seize opportunities</td>
-                        <td><strong>ST Strategies</strong><br>(Maxi-Mini):<br>Use strengths to avoid threats</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Weaknesses (Internal)</strong></td>
-                        <td><strong>WO Strategies</strong><br>(Mini-Maxi):<br>Overcome weaknesses by exploiting opportunities</td>
-                        <td><strong>WT Strategies</strong><br>(Mini-Mini):<br>Minimize weaknesses and avoid threats</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>Building Your Strategy Matrix</h3>
-            <ol>
-                <li>Navigate to <strong>Strategy → Strategy Matrix</strong></li>
-                <li>You'll see four quadrants corresponding to SO, ST, WO, and WT strategies</li>
-                <li>Click <strong>"+ Add Strategy"</strong> in the appropriate quadrant</li>
-                <li>Write a clear strategy statement that links specific SWOT elements:
-                    <ul>
-                        <li><strong>Example SO Strategy:</strong> "Leverage our strong brand recognition (Strength) to capture government digitalization contracts (Opportunity) through targeted public sector marketing"</li>
-                        <li><strong>Example WT Strategy:</strong> "Address skills gap in data analytics (Weakness) by avoiding markets requiring heavy AI investment (Threat) and focusing on traditional service lines"</li>
-                    </ul>
-                </li>
-                <li>Set <strong>Priority</strong>: High (critical), Medium (important), or Low (nice-to-have)</li>
-                <li>Link to specific SWOT items using the dropdown to maintain traceability</li>
-            </ol>
-
-            <h3>AI Strategy Generation</h3>
-            <p>To generate strategic options automatically:</p>
-            <ol>
-                <li>Click <strong>"AI Generate Strategies"</strong></li>
-                <li>Select your strategic focus area (e.g., "Market Expansion," "Digital Transformation," "Cost Optimization")</li>
-                <li>Choose time horizon: Short-term (1 year), Medium-term (2-3 years), or Long-term (5+ years)</li>
-                <li>Click <strong>"Generate Options"</strong></li>
-                <li>Review AI suggestions and click <strong>"Add to Matrix"</strong> for viable options</li>
-            </ol>
-
-            <h3>Strategy Management</h3>
-            <ul>
-                <li><strong>Drag and Drop:</strong> Reorder strategies within quadrants by priority</li>
-                <li><strong>Link to SWOT:</strong> Ensure each strategy references specific SWOT items (shows traceability icons)</li>
-                <li><strong>Status Tracking:</strong> Mark strategies as Proposed, Approved, or Deferred</li>
-                <li><strong>Assign Owners:</strong> Designate strategy champions responsible for implementation</li>
-            </ul>
-        </section>
-
-        <!-- Balanced Scorecard -->
-        <section id="balanced-scorecard">
-            <h2>7. Phase 4: Balanced Scorecard</h2>
-
-            <p>Translate strategies into measurable Key Performance Indicators (KPIs) across four perspectives.</p>
-
-            <h3>The Four Perspectives</h3>
-            <ol>
-                <li><strong>Financial:</strong> How do we look to shareholders? (Revenue, costs, ROI)</li>
-                <li><strong>Customer:</strong> How do customers see us? (Satisfaction, retention, market share)</li>
-                <li><strong>Internal Process:</strong> What must we excel at? (Efficiency, quality, cycle time)</li>
-                <li><strong>Learning & Growth:</strong> How can we sustain improvement? (Skills, innovation, culture)</li>
-            </ol>
-
-            <h3>Creating KPIs</h3>
-            <ol>
-                <li>Go to <strong>Scorecard → Balanced Scorecard</strong></li>
-                <li>Select a perspective tab (Financial, Customer, Internal, Learning)</li>
-                <li>Click <strong>"+ Add KPI"</strong></li>
-                <li>Define the KPI:
-                    <ul>
-                        <li><strong>KPI Name:</strong> Clear metric (e.g., "Revenue Growth," "Customer Satisfaction Score")</li>
-                        <li><strong>Target:</strong> Goal value (e.g., "15%" or "4.5/5")</li>
-                        <li><strong>Unit:</strong> %, ₱, days, score, count, etc.</li>
-                        <li><strong>Weight:</strong> Importance relative to other KPIs (0.0 to 1.0, total should equal 1.0 per perspective)</li>
-                        <li><strong>Current Actual:</strong> Current performance value</li>
-                        <li><strong>Status:</strong> On Track, At Risk, Behind, or Complete</li>
-                    </ul>
-                </li>
-                <li>Click <strong>"Save KPI"</strong></li>
-            </ol>
-
-            <h3>KPI Status & Alerts</h3>
-            <p>The system automatically tracks performance:</p>
-            <ul>
-                <li><span class="status-badge status-green">🟢 On Track</span> Meeting or exceeding target</li>
-                <li><span class="status-badge status-yellow">🟡 At Risk</span> Within 10% of missing target (triggers email alert to plan owner)</li>
-                <li><span class="status-badge status-red">🔴 Behind</span> Missing target by >10% (triggers email alert)</li>
-                <li><span class="status-badge status-blue">✅ Complete</span> Target achieved</li>
-            </ul>
-
-            <h3>Updating Progress:</h3>
-            <ol>
-                <li>Click on any KPI to open the edit panel</li>
-                <li>Update the "Actual" value</li>
-                <li>Status updates automatically based on target comparison</li>
-                <li>Add notes explaining the variance (e.g., "Q2 marketing campaign exceeded expectations")</li>
-            </ol>
-
-            <h3>Scorecard Visualization</h3>
-            <ul>
-                <li><strong>Perspective Dashboard:</strong> See all KPIs color-coded by status</li>
-                <li><strong>Strategy Mapping:</strong> Visual lines connect KPIs to the strategies they support</li>
-                <li><strong>Trend Charts:</strong> Historical performance graphs (if updated regularly)</li>
-            </ul>
-        </section>
-
-        <!-- Initiatives -->
-        <section id="initiatives">
-            <h2>8. Phase 5: Initiatives & Execution</h2>
-
-            <p>Break strategies down into concrete Programs, Activities, and Projects (PAP) with budget tracking.</p>
-
-            <h3>Understanding the Hierarchy</h3>
-            <ul>
-                <li><strong>Programs:</strong> Large-scale, long-term initiatives comprising multiple projects (e.g., "Digital Transformation Program")</li>
-                <li><strong>Projects:</strong> Discrete efforts with specific deliverables (e.g., "CRM Implementation")</li>
-                <li><strong>Activities:</strong> Specific tasks or events within projects (e.g., "Staff Training Workshop")</li>
-            </ul>
-
-            <h3>Creating Initiatives</h3>
-            <ol>
-                <li>Navigate to <strong>Execution → Initiatives</strong></li>
-                <li>Click <strong>"+ New Initiative"</strong></li>
-                <li>Complete the details:
-                    <ul>
-                        <li><strong>Name:</strong> Clear, action-oriented title</li>
-                        <li><strong>Type:</strong> Program, Project, or Activity</li>
-                        <li><strong>Owner:</strong> Person or department responsible</li>
-                        <li><strong>Budget:</strong> Total allocated amount (₱)</li>
-                        <li><strong>Utilized:</strong> Amount spent to date (₱)</li>
-                        <li><strong>Progress:</strong> Percentage complete (0-100%)</li>
-                        <li><strong>Status:</strong> On Track, At Risk, Behind, or Complete</li>
-                        <li><strong>Due Date:</strong> Target completion date</li>
-                    </ul>
-                </li>
-                <li><strong>Link to Strategy:</strong> Select which strategy(ies) this initiative supports from the dropdown</li>
-                <li>Click <strong>"Save Initiative"</strong></li>
-            </ol>
-
-            <h3>Budget Tracking</h3>
-            <p>The system automatically calculates:</p>
-            <ul>
-                <li><strong>Total Budget:</strong> Sum of all initiative budgets</li>
-                <li><strong>Total Utilized:</strong> Sum of all spending</li>
-                <li><strong>Remaining:</strong> Budget minus utilized</li>
-                <li><strong>Burn Rate:</strong> Visual indicators if spending outpaces progress</li>
-            </ul>
-
-            <h3>Updating Progress:</h3>
-            <ul>
-                <li>Edit initiatives regularly to update % complete and budget utilized</li>
-                <li>Upload supporting documents (invoices, completion reports) to the comments section</li>
-                <li>Mark milestones complete to auto-update progress percentages</li>
-            </ul>
-
-            <h3>Gantt-Style Timeline</h3>
-            <p>Switch to <strong>Timeline View</strong> to see:</p>
-            <ul>
-                <li>Initiative start and end dates</li>
-                <li>Dependencies between projects</li>
-                <li>Critical path visualization</li>
-                <li>Overlapping resource allocations</li>
-            </ul>
-        </section>
-
-        <!-- Collaboration -->
-        <section id="collaboration">
-            <h2>9. Collaboration & Team Management</h2>
-
-            <p>Strat Planner Pro is built for teams. Work simultaneously with colleagues anywhere in the world.</p>
-
-            <h3>Sharing Your Plan</h3>
-            <ol>
-                <li>Open the plan you want to share</li>
-                <li>Click the <strong>"Share"</strong> button (top right)</li>
-                <li>Enter colleague's email address</li>
-                <li>Set permission level:
-                    <ul>
-                        <li><strong>Viewer:</strong> Can view all sections but cannot edit (good for board members, external consultants)</li>
-                        <li><strong>Editor:</strong> Can add and edit content but cannot delete the plan or manage sharing</li>
-                        <li><strong>Admin:</strong> Full control including deleting items and managing team access</li>
-                    </ul>
-                </li>
-                <li>Add an optional message explaining the plan context</li>
-                <li>Click <strong>"Send Invitation"</strong></li>
-                <li>The recipient receives an email with a link to access the plan</li>
-            </ol>
-
-            <div class="callout callout-warning">
-                <div class="callout-title">📝 Note:</div>
-                <p>Recipients must have a Strat Planner Pro account (free) to access shared plans.</p>
-            </div>
-
-            <h3>Real-Time Collaboration Features</h3>
-            <p>When multiple people work on the same plan:</p>
-            <ul>
-                <li><strong>Live Presence:</strong> See colored avatars in the top bar showing who's online</li>
-                <li><strong>Live Cursors:</strong> See where others are working (when in same section)</li>
-                <li><strong>Instant Updates:</strong> Changes appear immediately on everyone's screen</li>
-                <li><strong>Conflict Prevention:</strong> The system prevents two people from editing the exact same text field simultaneously</li>
-            </ul>
-
-            <h3>Commenting & Discussion</h3>
-            <p>Add context and questions without cluttering the content:</p>
-            <ol>
-                <li>On any SWOT item, KPI, or Initiative, click the <strong>speech bubble icon</strong></li>
-                <li>Type your comment or question</li>
-                <li>Click <strong>"Post Comment"</strong></li>
-                <li>Tagged users receive email notifications</li>
-                <li><strong>Resolve Comments:</strong> When the discussion concludes, click "Resolve" to archive the thread (resolved comments remain visible in the history)</li>
-            </ol>
-
-            <p><strong>@Mentions:</strong> Type @ followed by a team member's name to send them a specific notification.</p>
-
-            <h3>Organization Management</h3>
-            <p>For enterprise users:</p>
-
-            <h4>Creating an Organization:</h4>
-            <ol>
-                <li>Go to <strong>Profile → Organizations</strong></li>
-                <li>Click <strong>"Create Organization"</strong></li>
-                <li>Enter organization name, type (Corporation, Government, NGO, Education), and description</li>
-                <li>You become the Organization Admin automatically</li>
-            </ol>
-
-            <h4>Inviting Team Members:</h4>
-            <ol>
-                <li>In your organization settings, click <strong>"Invite Members"</strong></li>
-                <li>Enter email addresses (bulk paste supported)</li>
-                <li>Set default role (Viewer, Editor, or Admin)</li>
-                <li>Set expiration (invitations expire in 7 days for security)</li>
-                <li>Send invitations</li>
-            </ol>
-
-            <h4>Organization vs. Plan Permissions:</h4>
-            <ul>
-                <li><strong>Organization Membership:</strong> Gives access to the organization's template library and shared resources</li>
-                <li><strong>Plan Sharing:</strong> Specific access to individual strategic plans (a user can be in your organization but only have access to specific plans)</li>
-            </ul>
-        </section>
-
-        <!-- Reporting -->
-        <section id="reporting">
-            <h2>10. Monitoring, Evaluation & Reporting</h2>
-
-            <p>Track execution progress and generate professional documents for stakeholders.</p>
-
-            <h3>MEL Dashboard (Monitor, Evaluate, Learn)</h3>
-            <p>Access the <strong>Dashboard</strong> view for executive summaries:</p>
-
-            <h4>Key Metrics Displayed:</h4>
-            <ul>
-                <li><strong>Overall Progress:</strong> Percentage of initiatives on track vs. at risk</li>
-                <li><strong>Budget Burn:</strong> Visual charts showing budget utilization vs. timeline</li>
-                <li><strong>KPI Health:</strong> Traffic light summary (Green/Yellow/Red) across all four scorecard perspectives</li>
-                <li><strong>Recent Activity:</strong> Timeline of latest updates and comments</li>
-                <li><strong>Milestone Tracker:</strong> Upcoming deadlines and completed milestones</li>
-            </ul>
-
-            <h3>Generating Reports</h3>
-            <p>Create print-ready strategic plan documents:</p>
-            <ol>
-                <li>Go to <strong>Reports → Generate Report</strong></li>
-                <li>Select sections to include:
-                    <ul>
-                        <li><strong>Executive Summary:</strong> Auto-generated from plan description and key metrics</li>
-                        <li><strong>SWOT Analysis:</strong> Full matrix with evidence</li>
-                        <li><strong>Systems Thinking Diagrams:</strong> Embedded images</li>
-                        <li><strong>Strategy Matrix:</strong> All four quadrants</li>
-                        <li><strong>Balanced Scorecard:</strong> KPI tables with status</li>
-                        <li><strong>Initiative Plan:</strong> Detailed PAP breakdown with budgets</li>
-                        <li><strong>Appendix:</strong> Activity logs and change history</li>
-                    </ul>
-                </li>
-                <li>Choose format:
-                    <ul>
-                        <li><strong>Executive Brief:</strong> Summary only (10-15 pages)</li>
-                        <li><strong>Complete Plan:</strong> All sections (30-50 pages)</li>
-                        <li><strong>Financial Focus:</strong> Heavy emphasis on budgets and financial KPIs</li>
-                    </ul>
-                </li>
-                <li>Click <strong>"Generate PDF"</strong></li>
-                <li>Download or print the document</li>
-            </ol>
-
-            <h3>Report Features:</h3>
-            <ul>
-                <li>Professional formatting with your organization name and plan period</li>
-                <li>Page numbers and table of contents</li>
-                <li>Color-coded status indicators</li>
-                <li>Footer with generation date ("Strategic Plan as of [Date]")</li>
-            </ul>
-
-            <h3>Activity Log & Audit Trail</h3>
-            <p>For compliance and governance:</p>
-            <ul>
-                <li>Go to <strong>Reports → Activity Log</strong></li>
-                <li>See complete history of who changed what and when</li>
-                <li>Filter by user, date range, or section</li>
-                <li>Export logs for audit purposes (CSV format)</li>
-            </ul>
-        </section>
-
-        <!-- Templates -->
-        <section id="templates">
-            <h2>11. Templates & Reuse</h2>
-
-            <p>Save time by starting with proven frameworks.</p>
-
-            <h3>Built-In Industry Templates</h3>
-            <p>New plans can start with pre-configured templates:</p>
-
-            <h4>Available Templates:</h4>
-            <ol>
-                <li><strong>Government/LGU:</strong> Public sector strategic planning with citizen-centric KPIs</li>
-                <li><strong>Healthcare:</strong> Hospital/clinic planning with patient outcome metrics</li>
-                <li><strong>Technology Startup:</strong> Agile growth planning with runway and burn-rate tracking</li>
-                <li><strong>Higher Education:</strong> University strategic plans covering enrollment, research, and accreditation</li>
-                <li><strong>Digital Transformation:</strong> Enterprise digitalization roadmap</li>
-                <li><strong>Non-Profit:</strong> Mission-focused planning with program impact metrics</li>
-                <li><strong>Manufacturing:</strong> Operational excellence and supply chain focus</li>
-                <li><strong>Retail:</strong> Customer experience and omnichannel strategy templates</li>
-            </ol>
-
-            <h4>Using a Template:</h4>
-            <ol>
-                <li>When creating a new plan, select <strong>"Start from Template"</strong></li>
-                <li>Choose industry category</li>
-                <li>Preview template contents</li>
-                <li>Click <strong>"Use This Template"</strong></li>
-                <li>All SWOT suggestions, strategies, KPIs, and initiatives are copied to your new plan</li>
-                <li>Customize all content to match your specific situation</li>
-            </ol>
-
-            <h3>Creating Custom Templates</h3>
-            <p>Save your successful plans as reusable templates for your organization:</p>
-            <ol>
-                <li>Open a completed plan that you want to templatize</li>
-                <li>Go to <strong>Settings → Save as Template</strong></li>
-                <li>Name the template (e.g., "ASI Annual Planning Template")</li>
-                <li>Select what to include (SWOT items, strategies, KPI structure, initiatives)</li>
-                <li>Set visibility:
-                    <ul>
-                        <li><strong>Private:</strong> Only you can see and use it</li>
-                        <li><strong>Organization:</strong> All members of your organization can use it</li>
-                        <li><strong>Public:</strong> Available to all Strat Planner Pro users (submitted for approval)</li>
-                    </ul>
-                </li>
-                <li>Click <strong>"Create Template"</strong></li>
-            </ol>
-        </section>
-
-        <!-- Settings -->
-        <section id="settings">
-            <h2>12. Account Settings & Administration</h2>
-
-            <h3>Managing Your Profile</h3>
-            <ol>
-                <li>Click your avatar (top right) → <strong>"Profile Settings"</strong></li>
-                <li>Update:
-                    <ul>
-                        <li>Personal information (name, email)</li>
-                        <li>Password (requires current password for security)</li>
-                        <li>Notification preferences (email frequency)</li>
-                        <li>Avatar color (for presence indicators)</li>
-                    </ul>
-                </li>
-            </ol>
-
-            <h3>Notification Settings</h3>
-            <p>Control your email alerts:</p>
-            <ul>
-                <li><strong>KPI Alerts:</strong> Notify when scorecard items go "At Risk" or "Behind" (recommended for plan owners)</li>
-                <li><strong>Comments:</strong> Notify when someone comments on items you created</li>
-                <li><strong>Shares:</strong> Notify when someone shares a plan with you</li>
-                <li><strong>Invitations:</strong> Organization invites and plan collaboration invites</li>
-                <li><strong>Digest Mode:</strong> Daily summary email instead of immediate notifications</li>
-            </ul>
-
-            <h3>Admin Functions (Organization Admins)</h3>
-            <p>If you're an organization administrator:</p>
-
-            <h4>User Management:</h4>
-            <ul>
-                <li>View all organization members</li>
-                <li>Change member roles (promote to Admin or demote to Viewer)</li>
-                <li>Deactivate accounts (prevents login but preserves historical data)</li>
-                <li>View login activity for security monitoring</li>
-            </ul>
-
-            <h4>System Health:</h4>
-            <ul>
-                <li>View storage usage (NeDB file sizes)</li>
-                <li>WebSocket connection status</li>
-                <li>Recent API activity and error rates</li>
-            </ul>
-
-            <h4>Backup & Export:</h4>
-            <ul>
-                <li>Export all organizational data (JSON format)</li>
-                <li>Schedule automated backups to cloud storage</li>
-            </ul>
-        </section>
-
-        <!-- FAQ -->
-        <section id="faq">
-            <h2>13. Frequently Asked Questions</h2>
-
-            <h3>General Usage</h3>
-
-            <h4>Q: Can I use Strat Planner Pro on my mobile device?</h4>
-            <p>A: Yes. Access the web app through your mobile browser (Chrome, Safari, Edge). The interface is fully responsive. For best results on tablets, use landscape mode when editing complex diagrams.</p>
-
-            <h4>Q: Is my data secure?</h4>
-            <p>A: Yes. All connections use HTTPS encryption. Your password is hashed using industry-standard bcrypt encryption. Data is stored in secure databases with regular automated backups.</p>
-
-            <h4>Q: What happens if I lose internet connection while working?</h4>
-            <p>A: The app is designed to work offline. Your changes are saved locally in your browser. When you reconnect, changes automatically sync to the server. A banner will indicate "Offline Mode" when disconnected.</p>
-
-            <h4>Q: Can I export my data if I stop using the service?</h4>
-            <p>A: Yes. Go to Plan Settings → Export Data to download your complete plan in JSON format, which can be imported into other systems or saved for records.</p>
-
-            <h3>Collaboration</h3>
-
-            <h4>Q: How many people can collaborate on one plan?</h4>
-            <p>A: There is no technical limit, but for optimal performance, we recommend maximum 20 simultaneous editors per plan. Unlimited viewers are supported.</p>
-
-            <h4>Q: Can I restrict someone from seeing financial data but let them edit SWOT?</h4>
-            <p>A: Currently, permission levels (Viewer/Editor/Admin) apply to the entire plan. For sensitive financial data, consider creating a separate "Financial Annex" plan with restricted sharing.</p>
-
-            <h4>Q: What if two people edit the same item simultaneously?</h4>
-            <p>A: The system uses "last write wins" for simplicity. If conflicts occur frequently in your team, we recommend using the commenting feature to coordinate who is editing which section.</p>
-
-            <h3>Technical Issues</h3>
-
-            <h4>Q: The page isn't loading or is showing an error.</h4>
-            <p>A: Try these steps in order:
-                <ol>
-                    <li>Refresh the browser (F5 or Ctrl+R / Cmd+R)</li>
-                    <li>Clear browser cache and cookies for strategy-ai-planner.deploypad.app</li>
-                    <li>Log out and log back in</li>
-                    <li>Try a different browser (Chrome, Firefox, Edge, Safari)</li>
-                    <li>Contact support if issues persist</li>
-                </ol>
-            </p>
-
-            <h4>Q: I didn't receive my invitation email.</h4>
-            <p>A: Check your spam/junk folder first. If not found, ensure the email address was typed correctly. Invitations expire after 7 days; ask the sender to resend if expired.</p>
-
-            <h4>Q: How do I reset my password?</h4>
-            <p>A: On the login page, click "Forgot Password." Enter your email. You'll receive a link valid for 1 hour to create a new password. For security, this logs you out of all devices.</p>
-
-            <h3>Billing & Accounts</h3>
-
-            <h4>Q: Is there a cost to use Strat Planner Pro?</h4>
-            <p>A: Basic accounts are free for up to 3 plans. Organization accounts with unlimited plans and advanced features require a subscription. Contact sales@deploypad.app for pricing.</p>
-
-            <h4>Q: How do I delete my account?</h4>
-            <p>A: Go to Profile Settings → Advanced → Delete Account. This permanently removes your user data but preserves plans you own (ownership transfers to organization admin) or plans shared with you (removes your access).</p>
-
-            <h4>Q: Can I change my email address?</h4>
-            <p>A: Yes, but you must verify the new email address before the change takes effect. Go to Profile Settings → Change Email. You'll receive a verification link at the new address.</p>
-        </section>
+    <div class="footer-col">
+      <div class="footer-col-title">Resources</div>
+      <a href="https://strategy-ai-planner.deploypad.app/">Open Strat Planner Pro</a>
+      <a href="#">Feature Requests (in-app Feedback)</a>
+      <a href="#">Release Notes</a>
+      <a href="#">API Documentation</a>
     </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Document</div>
+      <p>Manual Version: 1.0.0</p>
+      <p>Last Updated: April 17, 2026</p>
+      <p>App Version: 1.0.0</p>
+      <p>Platform: Web · PWA · Mobile</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-brand">Strat Planner Pro</div>
+    <div class="footer-copy">© 2026 ASilva Innovations, Inc. · Precision Planning for Ambitious Organizations</div>
+  </div>
+</footer>
 
-    <!-- Footer -->
-    <footer>
-        <h2 style="color: white; border: none; font-size: 1.5rem;">Support & Contact</h2>
-        <p><strong>Technical Support:</strong> support@deploypad.app</p>
-        <p><strong>Feature Requests:</strong> Use the "Feedback" button in the app footer</p>
-        <p><strong>Documentation Updates:</strong> This manual is updated regularly. Check the "Help" menu in-app for the latest version.</p>
-        
-        <br>
-        <p><strong>Office Hours:</strong> Monday – Friday, 9:00 AM – 6:00 PM (GMT+8)</p>
-        <p><strong>Average response time:</strong> 4 hours during business hours</p>
-        
-        <br>
-        <hr style="border-color: rgba(255,255,255,0.2);">
-        <br>
-        
-        <p>Quick Reference Card</p>
-        <ul style="text-align: left; display: inline-block; margin: 1rem 0;">
-            <li><strong>Keyboard Shortcuts:</strong> Ctrl+S (save), Esc (close modal), ? (help)</li>
-            <li><strong>Status Colors:</strong> 🟢 Green = On Track, 🟡 Yellow = At Risk, 🔴 Red = Behind</li>
-            <li><strong>Plan Lifecycle:</strong> Draft → Review → Approved → Archived</li>
-        </ul>
-        
-        <br>
-        <p><em>Strat Planner Pro — Precision Planning for Ambitious Organizations</em></p>
-        <p>Built with ❤️ by ASilva Innovations, Inc.</p>
-        <p>© 2026 All Rights Reserved</p>
-        <p><strong>Document Version:</strong> 1.0.0 | <strong>Last Updated:</strong> April 17, 2026</p>
-    </footer>
+<script>
+// ── FAQ accordion ──────────────────────────────────
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
+
+// ── TOC active link ────────────────────────────────
+function setActive(link) {
+  document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+  link.classList.add('active');
+}
+
+// ── Scroll-driven behaviors ────────────────────────
+const scrollProgress  = document.getElementById('scrollProgress');
+const sidebarProgress = document.getElementById('sidebarProgress');
+const progressPct     = document.getElementById('progressPct');
+const backTop         = document.getElementById('backTop');
+
+const sections = document.querySelectorAll('.section');
+const tocLinks  = document.querySelectorAll('.toc-link');
+
+function onScroll() {
+  const scrollTop    = window.scrollY;
+  const docHeight    = document.documentElement.scrollHeight - window.innerHeight;
+  const pct          = Math.min(100, Math.round((scrollTop / docHeight) * 100));
+
+  // Top progress bar
+  scrollProgress.style.transform = `scaleX(${pct / 100})`;
+
+  // Sidebar progress
+  sidebarProgress.style.width = pct + '%';
+  progressPct.textContent = pct + '%';
+
+  // Back to top
+  backTop.classList.toggle('visible', scrollTop > 400);
+
+  // Highlight active TOC section
+  let currentId = '';
+  sections.forEach(sec => {
+    if (window.scrollY >= sec.offsetTop - 100) {
+      currentId = sec.id;
+    }
+  });
+  tocLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+  });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll(); // init
+
+// ── Staggered section entrance ─────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+    }
+  });
+}, { threshold: 0.06 });
+
+sections.forEach(sec => {
+  sec.style.animationPlayState = 'paused';
+  observer.observe(sec);
+});
+
+// ── Smooth anchor scroll ───────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+    }
+    // Update active
+    document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+    if (a.classList.contains('toc-link')) a.classList.add('active');
+  });
+});
+</script>
 </body>
 </html>
