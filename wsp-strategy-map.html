@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="description" content="WorldSkills Philippines Strategy Map 2026-2030">
+    <link rel="manifest" href="#" id="manifest-placeholder">
+    <title>WSP Strategy Map 2026-2030 - Interactive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: #bfdbfe;
+            font-style: italic;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(30, 41, 59, 0.8);
+            color: #94a3b8;
+        }
+
+        .tab-btn:hover {
+            background: rgba(51, 65, 85, 0.8);
+            color: #e2e8f0;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .strategy-map {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .perspective {
+            position: relative;
+        }
+
+        .connection-line {
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1.5rem;
+            background: linear-gradient(to bottom, #60a5fa, transparent);
+            opacity: 0.5;
+        }
+
+        .perspective-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .perspective-card.expanded {
+            box-shadow: 0 0 0 4px white;
+        }
+
+        .bg-purple { background-color: #7c3aed; }
+        .bg-blue { background-color: #2563eb; }
+        .bg-green { background-color: #16a34a; }
+        .bg-orange { background-color: #ea580c; }
+        .bg-red { background-color: #dc2626; }
+
+        .perspective-header {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .perspective-header:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .perspective-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .perspective-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .strategy-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            font-size: 0.875rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+        }
+
+        .vision-items,
+        .strategy-details {
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .vision-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .vision-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .vision-desc {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+            margin-bottom: 0.75rem;
+        }
+
+        .vision-goals {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .vision-goal {
+            font-size: 0.75rem;
+            color: #bfdbfe;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .strategy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .strategy-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .strategy-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .strategy-item.selected {
+            box-shadow: 0 0 0 2px white;
+        }
+
+        .strategy-meta {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .strategy-pillar {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fde047;
+        }
+
+        .strategy-target {
+            font-size: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .strategy-action {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .strategy-kpi {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+            margin-bottom: 0.5rem;
+        }
+
+        .strategy-contributes {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .contributes-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fde047;
+            margin-bottom: 0.5rem;
+        }
+
+        .contributes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .contributes-item {
+            font-size: 0.75rem;
+            color: #86efac;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 0.375rem;
+            height: 0.375rem;
+            background-color: #86efac;
+            border-radius: 50%;
+        }
+
+        .priorities-section {
+            margin-top: 3rem;
+            background: linear-gradient(to right, #581c87, #1e3a8a);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .priorities-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .priorities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .priority-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .priority-title {
+            font-weight: bold;
+            color: #fde047;
+            margin-bottom: 0.5rem;
+        }
+
+        .priority-desc {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+        }
+
+        .instructions {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #bfdbfe;
+            font-size: 0.875rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .chevron {
+            width: 1.5rem;
+            height: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .swot-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .swot-card.strength {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+        }
+
+        .swot-card.weakness {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+        }
+
+        .swot-card.opportunity {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+        }
+
+        .swot-card.threat {
+            border-color: #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+        }
+
+        .swot-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .swot-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .swot-item {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .vision-grid,
+            .priorities-grid,
+            .swot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+            }
+        }
+
+        .install-container {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .install-btn {
+            background-color: #7c3aed;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .install-btn:hover {
+            background-color: #6d28d9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>WorldSkills Philippines Strategy Map 2026-2030</h1>
+            <p>"Transforming Demonstrated Excellence into a Lasting Legacy"</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('strategy-map')">📊 Strategy Map</button>
+            <button class="tab-btn" onclick="switchTab('swot-analysis')">🔍 SWOT Analysis</button>
+            <button class="tab-btn" onclick="switchTab('bsc-matrix')">📈 BSC Matrix</button>
+        </div>
+
+        <div id="strategy-map" class="tab-content active">
+            <div class="strategy-map" id="strategyMapContainer"></div>
+
+            <div class="priorities-section">
+                <h3 class="priorities-title">2030 Strategic Priorities</h3>
+                <div class="priorities-grid">
+                    <div class="priority-item">
+                        <h4 class="priority-title">Event → System Driven</h4>
+                        <p class="priority-desc">Permanent organizational structure</p>
+                    </div>
+                    <div class="priority-item">
+                        <h4 class="priority-title">National Integration</h4>
+                        <p class="priority-desc">WSOS into Philippine TVET system</p>
+                    </div>
+                    <div class="priority-item">
+                        <h4 class="priority-title">Human Capital Retention</h4>
+                        <p class="priority-desc">Stable, accredited Experts Pool</p>
+                    </div>
+                    <div class="priority-item">
+                        <h4 class="priority-title">Legacy Preservation</h4>
+                        <p class="priority-desc">Digitized knowledge systems</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <p>Click on each perspective to expand strategies • Click strategies to view their contribution to goals</p>
+            </div>
+        </div>
+
+        <div id="swot-analysis" class="tab-content">
+            <div class="swot-grid">
+                <div class="swot-card strength">
+                    <div class="swot-header">
+                        <span>💪</span>
+                        <span>Strengths</span>
+                    </div>
+                    <div class="swot-items" id="strengths-list"></div>
+                </div>
+
+                <div class="swot-card weakness">
+                    <div class="swot-header">
+                        <span>⚠️</span>
+                        <span>Weaknesses</span>
+                    </div>
+                    <div class="swot-items" id="weaknesses-list"></div>
+                </div>
+
+                <div class="swot-card opportunity">
+                    <div class="swot-header">
+                        <span>🌟</span>
+                        <span>Opportunities</span>
+                    </div>
+                    <div class="swot-items" id="opportunities-list"></div>
+                </div>
+
+                <div class="swot-card threat">
+                    <div class="swot-header">
+                        <span>🔥</span>
+                        <span>Threats</span>
+                    </div>
+                    <div class="swot-items" id="threats-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bsc-matrix" class="tab-content">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid #334155; border-radius: 0.75rem; padding: 2rem; overflow-x: auto;">
+                <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: #60a5fa;">Balanced Scorecard Matrix (2026–2030)</h3>
+                <table id="bsc-table" style="width: 100%; border-collapse: collapse; font-size: 0.875rem;"></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="install-container">
+        <button class="install-btn hidden" id="installBtn">Install App</button>
+    </div>
+
+    <script>
+        const perspectivesData = [
+            {
+                id: 'vision',
+                name: 'VISION & MISSION',
+                color: 'bg-purple',
+                icon: 'target',
+                items: [
+                    {
+                        title: 'Vision 2030',
+                        desc: 'Southeast Asia\'s premier hub for technical excellence, skills innovation, and global benchmarking',
+                        goals: ['Global Hub Positioning', 'Regional Leadership', 'Standards Authority']
+                    },
+                    {
+                        title: 'Mission',
+                        desc: 'Enhance workforce quality by aligning national TVET with global benchmarks',
+                        goals: ['Competition-Driven Diagnostics', 'Expert Development', 'Strategic Partnerships']
+                    }
+                ]
+            },
+            {
+                id: 'stakeholder',
+                name: 'STAKEHOLDER PERSPECTIVE',
+                color: 'bg-blue',
+                icon: 'users',
+                strategies: [
+                    {
+                        pillar: 'Pillar 2: Talent & Competition Pipeline',
+                        action: 'Link medalists to high-value employment',
+                        kpi: 'Skills Premium Index ⭐',
+                        target: '90% placement with ≥30% wage uplift',
+                        contributes: ['Goal 2: Sustainable Pipeline', 'Human Capital Retention Priority']
+                    },
+                    {
+                        pillar: 'Pillar 6: Partnerships',
+                        action: 'Measure employer satisfaction with graduates',
+                        kpi: 'Industry NPS on Graduate Readiness',
+                        target: 'NPS ≥ 70',
+                        contributes: ['Goal 6: Industry Partnerships', 'National Integration Priority']
+                    },
+                    {
+                        pillar: 'Pillar 2: Pipeline',
+                        action: 'Ensure world-class competition participation',
+                        kpi: 'Global Participation Rate',
+                        target: '100% hosted skills',
+                        contributes: ['Goal 2: Sustainable Pipeline', 'Goal 6: Global Positioning']
+                    }
+                ]
+            },
+            {
+                id: 'finance',
+                name: 'FINANCIAL PERSPECTIVE',
+                color: 'bg-green',
+                icon: 'dollar',
+                strategies: [
+                    {
+                        pillar: 'Pillar 1: Governance',
+                        action: 'Transition to sustained, program-based budgeting',
+                        kpi: 'Budgetary Permanence ⭐',
+                        target: '100% PBB Integration',
+                        contributes: ['Goal 1: Governance', 'Goal 7: Sustainability']
+                    },
+                    {
+                        pillar: 'Pillar 7: Sustainability',
+                        action: 'Implement cost-sharing frameworks',
+                        kpi: 'PPP Cost-Sharing Ratio',
+                        target: '30% Industry Offset',
+                        contributes: ['Goal 6: Partnerships', 'Goal 7: Sustainability']
+                    }
+                ]
+            },
+            {
+                id: 'process',
+                name: 'INTERNAL PROCESS PERSPECTIVE',
+                color: 'bg-orange',
+                icon: 'cog',
+                strategies: [
+                    {
+                        pillar: 'Pillar 5: Standards',
+                        action: 'Align WSOS with national competency frameworks',
+                        kpi: 'WSOS Integration Index ⭐',
+                        target: '100% TR Alignment',
+                        contributes: ['Goal 5: Standards Integration', 'National Integration Priority']
+                    },
+                    {
+                        pillar: 'Pillar 1: Governance',
+                        action: 'Establish permanent national-regional structure',
+                        kpi: 'Structural Integrity Ratio ⭐',
+                        target: '20:0 Plantilla',
+                        contributes: ['Goal 1: Governance', 'System-Driven Priority']
+                    },
+                    {
+                        pillar: 'Pillar 1: Governance',
+                        action: 'Develop and approve WSP Manual of Operations',
+                        kpi: 'MOP Compliance Rate',
+                        target: '100% Documented SOPs',
+                        contributes: ['Goal 1: Governance', 'Legacy Preservation Priority']
+                    }
+                ]
+            },
+            {
+                id: 'learning',
+                name: 'LEARNING & GROWTH PERSPECTIVE',
+                color: 'bg-red',
+                icon: 'graduation',
+                strategies: [
+                    {
+                        pillar: 'Pillar 7: Sustainability',
+                        action: 'Adopt Digital MEL and Strategic Planner',
+                        kpi: 'Digital Visibility Rate ⭐',
+                        target: '100% Digital Tracking',
+                        contributes: ['Goal 7: Legacy & Impact', 'Legacy Preservation Priority']
+                    },
+                    {
+                        pillar: 'Pillar 3: Professionalism',
+                        action: 'Professionalize and incentivize Experts',
+                        kpi: 'Gold Standard Accreditation ⭐',
+                        target: '100% WSMP Certification',
+                        contributes: ['Goal 3: Professionalism', 'Human Capital Retention Priority']
+                    },
+                    {
+                        pillar: 'Pillar 3: Professionalism',
+                        action: 'Utilize LMS to resolve expert turnover',
+                        kpi: 'Institutional Memory Coverage',
+                        target: '100% LMS Coverage',
+                        contributes: ['Goal 3: Professionalism', 'Human Capital Retention Priority']
+                    },
+                    {
+                        pillar: 'Pillar 2: Talent & Competition Pipeline',
+                        action: 'Track regional inclusion in initiatives',
+                        kpi: 'Rural Inclusion Index',
+                        target: '≥30% in non-Metro regions',
+                        contributes: ['Goal 2: Sustainable Pipeline', 'National Integration Priority']
+                    }
+                ]
+            }
+        ];
+
+        const swotData = {
+            strengths: [
+                'Institutional & Policy Alignment: Strong legal anchoring via Section 30 of RA 7796',
+                'Direct Leadership Support: Consistent financial and administrative backing',
+                'WS standards complement existing CBT/Outcomes-based frameworks',
+                'Proven world-class logistics (hosting largest WorldSkills ASEAN)',
+                'Access to established Regional Training Centers and skilled experts'
+            ],
+            weaknesses: [
+                'Structural Ambiguity: Reliance on ad-hoc/shifting task forces',
+                'Conflict of Priority: WS roles perceived as "additional workload"',
+                'Talent Attrition: High turnover of expert trainers to industry',
+                'Skill Gaps: Dependence on untrained JO personnel',
+                'No clear mandate for local integration of international benchmarks'
+            ],
+            opportunities: [
+                'Positioning the PH as a SE Asian hub for technical excellence',
+                'Leveraging "Gold Medal" visibility for international hosting',
+                'Using 2025 success to rebrand TVET and attract Gen Z talent',
+                'Expansion into Industry 4.0 sectors (IoT, Cyber Security, Robotics)',
+                'Companies open to co-developing standards and assessments'
+            ],
+            threats: [
+                'Sustainability Risk: Changes in organizational hierarchy',
+                'Risk of WS integration being "pilot-only" without long-term commitment',
+                'Institutional Memory Loss from personnel rotations',
+                'Technological Lag: Industry 4.0 outstripping slow TR updates',
+                'Resistance to adopt rigorous, high-performance benchmarks'
+            ]
+        };
+
+        const bscData = [
+            { perspective: 'STAKEHOLDER', pillar: 'Pillar 2: Talent & Competition Pipeline', strategy: 'Link medalists to high-value employment', kpi: 'Skills Premium Index ⭐', current: 'Not tracked', target: '90% placement with ≥30% wage uplift' },
+            { perspective: 'STAKEHOLDER', pillar: 'Pillar 6: Partnerships', strategy: 'Measure employer satisfaction with graduates', kpi: 'Industry NPS on Graduate Readiness', current: 'Not measured', target: 'NPS ≥ 70' },
+            { perspective: 'FINANCE', pillar: 'Pillar 1: Governance', strategy: 'Transition to sustained, program-based budgeting', kpi: 'Budgetary Permanence ⭐', current: '0% (Ad-hoc)', target: '100% Integration' },
+            { perspective: 'INTERNAL PROCESS', pillar: 'Pillar 5: Standards', strategy: 'Align WSOS with national competency frameworks', kpi: 'WSOS Integration Index ⭐', current: 'Significant Tech Lag', target: '100% Alignment' },
+            { perspective: 'INTERNAL PROCESS', pillar: 'Pillar 1: Governance', strategy: 'Establish permanent national-regional structure', kpi: 'Structural Integrity Ratio ⭐', current: '4 Plantilla (High JO)', target: '20:0 (Core Plantilla)' },
+            { perspective: 'LEARNING & GROWTH', pillar: 'Pillar 7: Sustainability', strategy: 'Adopt Digital MEL and Strategic Planner', kpi: 'Digital Visibility Rate ⭐', current: 'Manual/Spreadsheet', target: '100% Digital Visibility' },
+            { perspective: 'LEARNING & GROWTH', pillar: 'Pillar 3: Professionalism', strategy: 'Professionalize and incentivize Experts', kpi: 'Gold Standard Accreditation ⭐', current: 'Guidelines exist', target: '100% WSMP Certification' },
+            { perspective: 'LEARNING & GROWTH', pillar: 'Pillar 2: Talent & Competition Pipeline', strategy: 'Track regional inclusion in initiatives', kpi: 'Rural Inclusion Index', current: 'Elite Silo Dynamic', target: '≥30% in non-Metro regions' }
+        ];
+
+        const icons = {
+            target: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><circle cx="12" cy="12" r="6" stroke-width="2"/><circle cx="12" cy="12" r="2" stroke-width="2"/></svg>',
+            users: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+            dollar: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            cog: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+            graduation: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>',
+            chevronDown: '<svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>',
+            chevronUp: '<svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>',
+            trending: '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>'
+        };
+
+        let state = {
+            expandedPerspective: null,
+            selectedStrategy: null,
+            currentTab: 'strategy-map'
+        };
+
+        function switchTab(tabName) {
+            state.currentTab = tabName;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Fix: get the clicked button from arguments or event
+            const clickedBtn = event ? event.target : document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+            if (clickedBtn) clickedBtn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            if (tabName === 'swot-analysis') renderSWOT();
+            if (tabName === 'bsc-matrix') renderBSC();
+        }
+
+        function renderVisionItems(items) {
+            return items.map(item => '<div class="vision-item"><h3 class="vision-title">' + item.title + '</h3><p class="vision-desc">' + item.desc + '</p><div class="vision-goals">' + item.goals.map(goal => '<div class="vision-goal">' + icons.trending + goal + '</div>').join('') + '</div></div>').join('');
+        }
+
+        function renderStrategies(strategies, perspectiveId) {
+            return strategies.map(function(strategy, idx) {
+                const strategyId = perspectiveId + '-' + idx;
+                const isSelected = state.selectedStrategy === strategyId;
+                return '<div class="strategy-item ' + (isSelected ? 'selected' : '') + '" data-strategy-id="' + strategyId + '"><div class="strategy-meta"><span class="strategy-pillar">' + strategy.pillar + '</span><span class="strategy-target">Target: ' + strategy.target + '</span></div><h4 class="strategy-action">' + strategy.action + '</h4><p class="strategy-kpi">KPI: ' + strategy.kpi + '</p>' + (isSelected ? '<div class="strategy-contributes"><p class="contributes-title">Contributes to:</p><div class="contributes-list">' + strategy.contributes.map(contrib => '<div class="contributes-item"><div class="dot"></div>' + contrib + '</div>').join('') + '</div></div>' : '') + '</div>';
+            }).join('');
+        }
+
+        function renderPerspective(perspective, index) {
+            const isExpanded = state.expandedPerspective === perspective.id;
+            const hasStrategies = perspective.strategies && perspective.strategies.length > 0;
+            return '<div class="perspective">' + (index > 0 ? '<div class="connection-line"></div>' : '') + '<div class="perspective-card ' + perspective.color + ' ' + (isExpanded ? 'expanded' : '') + '"><button class="perspective-header" data-perspective-id="' + perspective.id + '"><div class="perspective-title">' + icons[perspective.icon] + '<h2 class="perspective-name">' + perspective.name + '</h2></div>' + (hasStrategies ? '<div class="strategy-count"><span class="badge">' + perspective.strategies.length + ' Strategies</span>' + (isExpanded ? icons.chevronUp : icons.chevronDown) + '</div>' : '') + '</button>' + (perspective.items ? '<div class="vision-items"><div class="vision-grid">' + renderVisionItems(perspective.items) + '</div></div>' : '') + (hasStrategies && isExpanded ? '<div class="strategy-details"><div class="strategy-list">' + renderStrategies(perspective.strategies, perspective.id) + '</div></div>' : '') + '</div></div>';
+        }
+
+        function render() {
+            const mapContainer = document.getElementById('strategyMapContainer');
+            mapContainer.innerHTML = perspectivesData.map(function(perspective, idx) {
+                return renderPerspective(perspective, idx);
+            }).join('');
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.perspective-header').forEach(function(header) {
+                header.addEventListener('click', function(e) {
+                    const perspectiveId = e.currentTarget.getAttribute('data-perspective-id');
+                    state.expandedPerspective = state.expandedPerspective === perspectiveId ? null : perspectiveId;
+                    render();
+                    saveState();
+                });
+            });
+            document.querySelectorAll('.strategy-item').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    const strategyId = e.currentTarget.getAttribute('data-strategy-id');
+                    state.selectedStrategy = state.selectedStrategy === strategyId ? null : strategyId;
+                    render();
+                    saveState();
+                });
+            });
+        }
+
+        function renderSWOT() {
+            document.getElementById('strengths-list').innerHTML = swotData.strengths.map(item => '<div class="swot-item">' + item + '</div>').join('');
+            document.getElementById('weaknesses-list').innerHTML = swotData.weaknesses.map(item => '<div class="swot-item">' + item + '</div>').join('');
+            document.getElementById('opportunities-list').innerHTML = swotData.opportunities.map(item => '<div class="swot-item">' + item + '</div>').join('');
+            document.getElementById('threats-list').innerHTML = swotData.threats.map(item => '<div class="swot-item">' + item + '</div>').join('');
+        }
+
+        function renderBSC() {
+            const table = document.getElementById('bsc-table');
+            let html = '<thead><tr style="background: rgba(79, 70, 229, 0.2); border-bottom: 2px solid #4f46e5;"><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Perspective</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Strategic Pillar</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Strategy/Action</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">KPI</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Current (2025)</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Target (2030)</th></tr></thead><tbody>';
+            bscData.forEach(function(row, idx) {
+                html += '<tr style="border-bottom: 1px solid #334155; ' + (idx % 2 === 0 ? 'background: rgba(15, 23, 42, 0.3);' : '') + '"><td style="padding: 0.75rem; color: #a78bfa;">' + row.perspective + '</td><td style="padding: 0.75rem; color: #fde047; font-size: 0.75rem;">' + row.pillar + '</td><td style="padding: 0.75rem;">' + row.strategy + '</td><td style="padding: 0.75rem; color: #86efac;">' + row.kpi + '</td><td style="padding: 0.75rem; color: #f87171;">' + row.current + '</td><td style="padding: 0.75rem; color: #4ade80; font-weight: 600;">' + row.target + '</td></tr>';
+            });
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('wspStrategyMapState', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        function loadState() {
+            try {
+                const savedState = localStorage.getItem('wspStrategyMapState');
+                if (savedState) {
+                    const parsed = JSON.parse(savedState);
+                    state.expandedPerspective = parsed.expandedPerspective;
+                    state.selectedStrategy = parsed.selectedStrategy;
+                }
+            } catch (e) {}
+        }
+
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        const manifest = {
+            name: 'WSP Strategy Map 2026-2030',
+            short_name: 'WSP StratMap',
+            description: 'WorldSkills Philippines Interactive Strategy Map',
+            start_url: '.',
+            display: 'standalone',
+            background_color: '#0f172a',
+            theme_color: '#1e3a8a',
+            icons: [{
+                src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="%231e3a8a"/><circle cx="256" cy="256" r="180" fill="none" stroke="%23fff" stroke-width="20"/><circle cx="256" cy="256" r="120" fill="none" stroke="%23fff" stroke-width="20"/><circle cx="256" cy="256" r="40" fill="%23fff"/></svg>',
+                sizes: '512x512',
+                type: 'image/svg+xml',
+                purpose: 'any maskable'
+            }]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+
+        if ('serviceWorker' in navigator) {
+            const swCode = 'const CACHE_NAME="wsp-strategy-map-v1";const urlsToCache=["/"];self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(urlsToCache)))});self.addEventListener("fetch",event=>{event.respondWith(caches.match(event.request).then(response=>response||fetch(event.request)))});';
+            const swBlob = new Blob([swCode], { type: 'application/javascript' });
+            const swURL = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swURL).then(reg => console.log('Service Worker registered')).catch(err => console.log('Service Worker registration failed:', err));
+        }
+
+        window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.remove('hidden');
+        });
+
+        installBtn.addEventListener('click', async function() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const result = await deferredPrompt.userChoice;
+            if (result.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+            installBtn.classList.add('hidden');
+        });
+
+        window.addEventListener('appinstalled', function() {
+            console.log('PWA was installed');
+            installBtn.classList.add('hidden');
+        });
+
+        loadState();
+        render();
+    </script>
+</body>
+</html>
