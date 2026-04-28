@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="description" content="WorldSkills Philippines Strategy Map 2026-2030">
+<link rel="manifest" href="#" id="manifest-placeholder">
+<title>WSP Strategy Map 2026-2030 - Interactive</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+min-height: 100vh;
+color: white;
+}
+.container {
+max-width: 1400px;
+margin: 0 auto;
+padding: 2rem;
+}
+.header {
+text-align: center;
+margin-bottom: 3rem;
+}
+.header h1 {
+font-size: 2.5rem;
+font-weight: bold;
+margin-bottom: 1rem;
+background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+.header p {
+font-size: 1.25rem;
+color: #bfdbfe;
+font-style: italic;
+}
+.tabs {
+display: flex;
+gap: 0.5rem;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+}
+.tab-btn {
+padding: 0.75rem 1.5rem;
+border: none;
+border-radius: 0.5rem;
+font-size: 0.875rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s;
+background: rgba(30, 41, 59, 0.8);
+color: #94a3b8;
+}
+.tab-btn:hover {
+background: rgba(51, 65, 85, 0.8);
+color: #e2e8f0;
+}
+.tab-btn.active {
+background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+color: white;
+}
+.tab-content {
+display: none;
+animation: fadeIn 0.4s ease-out;
+}
+.tab-content.active {
+display: block;
+}
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+.strategy-map {
+display: flex;
+flex-direction: column;
+gap: 1.5rem;
+}
+.perspective {
+position: relative;
+}
+.connection-line {
+position: absolute;
+top: -1.5rem;
+left: 50%;
+transform: translateX(-50%);
+width: 2px;
+height: 1.5rem;
+background: linear-gradient(to bottom, #60a5fa, transparent);
+opacity: 0.5;
+}
+.perspective-card {
+border-radius: 0.75rem;
+box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+overflow: hidden;
+transition: all 0.3s;
+}
+.perspective-card.expanded {
+box-shadow: 0 0 0 4px white;
+}
+.bg-purple { background-color: #7c3aed; }
+.bg-blue { background-color: #2563eb; }
+.bg-green { background-color: #16a34a; }
+.bg-orange { background-color: #ea580c; }
+.bg-red { background-color: #dc2626; }
+.perspective-header {
+width: 100%;
+padding: 1.5rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+cursor: pointer;
+border: none;
+background: transparent;
+color: white;
+transition: background-color 0.3s;
+}
+.perspective-header:hover {
+background-color: rgba(255, 255, 255, 0.1);
+}
+.perspective-title {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+}
+.icon {
+width: 1.5rem;
+height: 1.5rem;
+}
+.perspective-name {
+font-size: 1.25rem;
+font-weight: bold;
+}
+.strategy-count {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.badge {
+font-size: 0.875rem;
+background-color: rgba(255, 255, 255, 0.2);
+padding: 0.25rem 0.75rem;
+border-radius: 9999px;
+}
+.vision-items,
+.strategy-details {
+padding: 1.5rem;
+background-color: rgba(255, 255, 255, 0.1);
+}
+.vision-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1rem;
+}
+.vision-item {
+background-color: rgba(255, 255, 255, 0.1);
+padding: 1rem;
+border-radius: 0.5rem;
+}
+.vision-title {
+font-weight: bold;
+margin-bottom: 0.5rem;
+}
+.vision-desc {
+font-size: 0.875rem;
+color: #bfdbfe;
+margin-bottom: 0.75rem;
+}
+.vision-goals {
+display: flex;
+flex-direction: column;
+gap: 0.25rem;
+}
+.vision-goal {
+font-size: 0.75rem;
+color: #bfdbfe;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.strategy-list {
+display: flex;
+flex-direction: column;
+gap: 0.75rem;
+}
+.strategy-item {
+background-color: rgba(255, 255, 255, 0.1);
+padding: 1rem;
+border-radius: 0.5rem;
+cursor: pointer;
+transition: all 0.3s;
+position: relative;
+}
+.strategy-item:hover {
+background-color: rgba(255, 255, 255, 0.2);
+}
+.strategy-item.selected {
+box-shadow: 0 0 0 2px white;
+}
+.tooltip {
+visibility: hidden;
+width: 300px;
+background-color: #1e293b;
+color: #e2e8f0;
+text-align: left;
+border-radius: 0.5rem;
+padding: 1rem;
+position: absolute;
+z-index: 1000;
+bottom: 125%;
+left: 50%;
+transform: translateX(-50%);
+opacity: 0;
+transition: opacity 0.3s;
+font-size: 0.875rem;
+border: 1px solid #334155;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+.strategy-item:hover .tooltip {
+visibility: visible;
+opacity: 1;
+}
+.tooltip h4 {
+font-size: 0.9rem;
+margin-bottom: 0.5rem;
+color: #60a5fa;
+}
+.tooltip p {
+margin: 0.25rem 0;
+line-height: 1.4;
+}
+.core-badge {
+background: #fde047;
+color: #000;
+padding: 0.1rem 0.4rem;
+border-radius: 4px;
+font-size: 0.75rem;
+margin-left: 0.5rem;
+}
+.strategy-meta {
+display: flex;
+align-items: start;
+justify-content: space-between;
+margin-bottom: 0.5rem;
+}
+.strategy-pillar {
+font-size: 0.75rem;
+font-weight: 600;
+color: #fde047;
+}
+.strategy-target {
+font-size: 0.75rem;
+background-color: rgba(255, 255, 255, 0.2);
+padding: 0.25rem 0.5rem;
+border-radius: 0.25rem;
+}
+.strategy-action {
+font-weight: bold;
+margin-bottom: 0.5rem;
+}
+.strategy-kpi {
+font-size: 0.875rem;
+color: #bfdbfe;
+margin-bottom: 0.5rem;
+}
+.strategy-contributes {
+margin-top: 0.75rem;
+padding-top: 0.75rem;
+border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.contributes-title {
+font-size: 0.75rem;
+font-weight: 600;
+color: #fde047;
+margin-bottom: 0.5rem;
+}
+.contributes-list {
+display: flex;
+flex-direction: column;
+gap: 0.25rem;
+}
+.contributes-item {
+font-size: 0.75rem;
+color: #86efac;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.dot {
+width: 0.375rem;
+height: 0.375rem;
+background-color: #86efac;
+border-radius: 50%;
+}
+.priorities-section {
+margin-top: 3rem;
+background: linear-gradient(to right, #581c87, #1e3a8a);
+border-radius: 0.75rem;
+padding: 1.5rem;
+box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.priorities-title {
+font-size: 1.25rem;
+font-weight: bold;
+margin-bottom: 1rem;
+}
+.priorities-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1rem;
+}
+.priority-item {
+background-color: rgba(255, 255, 255, 0.1);
+padding: 1rem;
+border-radius: 0.5rem;
+}
+.priority-title {
+font-weight: bold;
+color: #fde047;
+margin-bottom: 0.5rem;
+}
+.priority-desc {
+font-size: 0.875rem;
+color: #bfdbfe;
+}
+.instructions {
+margin-top: 1.5rem;
+text-align: center;
+color: #bfdbfe;
+font-size: 0.875rem;
+}
+.hidden {
+display: none;
+}
+.chevron {
+width: 1.5rem;
+height: 1.5rem;
+transition: transform 0.3s;
+}
+.swot-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1.5rem;
+margin-top: 2rem;
+}
+.swot-card {
+background: rgba(30, 41, 59, 0.6);
+border: 1px solid;
+border-radius: 0.75rem;
+padding: 1.5rem;
+}
+.swot-card.strength {
+border-color: #10b981;
+background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+}
+.swot-card.weakness {
+border-color: #f59e0b;
+background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+}
+.swot-card.opportunity {
+border-color: #3b82f6;
+background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+}
+.swot-card.threat {
+border-color: #ef4444;
+background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(30, 41, 59, 0.6) 100%);
+}
+.swot-header {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+margin-bottom: 1rem;
+font-size: 1.25rem;
+font-weight: bold;
+}
+.swot-items {
+display: flex;
+flex-direction: column;
+gap: 0.75rem;
+}
+.swot-item {
+background: rgba(15, 23, 42, 0.4);
+padding: 0.75rem;
+border-radius: 0.5rem;
+font-size: 0.875rem;
+line-height: 1.5;
+cursor: pointer;
+transition: background 0.2s;
+}
+.swot-item:hover {
+background: rgba(15, 23, 42, 0.6);
+}
+/* Modal Styles for Archetypes */
+.modal {
+display: none;
+position: fixed;
+z-index: 100;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.7);
+animation: fadeIn 0.3s ease;
+}
+.modal.active {
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1rem;
+}
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+.modal-content {
+background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+padding: 2rem;
+border-radius: 1.5rem;
+max-width: 900px;
+max-height: 90vh;
+overflow-y: auto;
+border: 1px solid #0ea5e9;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+animation: slideUp 0.3s ease;
+width: 100%;
+}
+@keyframes slideUp {
+from { transform: translateY(50px); opacity: 0; }
+to { transform: translateY(0); opacity: 1; }
+}
+.close-btn {
+float: right;
+font-size: 28px;
+font-weight: bold;
+cursor: pointer;
+color: #0ea5e9;
+transition: color 0.2s ease;
+}
+.close-btn:hover {
+color: #06b6d4;
+}
+.cld-image-container {
+text-align: center;
+margin: 1.5rem 0;
+}
+.cld-image {
+max-width: 100%;
+height: auto;
+border-radius: 0.75rem;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+border: 1px solid #334155;
+}
+.term-definition {
+background: rgba(15, 23, 42, 0.5);
+border-left: 3px solid #0ea5e9;
+padding: 0.75rem 1rem;
+border-radius: 0.5rem;
+margin: 0.75rem 0;
+}
+.btn-learn-more {
+background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+color: white;
+padding: 0.5rem 1rem;
+border-radius: 0.5rem;
+font-weight: 600;
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+transition: all 0.3s ease;
+cursor: pointer;
+border: none;
+font-size: 0.875rem;
+margin-top: 0.5rem;
+}
+.btn-learn-more:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+}
+@media (max-width: 768px) {
+.container {
+padding: 1rem;
+}
+.header h1 {
+font-size: 1.75rem;
+}
+.header p {
+font-size: 1rem;
+}
+.vision-grid,
+.priorities-grid,
+.swot-grid {
+grid-template-columns: 1fr;
+}
+.tabs {
+overflow-x: auto;
+}
+.tab-btn {
+white-space: nowrap;
+}
+}
+.install-container {
+position: fixed;
+bottom: 1rem;
+right: 1rem;
+z-index: 1000;
+}
+.install-btn {
+background-color: #7c3aed;
+color: white;
+border: none;
+padding: 0.75rem 1.5rem;
+border-radius: 0.5rem;
+font-weight: bold;
+cursor: pointer;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+transition: all 0.3s;
+}
+.install-btn:hover {
+background-color: #6d28d9;
+transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>WorldSkills Philippines Strategy Map 2026-2030</h1>
+<p>"Transforming Demonstrated Excellence into a Lasting Legacy"</p>
+</div>
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('strategy-map')">📊 Strategy Map</button>
+<button class="tab-btn" onclick="switchTab('swot-analysis')">🔍 SWOT + Causal Loops</button>
+<button class="tab-btn" onclick="switchTab('bsc-matrix')">📈 BSC Matrix</button>
+<button class="tab-btn" onclick="filterCore('core')">⭐ Core Drivers Only</button>
+<button class="tab-btn" onclick="showAll('all')">👁️ Show All</button>
+</div>
+<div id="strategy-map" class="tab-content active">
+<div class="strategy-map" id="strategyMapContainer"></div>
+<div class="priorities-section">
+<h3 class="priorities-title">2030 Strategic Priorities</h3>
+<div class="priorities-grid">
+<div class="priority-item">
+<h4 class="priority-title">Event → System Driven</h4>
+<p class="priority-desc"><a href="wsp-secretariat-orgchart.html" style="color:#60a5fa; text-decoration:underline;">Permanent organizational structure</a></p>
+</div>
+<div class="priority-item">
+<h4 class="priority-title">National Integration</h4> </p>
+<p class="priority-desc"><a href="strategic-diagnostic.html" style="color:#60a5fa; text-decoration:underline;"> WSOS into Philippine TVET System</a></p>
+</div>
+<div class="priority-item">
+<h4 class="priority-title">Human Capital Retention</h4>
+<p class="priority-desc"><a href="wsp-calibrated-structure.html" style="color:#60a5fa; text-decoration:underline;">Stable, accredited Experts Pool</a></p>
+</div>
+<div class="priority-item">
+<h4 class="priority-title">Legacy Preservation</h4>
+<p class="priority-desc"><a href="dashboard.html" style="color:#60a5fa; text-decoration:underline;">Digitized knowledge systems</a></p>
+</div>
+</div>
+</div>
+<div class="instructions">
+<p>Hover over strategies for insights • Click to expand • Use tabs to explore</p>
+</div>
+</div>
+<div id="swot-analysis" class="tab-content">
+<div class="swot-grid">
+<div class="swot-card strength">
+<div class="swot-header">
+<span>💪</span>
+<span>Strengths</span>
+</div>
+<div class="swot-items" id="strengths-list"></div>
+</div>
+<div class="swot-card weakness">
+<div class="swot-header">
+<span>⚠️</span>
+<span>Weaknesses & Archetypes</span>
+</div>
+<div class="swot-items" id="weaknesses-list"></div>
+</div>
+<div class="swot-card opportunity">
+<div class="swot-header">
+<span>🌟</span>
+<span>Opportunities</span>
+</div>
+<div class="swot-items" id="opportunities-list"></div>
+</div>
+<div class="swot-card threat">
+<div class="swot-header">
+<span>🔥</span>
+<span>Threats & Archetypes</span>
+</div>
+<div class="swot-items" id="threats-list"></div>
+</div>
+</div>
+</div>
+<div id="bsc-matrix" class="tab-content">
+<div style="background: rgba(30, 41, 59, 0.6); border: 1px solid #334155; border-radius: 0.75rem; padding: 2rem; overflow-x: auto;">
+<h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: #60a5fa;">Balanced Scorecard Matrix (2026–2030)</h3>
+<table id="bsc-table" style="width: 100%; border-collapse: collapse; font-size: 0.875rem;"></table>
+</div>
+</div>
+</div>
+
+<!-- Archetype Modals with Image-Based CLD Visualization -->
+<div id="archetypeModal1" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(1)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">1. Fixes that Fail: Governance Dynamics</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Rapid mobilization of Job Order personnel creates short-term success but undermines long-term institutional capacity.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/db60500d543d_742_1097.png" alt="Causal Loop Diagram: Fixes that Fail in Governance Dynamics" class="cld-image">
+</div>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/b4b3595fa8b3_831_1097.png" alt="Behavior Over Time Graph: Fixes that Fail in Governance Dynamics" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: The Addiction Trap</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">Like an addiction, JO mobilization provides immediate relief but creates long-term dependency. Each "fix" removes pressure to implement permanent solutions, making the fundamental solution seem less urgent.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>Structural Integrity Ratio (Goal 1):</strong> Transition from 4 plantilla positions to 20:0 ratio (20 permanent, 0 JO dependency) through permanent national-regional structure.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal2" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(2)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">2. Support vs. Priority Paradox</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Systemic tension where borrowed staff face conflicting accountability between WSP duties and original departmental KPIs.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/e231448de69c_943_1097.png" alt="Dynamics of Support vs. Priority Paradox" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: Cultural Resistance</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">This paradox reflects cultural resistance within TESDA's bureaucracy. While leadership support is strong, institutional culture treats WSP as peripheral because staff incentives remain tied to original departments.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>MOP Compliance Rate (Goal 1):</strong> Formalize WSP roles through Manual of Operations, creating legal clarity and departmental legitimacy.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal3" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(3)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">3. The Generalist Trap</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Absence of permanent roles forces categorical overlaps where admin, technical, and support functions blur.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/dc41df7d3e33_381_1097.png" alt="Dynamics of Generalist Trap" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: False Efficiency</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">What appears as "agile flexibility" is actually structural inefficiency. Generalists can respond quickly but cannot build the specialized competencies needed for world-class standards.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>Functional Calibration (Pillar 1):</strong> Establish three specialized groups (Shield, Core, Nervous System) with distinct mandates, clients, and value streams. See <a href="wsp-calibrated-structure.html" style="color: #60a5fa; text-decoration: underline;">Calibrated Structure</a>.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal4" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(4)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">4. The Mobilization Trap</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Speed vs. Sustainability dilemma where rapid deployment enables events but prevents lasting capacity.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/74aa78586832_370_1097.png" alt="Dynamics of 'Fixes that Fail' Mobilization Trap" class="cld-image">
+</div>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/4960b7fa13fb_10_1097.png" alt="BOT Graph of Mobilization Trap" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: Training Investment Leak</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">Technical training invested in JO personnel "leaks out" when contracts end, forcing the organization to restart the learning curve for every event cycle.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>Institutional Memory Coverage (Pillar 3):</strong> Implement LMS to preserve knowledge independent of personnel changes, achieving 100% digital coverage of critical expertise.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal5" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(5)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">5. Red Queen Effect (Drifting Goals)</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Industry 4.0 evolution outpaces bureaucratic TR updates, risking downward drift of quality standards.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/e0ecb7375ea7_477_1097.png" alt="Dynamics of Drifting Goal in Red Queen Effect" class="cld-image">
+</div>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/3bc4bc45d1e5_788_1097.png" alt="BOT Graph of Drifting Goal in Red Queen Effect" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: The Quality Ceiling</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">Global benchmarks represent a moving "quality ceiling." Without active alignment mechanisms, local standards naturally drift downward relative to this ceiling due to bureaucratic inertia.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>WSOS Integration Index ⭐ (Pillar 5):</strong> Embed WorldSkills Occupational Standards into all Training Regulations, creating structural mechanism for continuous standards elevation.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal6" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(6)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">6. Elite Silo Dynamic (Success to the Successful)</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Resource concentration in high-performing centers creates two-tiered system neglecting provincial integration.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/e238e12a1530_721_1097.png" alt="Dynamics of Success to the Successful in Elite Silo" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: The Matthew Effect</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">"To those who have, more will be given." Without explicit countermeasures, excellence programs naturally concentrate in already-successful centers, leaving the periphery behind.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>Rural Inclusion Index (Pillar 2):</strong> Mandate ≥30% participation from non-Metro regions, creating structural counterbalance to elite concentration.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal7" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(7)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">7. Human Capital Leak (Shifting the Burden)</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Experts leave for industry; retraining new staff drains resources without solving root cause.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/3d3f478d3c95_661_1097.png" alt="Dynamics of Shifting the Burden in Human Capital Leak" class="cld-image">
+</div>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/f924cd1aaf0c_5_1097.png" alt="BOT Graph of Human Capital Leak" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: The Expertise Sinkhole</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">Without career pathways, WSP becomes a "talent pipeline" for industry rather than a destination for mastery.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>Gold Standard Accreditation ⭐ (Pillar 3):</strong> Implement PQF-aligned WorldSkills Mastery Program with CSC salary grade linkage to create retention incentives.</p>
+</div>
+</div>
+</div>
+
+<div id="archetypeModal8" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeArchetypeModal(8)">×</span>
+<h2 style="color: white; font-size: 1.75rem; font-weight: bold; margin-bottom: 1rem; margin-top: 1rem;">8. The Credibility Gap</h2>
+<p style="color: #cbd5e1; margin-bottom: 1.5rem;">Fast industry partnerships collide with slow MOA approvals, eroding partner trust over time.</p>
+<div class="cld-image-container">
+<img src="https://appimize.app/assets/apps/user_1097/images/aec4a3fc9128_675_1097.png" alt="Dynamics of Credibility Gap" class="cld-image">
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">💡 Key Insight: The Pace Paradox</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;">Partners are attracted by WSP’s speed and vision but repelled by administrative delays. Bridging this gap requires process innovation, not just goodwill.</p>
+</div>
+<div class="term-definition">
+<h4 style="color: #0ea5e9; font-weight: bold; margin-bottom: 0.5rem;">🎯 Strategic Response</h4>
+<p style="color: #cbd5e1; font-size: 0.875rem;"><strong>Operational Lead-Time Compliance (Pillar 6):</strong> Ensure 100% of MOAs are signed 3+ months before events via dedicated fast-track unit.</p>
+</div>
+</div>
+</div>
+
+<div class="install-container">
+<button class="install-btn hidden" id="installBtn">Install App</button>
+</div>
+<script>
+const perspectivesData = [
+{
+id: 'vision',
+name: 'VISION & MISSION',
+color: 'bg-purple',
+icon: 'target',
+items: [
+{
+title: 'Vision 2030',
+desc: 'Southeast Asia\'s premier hub for technical excellence, skills innovation, and global benchmarking',
+goals: ['Global Hub Positioning', 'Regional Leadership', 'Standards Authority']
+},
+{
+title: 'Mission',
+desc: 'Enhance workforce quality by aligning national TVET with global benchmarks',
+goals: ['Competition-Driven Diagnostics', 'Expert Development', 'Strategic Partnerships']
+}
+]
+},
+{
+id: 'stakeholder',
+name: 'STAKEHOLDER PERSPECTIVE',
+color: 'bg-blue',
+icon: 'users',
+strategies: [
+{
+pillar: 'Pillar 2: Talent & Competition Pipeline',
+action: 'Link medalists to high-value employment',
+kpi: 'Skills Premium Index ⭐',
+target: '90% placement with ≥30% wage uplift',
+contributes: ['Goal 2: Sustainable Pipeline', 'Human Capital Retention Priority'],
+tooltip: '<h4>Skills Premium Index</h4><p>Measures real-world economic impact of WSP training.</p><p><strong>Pareto Insight:</strong> This KPI drives 80% of societal ROI.</p><p><strong>Archetype:</strong> Addresses "Human Capital Leak" by proving career value.</p>'
+},
+{
+pillar: 'Pillar 6: Partnerships',
+action: 'Measure employer satisfaction with graduates',
+kpi: 'Industry NPS on Graduate Readiness',
+target: 'NPS ≥ 70',
+contributes: ['Goal 6: Industry Partnerships', 'National Integration Priority'],
+tooltip: '<h4>Industry Net Promoter Score</h4><p>Validates skill relevance from employer perspective.</p><p><strong>Benchmark:</strong> World Bank standard for TVET impact.</p>'
+},
+{
+pillar: 'Pillar 2: Pipeline',
+action: 'Ensure world-class competition participation',
+kpi: 'Global Participation Rate',
+target: '100% hosted skills',
+contributes: ['Goal 2: Sustainable Pipeline', 'Goal 6: Global Positioning'],
+tooltip: '<h4>Global Participation Rate</h4><p>Ensures consistent presence in ASEAN/Asia/WSI cycles.</p>'
+},
+{
+pillar: 'Pillar 2: Talent & Competition Pipeline',
+action: 'Track regional inclusion in initiatives',
+kpi: 'Rural Inclusion Index',
+target: '≥30% in non-Metro regions',
+contributes: ['Goal 2: Sustainable Pipeline', 'National Integration Priority'],
+tooltip: '<h4>Rural Inclusion Index</h4><p>Counters "Elite Silo Dynamic" by ensuring national reach.</p><p><strong>Archetype:</strong> Disrupts "Success to the Successful".</p>'
+}
+]
+},
+{
+id: 'finance',
+name: 'FINANCIAL PERSPECTIVE',
+color: 'bg-green',
+icon: 'dollar',
+strategies: [
+{
+pillar: 'Pillar 1: Governance',
+action: 'Transition to sustained, program-based budgeting',
+kpi: 'Budgetary Permanence ⭐',
+target: '100% PBB Integration',
+contributes: ['Goal 1: Governance', 'Goal 7: Sustainability'],
+tooltip: '<h4>Budgetary Permanence</h4><p>Embeds WSP funding into TESDA Regular Program Fund.</p><p><strong>Pareto Insight:</strong> Core driver of fiscal sustainability.</p><p><strong>Policy:</strong> DBM Circular No. 2022-001.</p>'
+},
+{
+pillar: 'Pillar 7: Sustainability',
+action: 'Implement cost-sharing frameworks',
+kpi: 'PPP Cost-Sharing Ratio',
+target: '30% Industry Offset',
+contributes: ['Goal 6: Partnerships', 'Goal 7: Sustainability'],
+tooltip: '<h4>PPP Cost-Sharing Ratio</h4><p>Reduces fiscal burden via industry co-investment.</p><p><strong>Benchmark:</strong> World Bank standard for TVET partnerships.</p>'
+},
+{
+pillar: 'Pillar 2: Pipeline',
+action: 'Secure multi-year competition funding',
+kpi: 'Fiscal Predictability Index',
+target: 'Multi-year PBB Approval',
+contributes: ['Goal 2: Pipeline', 'Goal 7: Sustainability'],
+tooltip: '<h4>Fiscal Predictability Index</h4><p>Enables long-term planning beyond annual budgets.</p>'
+}
+]
+},
+{
+id: 'process',
+name: 'INTERNAL PROCESS PERSPECTIVE',
+color: 'bg-orange',
+icon: 'cog',
+strategies: [
+{
+pillar: 'Pillar 5: Standards',
+action: 'Align WSOS with national competency frameworks',
+kpi: 'WSOS Integration Index ⭐',
+target: '100% TR Alignment',
+contributes: ['Goal 5: Standards Integration', 'National Integration Priority'],
+tooltip: '<h4>WSOS Integration Index</h4><p>Embeds global standards into national Training Regulations.</p><p><strong>Pareto Insight:</strong> Primary engine of National Quality Engine.</p><p><strong>Archetype:</strong> Counters "Red Queen Effect".</p>'
+},
+{
+pillar: 'Pillar 1: Governance',
+action: 'Establish permanent national-regional structure',
+kpi: 'Structural Integrity Ratio ⭐',
+target: '20:0 Plantilla',
+contributes: ['Goal 1: Governance', 'System-Driven Priority'],
+tooltip: '<h4>Structural Integrity Ratio</h4><p>Replaces JO dependence with permanent plantilla roles.</p><p><strong>Pareto Insight:</strong> Root cause solution for institutional fragility.</p><p><strong>Archetype:</strong> Disrupts "Fixes that Fail" and "Shifting the Burden".</p>'
+},
+{
+pillar: 'Pillar 1: Governance',
+action: 'Develop and approve WSP Manual of Operations',
+kpi: 'MOP Compliance Rate',
+target: '100% Documented SOPs',
+contributes: ['Goal 1: Governance', 'Legacy Preservation Priority'],
+tooltip: '<h4>MOP Compliance Rate</h4><p>Codifies workflows to prevent institutional memory loss.</p>'
+},
+{
+pillar: 'Pillar 6: Partnerships',
+action: 'Streamline collaboration readiness',
+kpi: 'Operational Lead-Time Compliance',
+target: '100% (3-mo lead time)',
+contributes: ['Goal 6: Partnerships', 'Credibility Gap Resolution'],
+tooltip: '<h4>Operational Lead-Time Compliance</h4><p>Addresses "Credibility Gap" by accelerating MOA processing.</p>'
+}
+]
+},
+{
+id: 'learning',
+name: 'LEARNING & GROWTH PERSPECTIVE',
+color: 'bg-red',
+icon: 'graduation',
+strategies: [
+{
+pillar: 'Pillar 7: Sustainability',
+action: 'Adopt Digital MEL and Strategic Planner',
+kpi: 'Digital Visibility Rate ⭐',
+target: '100% Digital Tracking',
+contributes: ['Goal 7: Legacy & Impact', 'Legacy Preservation Priority'],
+tooltip: '<h4>Digital Visibility Rate</h4><p>Enables real-time monitoring and adaptive management.</p><p><strong>Pareto Insight:</strong> Critical for preventing "Goal Drifting".</p>'
+},
+{
+pillar: 'Pillar 3: Professionalism',
+action: 'Professionalize and incentivize Experts',
+kpi: 'Gold Standard Accreditation ⭐',
+target: '100% WSMP Certification',
+contributes: ['Goal 3: Professionalism', 'Human Capital Retention Priority'],
+tooltip: '<h4>Gold Standard Accreditation</h4><p>Creates formal career pathway via WorldSkills Mastery Program.</p><p><strong>Pareto Insight:</strong> Directly addresses "Human Capital Leak".</p><p><strong>Benchmark:</strong> BIBB Germany Master Trainer Standards.</p>'
+},
+{
+pillar: 'Pillar 3: Professionalism',
+action: 'Utilize LMS to resolve expert turnover',
+kpi: 'Institutional Memory Coverage',
+target: '100% LMS Coverage',
+contributes: ['Goal 3: Professionalism', 'Human Capital Retention Priority'],
+tooltip: '<h4>Institutional Memory Coverage</h4><p>Preserves knowledge in LMS despite personnel changes.</p>'
+},
+{
+pillar: 'Pillar 4: COE',
+action: 'Upskill trainers amid tech change',
+kpi: 'Emerging Tech Certification Rate',
+target: '100% Certification',
+contributes: ['Goal 3: Professionalism', 'Goal 4: COE'],
+tooltip: '<h4>Emerging Tech Certification Rate</h4><p>Ensures trainers stay current with Industry 4.0.</p>'
+}
+]
+}
+];
+const swotData = {
+strengths: [
+'Institutional & Policy Alignment: Strong legal anchoring via Section 30 of RA 7796',
+'Direct Leadership Support: Consistent financial and administrative backing',
+'WS standards complement existing CBT/Outcomes-based frameworks',
+'Proven world-class logistics (hosting largest WorldSkills ASEAN)',
+'Access to established Regional Training Centers and skilled experts'
+],
+weaknesses: [
+{text: '1. Fixes that Fail (Governance Dynamics)<br>Rapid JO mobilization solves short-term needs but causes institutional memory loss.', modal: 1},
+{text: '2. Support vs. Priority Paradox<br>WSP duties seen as "additional workload," diluting operational focus.', modal: 2},
+{text: '3. Generalist Trap<br>Blurred role boundaries prevent deep expertise development.', modal: 3},
+{text: '4. Mobilization Trap<br>Capability spikes during events followed by sharp declines.', modal: 4},
+{text: '7. Human Capital Leak (Shifting the Burden)<br>Experts leave for industry; retraining new staff drains resources.', modal: 7}
+],
+opportunities: [
+'Positioning the PH as a SE Asian hub for technical excellence',
+'Leveraging "Gold Medal" visibility for international hosting',
+'Using 2025 success to rebrand TVET and attract Gen Z talent',
+'Expansion into Industry 4.0 sectors (IoT, Cyber Security, Robotics)',
+'Companies open to co-developing standards and assessments'
+],
+threats: [
+{text: '5. Red Queen Effect (Drifting Goals)<br>Industry 4.0 outpaces TR updates; standards risk downward drift.', modal: 5},
+{text: '6. Elite Silo Dynamic (Success to the Successful)<br>Resources concentrate in HRDC, neglecting provincial integration.', modal: 6},
+{text: '8. Credibility Gap<br>Slow MOA processing erodes partner trust despite rapid engagement.', modal: 8},
+'Sustainability Risk: Changes in organizational hierarchy',
+'Risk of WS integration being "pilot-only" without long-term commitment'
+]
+};
+const bscData = [
+{ perspective: 'STAKEHOLDER', pillar: 'Pillar 2: Talent & Competition Pipeline', strategy: 'Link medalists to high-value employment', kpi: 'Skills Premium Index ⭐', current: 'Not tracked', target: '90% placement with ≥30% wage uplift' },
+{ perspective: 'STAKEHOLDER', pillar: 'Pillar 6: Partnerships', strategy: 'Measure employer satisfaction with graduates', kpi: 'Industry NPS on Graduate Readiness', current: 'Not measured', target: 'NPS ≥ 70' },
+{ perspective: 'STAKEHOLDER', pillar: 'Pillar 2: Pipeline', strategy: 'Ensure world-class competition participation', kpi: 'Global Participation Rate', current: 'Successful Hosting 2025', target: '100% hosted skills' },
+{ perspective: 'STAKEHOLDER', pillar: 'Pillar 2: Talent & Competition Pipeline', strategy: 'Track regional inclusion in initiatives', kpi: 'Rural Inclusion Index', current: 'Elite Silo Dynamic', target: '≥30% in non-Metro regions' },
+{ perspective: 'FINANCE', pillar: 'Pillar 1: Governance', strategy: 'Transition to sustained, program-based budgeting', kpi: 'Budgetary Permanence ⭐', current: '0% (Ad-hoc)', target: '100% Integration' },
+{ perspective: 'FINANCE', pillar: 'Pillar 7: Sustainability', strategy: 'Implement cost-sharing frameworks', kpi: 'PPP Cost-Sharing Ratio', current: '<10% (Estimated)', target: '30% Offset' },
+{ perspective: 'FINANCE', pillar: 'Pillar 2: Pipeline', strategy: 'Secure multi-year competition funding', kpi: 'Fiscal Predictability Index', current: 'Annual/ Ad-hoc', target: 'Multi-year PBB Approval' },
+{ perspective: 'INTERNAL PROCESS', pillar: 'Pillar 5: Standards', strategy: 'Align WSOS with national competency frameworks', kpi: 'WSOS Integration Index ⭐', current: 'Significant Tech Lag', target: '100% Alignment' },
+{ perspective: 'INTERNAL PROCESS', pillar: 'Pillar 1: Governance', strategy: 'Establish permanent national-regional structure', kpi: 'Structural Integrity Ratio ⭐', current: '4 Plantilla (High JO)', target: '20:0 (Core Plantilla)' },
+{ perspective: 'INTERNAL PROCESS', pillar: 'Pillar 1: Governance', strategy: 'Develop and approve WSP Manual of Operations', kpi: 'MOP Compliance Rate', current: '0% (Ad-hoc)', target: '100% Documented' },
+{ perspective: 'INTERNAL PROCESS', pillar: 'Pillar 6: Partnerships', strategy: 'Streamline collaboration readiness', kpi: 'Operational Lead-Time Compliance', current: 'Last-minute processing', target: '100% (3-mo lead time)' },
+{ perspective: 'LEARNING & GROWTH', pillar: 'Pillar 7: Sustainability', strategy: 'Adopt Digital MEL and Strategic Planner', kpi: 'Digital Visibility Rate ⭐', current: 'Manual/Spreadsheet', target: '100% Digital Visibility' },
+{ perspective: 'LEARNING & GROWTH', pillar: 'Pillar 3: Professionalism', strategy: 'Professionalize and incentivize Experts', kpi: 'Gold Standard Accreditation ⭐', current: 'Guidelines exist', target: '100% WSMP Certification' },
+{ perspective: 'LEARNING & GROWTH', pillar: 'Pillar 3: Professionalism', strategy: 'Utilize LMS to resolve expert turnover', kpi: 'Institutional Memory Coverage', current: 'Beta testing phase', target: '100% Coverage' },
+{ perspective: 'LEARNING & GROWTH', pillar: 'Pillar 4: COE', strategy: 'Upskill trainers amid tech change', kpi: 'Emerging Tech Certification Rate', current: 'Ad-hoc training', target: '100% Certification' }
+];
+const icons = {
+target: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><circle cx="12" cy="12" r="6" stroke-width="2"/><circle cx="12" cy="12" r="2" stroke-width="2"/></svg>',
+users: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+dollar: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+cog: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+graduation: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>',
+chevronDown: '<svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>',
+chevronUp: '<svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>',
+trending: '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>'
+};
+let state = {
+expandedPerspective: null,
+selectedStrategy: null,
+currentTab: 'strategy-map',
+viewMode: 'all' // 'all' or 'core'
+};
+function switchTab(tabName) {
+state.currentTab = tabName;
+document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+event.target.classList.add('active');
+document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+document.getElementById(tabName).classList.add('active');
+if (tabName === 'swot-analysis') renderSWOT();
+if (tabName === 'bsc-matrix') renderBSC();
+}
+function filterCore() {
+state.viewMode = 'core';
+// Remove active from all tab buttons
+document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+// Add active to this button (use text content or index)
+const coreBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn =>
+btn.textContent.trim() === '⭐ Core Drivers Only'
+);
+if (coreBtn) coreBtn.classList.add('active');
+render();
+}
+function showAll() {
+state.viewMode = 'all';
+document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+const showAllBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn =>
+btn.textContent.trim() === '👁️ Show All'
+);
+if (showAllBtn) showAllBtn.classList.add('active');
+render();
+}
+function openArchetypeModal(modalId) {
+document.getElementById(`archetypeModal${modalId}`).classList.add('active');
+}
+function closeArchetypeModal(modalId) {
+document.getElementById(`archetypeModal${modalId}`).classList.remove('active');
+}
+function renderVisionItems(items) {
+return items.map(item => '<div class="vision-item"><h3 class="vision-title">' + item.title + '</h3><p class="vision-desc">' + item.desc + '</p><div class="vision-goals">' + item.goals.map(goal => '<div class="vision-goal">' + icons.trending + goal + '</div>').join('') + '</div></div>').join('');
+}
+function renderStrategies(strategies, perspectiveId) {
+// Filter strategies based on view mode
+const filteredStrategies = state.viewMode === 'core'
+? strategies.filter(s => s.kpi.includes('⭐'))
+: strategies;
+if (filteredStrategies.length === 0 && state.viewMode === 'core') {
+return '<div class="strategy-item" style="background:rgba(255,255,255,0.05);"><em>No core drivers in this perspective</em></div>';
+}
+return filteredStrategies.map(function(strategy, idx) {
+const strategyId = perspectiveId + '-' + idx;
+const isSelected = state.selectedStrategy === strategyId;
+return '<div class="strategy-item ' + (isSelected ? 'selected' : '') + '" data-strategy-id="' + strategyId + '"><div class="strategy-meta"><span class="strategy-pillar">' + strategy.pillar + '</span><span class="strategy-target">Target: ' + strategy.target + '</span></div><h4 class="strategy-action">' + strategy.action + '</h4><p class="strategy-kpi">' + strategy.kpi + '</p>' + (isSelected ? '<div class="strategy-contributes"><p class="contributes-title">Contributes to:</p><div class="contributes-list">' + strategy.contributes.map(contrib => '<div class="contributes-item"><div class="dot"></div>' + contrib + '</div>').join('') + '</div></div>' : '') + '<div class="tooltip">' + (strategy.tooltip || '') + '</div></div>';
+}).join('');
+}
+function renderPerspective(perspective, index) {
+const isExpanded = state.expandedPerspective === perspective.id;
+const hasStrategies = perspective.strategies && perspective.strategies.length > 0;
+return '<div class="perspective">' + (index > 0 ? '<div class="connection-line"></div>' : '') + '<div class="perspective-card ' + perspective.color + ' ' + (isExpanded ? 'expanded' : '') + '"><button class="perspective-header" data-perspective-id="' + perspective.id + '"><div class="perspective-title">' + icons[perspective.icon] + '<h2 class="perspective-name">' + perspective.name + '</h2></div>' + (hasStrategies ? '<div class="strategy-count"><span class="badge">' + perspective.strategies.length + ' Strategies</span>' + (isExpanded ? icons.chevronUp : icons.chevronDown) + '</div>' : '') + '</button>' + (perspective.items ? '<div class="vision-items"><div class="vision-grid">' + renderVisionItems(perspective.items) + '</div></div>' : '') + (hasStrategies && isExpanded ? '<div class="strategy-details"><div class="strategy-list">' + renderStrategies(perspective.strategies, perspective.id) + '</div></div>' : '') + '</div></div>';
+}
+function render() {
+const mapContainer = document.getElementById('strategyMapContainer');
+mapContainer.innerHTML = perspectivesData.map(function(perspective, idx) {
+return renderPerspective(perspective, idx);
+}).join('');
+attachEventListeners();
+}
+function attachEventListeners() {
+document.querySelectorAll('.perspective-header').forEach(function(header) {
+header.addEventListener('click', function(e) {
+const perspectiveId = e.currentTarget.getAttribute('data-perspective-id');
+state.expandedPerspective = state.expandedPerspective === perspectiveId ? null : perspectiveId;
+render();
+saveState();
+});
+});
+document.querySelectorAll('.strategy-item').forEach(function(item) {
+item.addEventListener('click', function(e) {
+const strategyId = e.currentTarget.getAttribute('data-strategy-id');
+state.selectedStrategy = state.selectedStrategy === strategyId ? null : strategyId;
+render();
+saveState();
+});
+});
+}
+function renderSWOT() {
+document.getElementById('strengths-list').innerHTML = swotData.strengths.map(item => '<div class="swot-item">' + item + '</div>').join('');
+document.getElementById('weaknesses-list').innerHTML = swotData.weaknesses.map(item =>
+'<div class="swot-item" onclick="openArchetypeModal(' + item.modal + ')">' + item.text + '</div>'
+).join('');
+document.getElementById('opportunities-list').innerHTML = swotData.opportunities.map(item => '<div class="swot-item">' + item + '</div>').join('');
+document.getElementById('threats-list').innerHTML = swotData.threats.map(item =>
+typeof item === 'string'
+? '<div class="swot-item">' + item + '</div>'
+: '<div class="swot-item" onclick="openArchetypeModal(' + item.modal + ')">' + item.text + '</div>'
+).join('');
+}
+function renderBSC() {
+const table = document.getElementById('bsc-table');
+let html = '<thead><tr style="background: rgba(79, 70, 229, 0.2); border-bottom: 2px solid #4f46e5;"><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Perspective</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Strategic Pillar</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Strategy/Action</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">KPI</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Current (2025)</th><th style="padding: 0.75rem; text-align: left; color: #60a5fa;">Target (2030)</th></tr></thead><tbody>';
+bscData.forEach(function(row, idx) {
+html += '<tr style="border-bottom: 1px solid #334155; ' + (idx % 2 === 0 ? 'background: rgba(15, 23, 42, 0.3);' : '') + '"><td style="padding: 0.75rem; color: #a78bfa;">' + row.perspective + '</td><td style="padding: 0.75rem; color: #fde047; font-size: 0.75rem;">' + row.pillar + '</td><td style="padding: 0.75rem;">' + row.strategy + '</td><td style="padding: 0.75rem; color: #86efac;">' + row.kpi + '</td><td style="padding: 0.75rem; color: #f87171;">' + row.current + '</td><td style="padding: 0.75rem; color: #4ade80; font-weight: 600;">' + row.target + '</td></tr>';
+});
+html += '</tbody>';
+table.innerHTML = html;
+}
+function saveState() {
+try {
+localStorage.setItem('wspStrategyMapState', JSON.stringify(state));
+} catch (e) {}
+}
+function loadState() {
+try {
+const savedState = localStorage.getItem('wspStrategyMapState');
+if (savedState) {
+const parsed = JSON.parse(savedState);
+state.expandedPerspective = parsed.expandedPerspective;
+state.selectedStrategy = parsed.selectedStrategy;
+}
+} catch (e) {}
+}
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+const manifest = {
+name: 'WSP Strategy Map 2026-2030',
+short_name: 'WSP StratMap',
+description: 'WorldSkills Philippines Interactive Strategy Map',
+start_url: 'https://asilvainnovations.com/strategy-map-cld',
+display: 'standalone',
+background_color: '#0f172a',
+theme_color: '#1e3a8a',
+icons: [{
+src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="%231e3a8a"/><circle cx="256" cy="256" r="180" fill="none" stroke="%23fff" stroke-width="20"/><circle cx="256" cy="256" r="120" fill="none" stroke="%23fff" stroke-width="20"/><circle cx="256" cy="256" r="40" fill="%23fff"/></svg>',
+sizes: '512x512',
+type: 'image/svg+xml',
+purpose: 'any maskable'
+}]
+};
+const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+const manifestURL = URL.createObjectURL(manifestBlob);
+document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+if ('serviceWorker' in navigator) {
+const swCode = 'const CACHE_NAME="wsp-strategy-map-v1";const urlsToCache=["/"];self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(urlsToCache)))});self.addEventListener("fetch",event=>{event.respondWith(caches.match(event.request).then(response=>response||fetch(event.request)))});';
+const swBlob = new Blob([swCode], { type: 'application/javascript' });
+const swURL = URL.createObjectURL(swBlob);
+navigator.serviceWorker.register(swURL).then(reg => console.log('Service Worker registered')).catch(err => console.log('Service Worker registration failed:', err));
+}
+window.addEventListener('beforeinstallprompt', function(e) {
+e.preventDefault();
+deferredPrompt = e;
+installBtn.classList.remove('hidden');
+});
+installBtn.addEventListener('click', async function() {
+if (!deferredPrompt) return;
+deferredPrompt.prompt();
+const result = await deferredPrompt.userChoice;
+if (result.outcome === 'accepted') {
+console.log('User accepted the install prompt');
+}
+deferredPrompt = null;
+installBtn.classList.add('hidden');
+});
+window.addEventListener('appinstalled', function() {
+console.log('PWA was installed');
+installBtn.classList.add('hidden');
+});
+loadState();
+render();
+</script>
+</body>
+</html>
