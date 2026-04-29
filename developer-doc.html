@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strat Planner Pro — Developer Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Condensed:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — Mirror user-manual brand palette
+   ============================================================ */
+:root {
+  --blue-950: #030712;
+  --blue-900: #0A1628;
+  --blue-850: #0D1F3C;
+  --blue-800: #0F2952;
+  --blue-700: #1A3A6B;
+  --blue-600: #1E4D9B;
+  --blue-500: #2563EB;
+  --blue-400: #3B82F6;
+  --blue-300: #60A5FA;
+  --blue-200: #93C5FD;
+  --blue-100: #BFDBFE;
+  --blue-50:  #EFF6FF;
+  --cyan-500: #06B6D4;
+  --cyan-400: #22D3EE;
+  --sky-500:  #0EA5E9;
+  --indigo-500: #6366F1;
+  --indigo-400: #818CF8;
+  --green-500: #10B981;
+  --green-400: #34D399;
+  --yellow-500: #F59E0B;
+  --yellow-400: #FBBF24;
+  --red-500: #EF4444;
+  --red-400: #FC8181;
+  --orange-500: #F97316;
+  --glass-bg:           rgba(255,255,255,0.07);
+  --glass-bg-hover:     rgba(255,255,255,0.11);
+  --glass-border:       rgba(255,255,255,0.13);
+  --glass-border-strong:rgba(255,255,255,0.22);
+  --glass-shadow:       0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
+  --glass-inset:        inset 0 1px 0 rgba(255,255,255,0.14);
+  --font-display: 'Poppins', sans-serif;
+  --font-ui:      'Inter', sans-serif;
+  --font-data:    'Roboto Condensed', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+  --text-primary:   rgba(255,255,255,0.95);
+  --text-secondary: rgba(255,255,255,0.65);
+  --text-tertiary:  rgba(255,255,255,0.38);
+  --sidebar-w: 280px;
+  --header-h:  64px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-ui); background: var(--blue-900); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+
+/* ============================================================ BACKGROUND ============================================================ */
+.app-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg-orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.14; animation: orb-drift 22s ease-in-out infinite; }
+.bg-orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, #1E4D9B, transparent); top: -250px; left: -200px; animation-delay: 0s; }
+.bg-orb-2 { width: 560px; height: 560px; background: radial-gradient(circle, #06B6D4, transparent); top: 35%; right: -160px; animation-delay: -8s; }
+.bg-orb-3 { width: 480px; height: 480px; background: radial-gradient(circle, #6366F1, transparent); bottom: -120px; left: 32%; animation-delay: -16s; }
+.bg-orb-4 { width: 320px; height: 320px; background: radial-gradient(circle, #0EA5E9, transparent); top: 60%; left: 10%; animation-delay: -4s; }
+.bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 44px 44px; }
+@keyframes orb-drift { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(28px,-24px) scale(1.08); } 66% { transform: translate(-18px,18px) scale(0.93); } }
+
+/* ============================================================ HEADER ============================================================ */
+.top-bar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 1000; display: flex; align-items: center; padding: 0 24px; gap: 16px; background: rgba(10,22,40,0.88); backdrop-filter: blur(32px) saturate(200%); border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 28px rgba(0,0,0,0.28); }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.logo-img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.18); box-shadow: 0 0 0 4px rgba(37,99,235,0.22), 0 4px 12px rgba(0,0,0,0.3); object-fit: cover; }
+.logo-text { font-family: var(--font-display); font-weight: 700; font-size: 17px; background: linear-gradient(135deg, #fff 0%, var(--blue-200) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.3px; }
+.logo-badge { font-family: var(--font-data); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; background: linear-gradient(135deg, var(--indigo-500), var(--cyan-500)); color: white; padding: 2px 8px; border-radius: 4px; align-self: flex-start; margin-top: 2px; }
+.header-center { flex: 1; display: flex; align-items: center; justify-content: center; }
+.manual-badge { font-family: var(--font-data); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-tertiary); }
+.manual-badge span { color: var(--cyan-400); margin: 0 6px; }
+.header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.version-chip { padding: 5px 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-full); font-size: 11px; font-family: var(--font-data); color: var(--text-secondary); }
+.btn-print { padding: 8px 16px; background: linear-gradient(135deg, var(--blue-500), var(--blue-600)); border: 1px solid rgba(255,255,255,0.18); border-radius: var(--radius-full); color: white; font-family: var(--font-ui); font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(37,99,235,0.38); }
+.btn-print:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(37,99,235,0.48); }
+
+/* ============================================================ LAYOUT ============================================================ */
+.layout { display: flex; padding-top: var(--header-h); min-height: 100vh; position: relative; z-index: 1; }
+
+/* ============================================================ SIDEBAR ============================================================ */
+.sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); z-index: 900; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; background: rgba(10,22,40,0.78); backdrop-filter: blur(30px) saturate(200%); border-right: 1px solid var(--glass-border); padding-bottom: 24px; }
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+.sidebar-top { padding: 20px 16px 10px; }
+.sidebar-heading { font-family: var(--font-data); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; color: var(--text-tertiary); margin-bottom: 14px; }
+.toc-section-label { padding: 6px 16px 4px; font-family: var(--font-data); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-tertiary); }
+.toc-link { display: flex; align-items: center; gap: 10px; padding: 9px 16px; margin: 1px 8px; border-radius: var(--radius-md); cursor: pointer; transition: all 0.18s ease; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; user-select: none; }
+.toc-link:hover { background: var(--glass-bg); color: var(--text-primary); }
+.toc-link.active { background: linear-gradient(135deg, rgba(37,99,235,0.22), rgba(6,182,212,0.08)); color: white; border: 1px solid rgba(37,99,235,0.28); box-shadow: 0 2px 12px rgba(37,99,235,0.18), inset 0 1px 0 rgba(255,255,255,0.08); }
+.toc-link .toc-num { width: 20px; height: 20px; border-radius: 50%; background: var(--glass-bg); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; font-size: 9px; font-family: var(--font-data); font-weight: 700; flex-shrink: 0; color: var(--blue-300); }
+.toc-link.active .toc-num { background: var(--blue-600); border-color: transparent; color: white; }
+.toc-link .toc-icon { font-size: 13px; flex-shrink: 0; }
+.progress-track { margin: 16px 16px 0; padding: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); }
+.progress-label { font-size: 10px; font-family: var(--font-data); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+.progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: var(--radius-full); overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue-500), var(--cyan-500)); border-radius: var(--radius-full); transition: width 0.4s ease; }
+
+/* ============================================================ SCROLL PROGRESS ============================================================ */
+.scroll-progress { position: fixed; top: var(--header-h); left: var(--sidebar-w); right: 0; height: 2px; background: linear-gradient(90deg, var(--blue-500), var(--cyan-500), var(--indigo-400)); transform-origin: left; transform: scaleX(0); z-index: 999; transition: transform 0.1s linear; }
+.back-top { position: fixed; bottom: 28px; right: 28px; z-index: 999; width: 42px; height: 42px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border-strong); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: all 0.22s ease; opacity: 0; pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.back-top.visible { opacity: 1; pointer-events: all; }
+.back-top:hover { background: var(--blue-600); border-color: transparent; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(37,99,235,0.4); }
+
+/* ============================================================ CONTENT ============================================================ */
+.content { flex: 1; margin-left: var(--sidebar-w); padding: 48px 48px 80px; max-width: calc(100% - var(--sidebar-w)); }
+
+/* ============================================================ HERO ============================================================ */
+.hero { position: relative; border-radius: var(--radius-xl); padding: 52px 48px; margin-bottom: 40px; overflow: hidden; background: linear-gradient(135deg, rgba(15,41,82,0.9) 0%, rgba(37,99,235,0.25) 50%, rgba(6,182,212,0.15) 100%); border: 1px solid var(--glass-border-strong); box-shadow: var(--glass-shadow), var(--glass-inset); backdrop-filter: blur(24px) saturate(180%); }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(37,99,235,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(6,182,212,0.12) 0%, transparent 50%); }
+.hero::after { content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--blue-500), var(--cyan-500), var(--indigo-500)); }
+.hero-inner { position: relative; z-index: 1; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.35); border-radius: var(--radius-full); font-size: 11px; font-family: var(--font-data); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--indigo-400); margin-bottom: 20px; }
+.hero-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); font-weight: 800; line-height: 1.15; margin-bottom: 14px; background: linear-gradient(135deg, #fff 0%, var(--blue-100) 60%, var(--cyan-400) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
+.hero-subtitle { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 640px; margin-bottom: 28px; }
+.hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+.shield-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-full); font-size: 11px; font-family: var(--font-data); font-weight: 600; color: var(--text-secondary); }
+.shield-badge .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+.hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 12px; font-family: var(--font-data); color: var(--text-secondary); }
+.hero-meta-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-400); animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.75); } }
+.hero-logo { position: absolute; right: 48px; top: 50%; transform: translateY(-50%); width: 120px; height: 120px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.15); box-shadow: 0 0 0 8px rgba(37,99,235,0.12), 0 0 0 16px rgba(37,99,235,0.06), 0 16px 48px rgba(0,0,0,0.4); object-fit: cover; animation: float 6s ease-in-out infinite; }
+@keyframes float { 0%,100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-8px); } }
+
+/* ============================================================ SECTIONS ============================================================ */
+.section { margin-bottom: 56px; scroll-margin-top: 88px; animation: section-in 0.5s ease both; animation-play-state: paused; }
+@keyframes section-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.section-num { width: 40px; height: 40px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--blue-600), var(--blue-700)); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 16px; font-weight: 700; flex-shrink: 0; box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+.section-title-block { flex: 1; }
+.section-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; background: linear-gradient(135deg, white, var(--blue-200)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
+.section-subtitle { font-size: 12px; font-family: var(--font-data); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ============================================================ ARCHITECTURE DIAGRAM ============================================================ */
+.arch-diagram { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 32px; margin: 16px 0; overflow-x: auto; }
+.arch-layer { margin-bottom: 12px; }
+.arch-layer-label { font-family: var(--font-data); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-tertiary); margin-bottom: 8px; }
+.arch-boxes { display: flex; gap: 10px; flex-wrap: wrap; }
+.arch-box { padding: 10px 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; font-family: var(--font-data); display: flex; align-items: center; gap: 8px; border: 1px solid; transition: all 0.2s ease; }
+.arch-box:hover { transform: translateY(-2px); }
+.arch-box-blue { background: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.3); color: var(--blue-300); }
+.arch-box-green { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.3); color: var(--green-400); }
+.arch-box-cyan { background: rgba(6,182,212,0.12); border-color: rgba(6,182,212,0.3); color: var(--cyan-400); }
+.arch-box-purple { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.3); color: var(--indigo-400); }
+.arch-box-yellow { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: var(--yellow-400); }
+.arch-connector { text-align: center; color: var(--text-tertiary); font-size: 18px; margin: 4px 0; line-height: 1; }
+
+/* ============================================================ COLLAPSIBLE CARDS ============================================================ */
+.coll-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); margin-bottom: 10px; overflow: hidden; transition: border-color 0.25s ease, box-shadow 0.25s ease; position: relative; }
+.coll-card:hover { border-color: rgba(255,255,255,0.2); }
+.coll-card.open { border-color: rgba(37,99,235,0.35); box-shadow: 0 4px 24px rgba(37,99,235,0.12); }
+.coll-card.open::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg, var(--blue-500), var(--cyan-500)); border-radius: 2px 0 0 2px; }
+.coll-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.18s ease; }
+.coll-header:hover { background: var(--glass-bg-hover); }
+.coll-card.open .coll-header { background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(6,182,212,0.04)); }
+.coll-header-icon { width: 34px; height: 34px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; background: var(--glass-bg); border: 1px solid var(--glass-border); transition: all 0.25s ease; }
+.coll-card.open .coll-header-icon { background: linear-gradient(135deg, var(--blue-600), var(--blue-700)); border-color: transparent; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+.coll-header-text { flex: 1; }
+.coll-header-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.coll-header-sub { font-size: 11px; font-family: var(--font-data); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.8px; }
+.coll-chevron { width: 24px; height: 24px; border-radius: 50%; background: var(--glass-bg); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--blue-300); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), background 0.2s ease; flex-shrink: 0; }
+.coll-card.open .coll-chevron { transform: rotate(180deg); background: var(--blue-600); border-color: transparent; color: white; }
+.coll-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.38s cubic-bezier(0.4,0,0.2,1); }
+.coll-card.open .coll-body { grid-template-rows: 1fr; }
+.coll-body-inner { overflow: hidden; padding: 0 20px; transition: padding 0.38s ease; }
+.coll-card.open .coll-body-inner { padding: 0 20px 20px; }
+
+/* ============================================================ GLASS CARDS ============================================================ */
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--glass-shadow), var(--glass-inset); margin-bottom: 16px; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); }
+.glass-card:hover { background: var(--glass-bg-hover); border-color: var(--glass-border-strong); transform: translateY(-2px); box-shadow: 0 16px 48px rgba(0,0,0,0.38), var(--glass-inset); }
+.glass-card.accent-top { position: relative; }
+.glass-card.accent-top::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--card-accent, linear-gradient(90deg, var(--blue-500), var(--cyan-500))); border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+.card-h3 { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.card-h3 .ch-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+/* ============================================================ CALLOUTS ============================================================ */
+.callout { display: flex; gap: 14px; padding: 16px 18px; border-radius: var(--radius-lg); margin: 16px 0; border: 1px solid; }
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; }
+.callout-title { font-family: var(--font-ui); font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.callout-text { font-size: 13px; line-height: 1.65; }
+.callout-text strong { font-weight: 600; }
+.callout-info { background: rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.3); }
+.callout-info .callout-title { color: var(--blue-300); }
+.callout-info .callout-text { color: var(--blue-200); }
+.callout-success { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+.callout-success .callout-title { color: #34D399; }
+.callout-success .callout-text { color: #6EE7B7; }
+.callout-warning { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+.callout-warning .callout-title { color: #FBBF24; }
+.callout-warning .callout-text { color: #FCD34D; }
+.callout-danger { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); }
+.callout-danger .callout-title { color: #FC8181; }
+.callout-danger .callout-text { color: #FCA5A5; }
+.callout-ai { background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(6,182,212,0.05)); border-color: rgba(99,102,241,0.3); position: relative; overflow: hidden; }
+.callout-ai::before { content: '✦'; position: absolute; right: 14px; top: 10px; font-size: 32px; opacity: 0.06; }
+.callout-ai .callout-title { color: var(--indigo-400); }
+.callout-ai .callout-text { color: rgba(196,181,253,0.85); }
+
+/* ============================================================ CODE BLOCKS ============================================================ */
+.code-block { position: relative; background: rgba(5,10,20,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); margin: 12px 0; overflow: hidden; }
+.code-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.07); }
+.code-lang { font-family: var(--font-data); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--cyan-400); }
+.code-dots { display: flex; gap: 6px; }
+.code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.code-dots .d1 { background: #FF5F57; }
+.code-dots .d2 { background: #FEBC2E; }
+.code-dots .d3 { background: #28C840; }
+.code-copy { padding: 4px 10px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-full); font-size: 10px; font-family: var(--font-data); color: var(--text-tertiary); cursor: pointer; transition: all 0.18s ease; }
+.code-copy:hover { background: var(--glass-bg-hover); color: var(--text-secondary); }
+.code-copy.copied { color: var(--green-400); border-color: rgba(16,185,129,0.3); }
+pre { padding: 16px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.65; color: rgba(255,255,255,0.82); }
+pre::-webkit-scrollbar { height: 4px; }
+pre::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+.token-comment { color: rgba(255,255,255,0.3); font-style: italic; }
+.token-key { color: var(--blue-300); }
+.token-string { color: var(--green-400); }
+.token-number { color: var(--yellow-400); }
+.token-keyword { color: var(--cyan-400); }
+.token-func { color: var(--indigo-400); }
+.token-punct { color: rgba(255,255,255,0.45); }
+
+/* ============================================================ DATA TABLE ============================================================ */
+.data-table { width: 100%; border-collapse: collapse; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--glass-border); margin: 14px 0; font-size: 13px; }
+.data-table th { background: rgba(15,41,82,0.85); color: var(--blue-300); font-family: var(--font-data); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+.data-table td { padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-secondary); line-height: 1.55; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.03); }
+.data-table td:first-child { font-weight: 600; color: var(--text-primary); }
+.data-table td strong { color: var(--text-primary); font-weight: 600; }
+.data-table td code { font-family: var(--font-mono); font-size: 11px; background: rgba(37,99,235,0.15); padding: 1px 6px; border-radius: 4px; color: var(--cyan-400); border: 1px solid rgba(37,99,235,0.2); }
+
+/* ============================================================ INLINE CODE ============================================================ */
+code.inline { font-family: var(--font-mono); font-size: 12px; background: rgba(37,99,235,0.15); padding: 2px 7px; border-radius: 5px; color: var(--cyan-400); border: 1px solid rgba(37,99,235,0.2); }
+
+/* ============================================================ PROSE ============================================================ */
+.prose p { font-size: 14px; line-height: 1.78; color: var(--text-secondary); margin-bottom: 12px; }
+.prose p strong { color: var(--text-primary); font-weight: 600; }
+.prose ol, .prose ul { margin: 8px 0 16px; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.prose ol { counter-reset: ol-cnt; }
+.prose ol li, .prose ul li { position: relative; padding: 9px 14px 9px 42px; font-size: 13px; line-height: 1.65; color: var(--text-secondary); background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-md); transition: background 0.18s ease; }
+.prose ol li:hover, .prose ul li:hover { background: rgba(255,255,255,0.06); }
+.prose ol li strong, .prose ul li strong { color: var(--text-primary); font-weight: 600; }
+.prose ol li::before { counter-increment: ol-cnt; content: counter(ol-cnt); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: var(--blue-600); color: white; font-size: 10px; font-family: var(--font-data); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.prose ul li::before { content: '▸'; position: absolute; left: 14px; top: 10px; color: var(--blue-400); font-size: 11px; }
+.prose h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 24px 0 10px; display: flex; align-items: center; gap: 8px; }
+.prose h3::before { content: ''; display: block; width: 4px; height: 16px; background: linear-gradient(180deg, var(--blue-400), var(--cyan-500)); border-radius: 2px; flex-shrink: 0; }
+.prose h4 { font-family: var(--font-data); font-size: 13px; font-weight: 700; color: var(--blue-300); text-transform: uppercase; letter-spacing: 0.8px; margin: 18px 0 8px; }
+
+/* ============================================================ TOOLTIPS ============================================================ */
+.tip { position: relative; display: inline; cursor: help; color: var(--blue-300); border-bottom: 1px dashed rgba(96,165,250,0.45); transition: color 0.18s ease; }
+.tip:hover { color: var(--blue-200); }
+.tip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: rgba(10,22,40,0.96); color: var(--text-primary); padding: 8px 12px; border-radius: var(--radius-md); font-size: 12px; font-family: var(--font-ui); font-weight: 400; line-height: 1.5; width: max-content; max-width: 240px; text-align: center; white-space: normal; opacity: 0; pointer-events: none; transition: opacity 0.22s ease, transform 0.22s ease; z-index: 9999; border: 1px solid rgba(37,99,235,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.tip::before { content: ''; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%) translateY(4px); border: 5px solid transparent; border-top-color: rgba(37,99,235,0.4); opacity: 0; pointer-events: none; transition: opacity 0.22s ease, transform 0.22s ease; z-index: 9999; }
+.tip:hover::after, .tip:hover::before { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================================================ STATUS BADGES ============================================================ */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: var(--radius-full); font-size: 11px; font-family: var(--font-data); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid; }
+.badge-red     { background: rgba(239,68,68,0.12);  color: #FC8181; border-color: rgba(239,68,68,0.3); }
+.badge-yellow  { background: rgba(245,158,11,0.12); color: #FBBF24; border-color: rgba(245,158,11,0.3); }
+.badge-green   { background: rgba(16,185,129,0.12); color: #34D399; border-color: rgba(16,185,129,0.3); }
+.badge-blue    { background: rgba(37,99,235,0.12);  color: #93C5FD; border-color: rgba(37,99,235,0.3); }
+.badge-cyan    { background: rgba(6,182,212,0.12);  color: #67e8f9; border-color: rgba(6,182,212,0.3); }
+.badge-purple  { background: rgba(99,102,241,0.12); color: #a5b4fc; border-color: rgba(99,102,241,0.3); }
+
+/* ============================================================ GRID ============================================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+/* ============================================================ SCHEMA ER ============================================================ */
+.er-tree { font-family: var(--font-mono); font-size: 12px; line-height: 1.8; color: var(--text-secondary); padding: 20px; background: rgba(5,10,20,0.6); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); margin: 12px 0; overflow-x: auto; white-space: pre; }
+.er-root { color: var(--cyan-400); font-weight: 700; }
+.er-child { color: var(--blue-300); }
+.er-leaf { color: var(--text-secondary); }
+.er-note { color: rgba(245,158,11,0.7); }
+
+/* ============================================================ ENV VARS TABLE ============================================================ */
+.env-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+.env-row:last-child { border-bottom: none; }
+.env-row:hover { background: rgba(255,255,255,0.03); }
+.env-key { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--cyan-400); min-width: 220px; flex-shrink: 0; background: rgba(37,99,235,0.1); padding: 2px 8px; border-radius: 5px; border: 1px solid rgba(37,99,235,0.2); }
+.env-used-by { font-size: 11px; color: var(--indigo-400); font-family: var(--font-data); min-width: 160px; flex-shrink: 0; }
+.env-desc { font-size: 12.5px; color: var(--text-secondary); }
+
+/* ============================================================ KNOWN ISSUES ============================================================ */
+.issue-card { border-radius: var(--radius-lg); padding: 16px; margin-bottom: 10px; border: 1px solid; transition: all 0.2s ease; }
+.issue-card:hover { transform: translateX(3px); }
+.issue-high { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.25); }
+.issue-med { background: rgba(245,158,11,0.07); border-color: rgba(245,158,11,0.25); }
+.issue-low { background: rgba(37,99,235,0.07); border-color: rgba(37,99,235,0.25); }
+.issue-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.issue-high .issue-title { color: #FC8181; }
+.issue-med .issue-title { color: #FBBF24; }
+.issue-low .issue-title { color: #93C5FD; }
+.issue-body { font-size: 12.5px; color: var(--text-secondary); line-height: 1.65; }
+.issue-priority { font-family: var(--font-data); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border-radius: 4px; margin-left: auto; flex-shrink: 0; }
+.issue-high .issue-priority { background: rgba(239,68,68,0.2); color: #FC8181; }
+.issue-med .issue-priority { background: rgba(245,158,11,0.2); color: #FBBF24; }
+.issue-low .issue-priority { background: rgba(37,99,235,0.2); color: #93C5FD; }
+
+/* ============================================================ FUNCTION CARD ============================================================ */
+.fn-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 10px; transition: all 0.22s ease; }
+.fn-card:hover { background: var(--glass-bg-hover); border-color: rgba(37,99,235,0.3); transform: translateY(-1px); }
+.fn-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.fn-name { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--cyan-400); }
+.fn-version { font-family: var(--font-data); font-size: 9px; font-weight: 700; color: var(--text-tertiary); background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.fn-endpoint { font-family: var(--font-mono); font-size: 11px; color: var(--green-400); background: rgba(16,185,129,0.1); padding: 3px 10px; border-radius: 5px; border: 1px solid rgba(16,185,129,0.2); }
+.fn-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 10px; }
+.fn-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.fn-action { font-size: 11px; font-family: var(--font-data); font-weight: 600; padding: 3px 9px; border-radius: var(--radius-full); background: rgba(37,99,235,0.12); color: var(--blue-300); border: 1px solid rgba(37,99,235,0.2); }
+
+/* ============================================================ FLOW STEPS ============================================================ */
+.flow-steps { display: flex; flex-direction: column; gap: 0; margin: 12px 0; }
+.flow-step { display: flex; gap: 14px; position: relative; }
+.flow-step:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 34px; bottom: -8px; width: 2px; background: linear-gradient(180deg, rgba(37,99,235,0.5), rgba(6,182,212,0.2)); }
+.flow-step-num { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-600), var(--blue-500)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: var(--font-data); font-weight: 700; color: white; flex-shrink: 0; box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin-top: 2px; }
+.flow-step-body { flex: 1; padding-bottom: 18px; }
+.flow-step-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.flow-step-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ============================================================ FILE TREE ============================================================ */
+.file-tree { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.85; color: var(--text-secondary); padding: 20px; background: rgba(5,10,20,0.6); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); overflow-x: auto; }
+.ft-dir { color: var(--blue-300); font-weight: 600; }
+.ft-file { color: var(--text-secondary); }
+.ft-version { color: var(--cyan-400); }
+.ft-current { color: var(--green-400); font-style: italic; }
+.ft-img { color: var(--yellow-400); }
+.ft-comment { color: rgba(255,255,255,0.28); }
+
+/* ============================================================ TECH STACK BADGES ============================================================ */
+.tech-grid { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+.tech-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); font-size: 12px; font-family: var(--font-data); font-weight: 600; color: var(--text-secondary); transition: all 0.2s ease; }
+.tech-badge:hover { background: var(--glass-bg-hover); color: var(--text-primary); transform: translateY(-2px); }
+.tech-badge .tb-icon { font-size: 16px; }
+.tech-badge .tb-version { font-size: 10px; color: var(--text-tertiary); margin-left: 2px; }
+
+/* ============================================================ FOOTER ============================================================ */
+.footer { position: relative; z-index: 1; background: rgba(10,22,40,0.8); backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding: 40px 48px; margin-left: var(--sidebar-w); }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+.footer-col-title { font-family: var(--font-data); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-tertiary); margin-bottom: 12px; }
+.footer-col p, .footer-col a { font-size: 13px; color: var(--text-secondary); line-height: 1.8; display: block; text-decoration: none; transition: color 0.18s; }
+.footer-col a:hover { color: var(--blue-300); }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+.footer-brand { font-family: var(--font-display); font-size: 14px; font-weight: 700; background: linear-gradient(135deg, white, var(--blue-300)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.footer-copy { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-data); }
+
+/* ============================================================ SCROLLBAR ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+/* ============================================================ RESPONSIVE ============================================================ */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { transform: translateX(-280px); }
+  .content { margin-left: 0; padding: 32px 20px 60px; max-width: 100%; }
+  .footer { margin-left: 0; padding: 32px 20px; }
+  .footer-grid, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hero-logo { display: none; }
+  .scroll-progress { left: 0; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
+@media print {
+  .sidebar, .top-bar, .back-top, .scroll-progress { display: none !important; }
+  .content { margin-left: 0; padding: 0; }
+  .footer { margin-left: 0; }
+  .section { break-inside: avoid; }
+  .glass-card, .coll-card { box-shadow: none; border: 1px solid #ddd; background: #f9fafb; }
+  body { background: white; color: #1a1a2e; }
+  .coll-body { display: block !important; }
+  .coll-body-inner { padding: 0 20px 20px !important; overflow: visible !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-bg">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+  <div class="bg-orb bg-orb-4"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</div>
+
+<!-- HEADER -->
+<header class="top-bar">
+  <a class="logo" href="#">
+    <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" class="logo-img" alt="Strat Planner Pro">
+    <div>
+      <div class="logo-text">Strat Planner Pro</div>
+    </div>
+    <span class="logo-badge">DOCS</span>
+  </a>
+  <div class="header-center">
+    <span class="manual-badge">Developer Documentation <span>·</span> v1.0</span>
+  </div>
+  <div class="header-right">
+    <div class="version-chip">📅 April 2026</div>
+    <button class="btn-print" onclick="window.print()">🖨️ Print Docs</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-heading">Documentation</div>
+    </div>
+    <a class="toc-link active" href="#overview" onclick="setActive(this)"><span class="toc-num">1</span><span class="toc-icon">🌐</span>Overview</a>
+    <a class="toc-link" href="#key-features" onclick="setActive(this)"><span class="toc-num">2</span><span class="toc-icon">✦</span>Key Features</a>
+    <a class="toc-link" href="#architecture" onclick="setActive(this)"><span class="toc-num">3</span><span class="toc-icon">🏗</span>Architecture</a>
+    <a class="toc-link" href="#database" onclick="setActive(this)"><span class="toc-num">4</span><span class="toc-icon">🗄</span>Database Schema</a>
+    <a class="toc-link" href="#edge-functions" onclick="setActive(this)"><span class="toc-num">5</span><span class="toc-icon">⚡</span>Edge Functions</a>
+    <a class="toc-link" href="#ai-assistant" onclick="setActive(this)"><span class="toc-num">6</span><span class="toc-icon">🤖</span>AI Assistant</a>
+    <a class="toc-link" href="#crm" onclick="setActive(this)"><span class="toc-num">7</span><span class="toc-icon">👥</span>CRM Module</a>
+    <a class="toc-link" href="#security" onclick="setActive(this)"><span class="toc-num">8</span><span class="toc-icon">🔒</span>Security & RLS</a>
+    <a class="toc-link" href="#env-vars" onclick="setActive(this)"><span class="toc-num">9</span><span class="toc-icon">🔑</span>Environment Vars</a>
+    <a class="toc-link" href="#getting-started" onclick="setActive(this)"><span class="toc-num">10</span><span class="toc-icon">🚀</span>Getting Started</a>
+    <a class="toc-link" href="#known-issues" onclick="setActive(this)"><span class="toc-num">11</span><span class="toc-icon">⚠️</span>Known Issues</a>
+    <a class="toc-link" href="#project-structure" onclick="setActive(this)"><span class="toc-num">12</span><span class="toc-icon">📁</span>Project Structure</a>
+    <a class="toc-link" href="#tech-stack" onclick="setActive(this)"><span class="toc-num">13</span><span class="toc-icon">🛠</span>Tech Stack</a>
+    <div style="margin: 8px 16px 0; border-top: 1px solid var(--glass-border); padding-top: 10px;">
+      <a class="toc-link" href="https://strategy-ai-planner.deploypad.app/" style="color:var(--cyan-400);" target="_blank"><span class="toc-num" style="background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.3);color:var(--cyan-400);">↗</span><span class="toc-icon">🖥</span>Live App</a>
+    </div>
+    <div class="progress-track">
+      <div class="progress-label"><span>Reading Progress</span><span id="progressPct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="sidebarProgress" style="width:0%"></div></div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" class="hero-logo" alt="">
+      <div class="hero-inner">
+        <div class="hero-eyebrow">⚙️ Technical Reference</div>
+        <h1 class="hero-title">Strat Planner Pro<br>Developer Docs</h1>
+        <p class="hero-subtitle">Full-stack SaaS platform for AI-powered strategic planning — built for government agencies, public sector organizations, and investment bodies. Supabase + Deno + PostgreSQL 15.</p>
+        <div class="hero-badges">
+          <div class="shield-badge"><div class="dot" style="background:#3ECF8E"></div>Supabase</div>
+          <div class="shield-badge"><div class="dot" style="background:#000000"></div>Deno Runtime</div>
+          <div class="shield-badge"><div class="dot" style="background:#336791"></div>PostgreSQL 15</div>
+          <div class="shield-badge"><div class="dot" style="background:#EF4444"></div>Proprietary</div>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-meta-item"><div class="dot"></div>3 DB Schemas</div>
+          <div class="hero-meta-item"><div class="dot"></div>4 Edge Functions (v1–v7)</div>
+          <div class="hero-meta-item"><div class="dot"></div>11 AI Actions</div>
+          <div class="hero-meta-item"><div class="dot"></div>Full RLS Coverage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================= SECTION 1: OVERVIEW ============================= -->
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title-block">
+          <div class="section-title">Overview</div>
+          <div class="section-subtitle">Platform scope, planning lifecycle, and Philippine public sector context</div>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">🌏</div>
+        <div class="callout-body">
+          <div class="callout-title">Philippine Public Sector Context</div>
+          <div class="callout-text">Strat Planner Pro is purpose-built for the Philippine public sector, using terminology and frameworks aligned with national planning standards — <strong>Programs, Activities & Projects (PAPs)</strong>, <strong>Monitoring, Evaluation & Learning (MEL)</strong>, and the <strong>Balanced Scorecard (BSC)</strong> with four perspectives.</div>
+        </div>
+      </div>
+
+      <div class="prose" style="margin:20px 0;">
+        <p>The platform guides organizations through a structured planning lifecycle:</p>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:16px 0 24px; padding:16px 20px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg);">
+        <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--cyan-400); font-weight:600;">SWOT Analysis</span>
+        <span style="color:var(--text-tertiary);">→</span>
+        <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--blue-300); font-weight:600;">Strategic Options</span>
+        <span style="color:var(--text-tertiary);">→</span>
+        <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--indigo-400); font-weight:600;">BSC Objectives</span>
+        <span style="color:var(--text-tertiary);">→</span>
+        <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--green-400); font-weight:600;">KPIs</span>
+        <span style="color:var(--text-tertiary);">→</span>
+        <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--yellow-400); font-weight:600;">PAPs</span>
+        <span style="color:var(--text-tertiary);">→</span>
+        <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--cyan-400); font-weight:600;">MEL Monitoring</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,#10B981,#06B6D4)">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(16,185,129,0.15);">📊</div>Strategic Planning</div>
+          <div class="prose"><p>Full strategic planning workflow combining SWOT, TOWS Matrix, Balanced Scorecard, KPI tracking, PAP management, and MEL logging — all integrated in a single data model.</p></div>
+        </div>
+        <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,#6366F1,#06B6D4)">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(99,102,241,0.15);">📧</div>Integrated CRM</div>
+          <div class="prose"><p>Contacts, email campaigns, automation flows, and appointment scheduling — sharing the same Supabase project and authentication layer as the planning module.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 2: KEY FEATURES ============================= -->
+    <section class="section" id="key-features">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title-block">
+          <div class="section-title">Key Features</div>
+          <div class="section-subtitle">Strategic planning, collaboration, templates, AI, and CRM capabilities</div>
+        </div>
+      </div>
+
+      <div class="coll-card open">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📋</div>
+          <div class="coll-header-text"><div class="coll-header-title">Strategic Planning Modules</div><div class="coll-header-sub">SWOT · Strategy Matrix · BSC · KPIs · PAPs · MEL</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Module</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>SWOT Analysis</td><td>Score items by impact and likelihood; AI-generated entries flagged with badge</td></tr>
+              <tr><td>Strategic Options Matrix</td><td>Auto-generate <span class="tip" data-tip="SO (Strength-Opportunity), ST (Strength-Threat), WO (Weakness-Opportunity), WT (Weakness-Threat)">SO, ST, WO, WT</span> strategies from SWOT data</td></tr>
+              <tr><td>Balanced Scorecard</td><td>Objectives across Financial, Customer, Internal Process, and Learning & Growth</td></tr>
+              <tr><td>KPI Tracking</td><td>Baseline → Target → Current value tracking with on-track / at-risk / delayed / completed statuses</td></tr>
+              <tr><td>PAP Management</td><td>Programs, Activities & Projects — budget, spend, progress %, and date tracking</td></tr>
+              <tr><td>MEL Logs</td><td>Monitoring, Evaluation & Learning entries linked to specific KPIs and PAPs</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">👥</div>
+          <div class="coll-header-text"><div class="coll-header-title">Collaboration & Multi-Tenancy</div><div class="coll-header-sub">Organizations, teams, permissions, real-time presence</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="grid-2" style="margin-top:8px; gap:12px;">
+            <div style="padding:12px; background:rgba(37,99,235,0.07); border:1px solid rgba(37,99,235,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:6px; color:var(--text-primary);">Organizations & Teams</div>
+              <div style="font-size:12px; color:var(--text-secondary);">Multi-user orgs with <code class="inline">viewer</code> / <code class="inline">editor</code> / <code class="inline">admin</code> / <code class="inline">owner</code> roles. Plan sharing to individuals or entire organizations with permission controls.</div>
+            </div>
+            <div style="padding:12px; background:rgba(6,182,212,0.07); border:1px solid rgba(6,182,212,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:6px; color:var(--text-primary);">Real-time & Audit</div>
+              <div style="font-size:12px; color:var(--text-secondary);">WebSocket presence indicators showing active viewers/editors. Threaded comments on any plan item. Full immutable audit log for every plan action.</div>
+            </div>
+            <div style="padding:12px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:6px; color:var(--text-primary);">Templates System</div>
+              <div style="font-size:12px; color:var(--text-secondary);">Built-in public templates by industry. User-saved templates. Org-shared templates. Community ratings (1–5 stars) with aggregated scores on template records.</div>
+            </div>
+            <div style="padding:12px; background:rgba(99,102,241,0.07); border:1px solid rgba(99,102,241,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:6px; color:var(--text-primary);">AI Features</div>
+              <div style="font-size:12px; color:var(--text-secondary);">SWOT generation, strategy derivation, KPI suggestions, PAP generation, MEL insights, trend analysis, causal loop diagrams, and systems archetype detection.</div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📧</div>
+          <div class="coll-header-text"><div class="coll-header-title">CRM Feature Set</div><div class="coll-header-sub">Contacts, campaigns, automation flows, scheduling</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Feature</th><th>Details</th></tr></thead>
+            <tbody>
+              <tr><td>Contact Management</td><td>Email marketing opt-ins, GIN-indexed tags, e-commerce linkage via <code class="inline">ecom_customer_id</code></td></tr>
+              <tr><td>Mailing Lists</td><td>Static and dynamic (filter-query based) lists</td></tr>
+              <tr><td>Email Campaigns</td><td>Full HTML + plain-text, open/click/bounce tracking, status lifecycle: <code class="inline">draft → scheduled → sending → sent/failed</code></td></tr>
+              <tr><td>Automation Flows</td><td>Trigger-based steps: <code class="inline">send_email</code>, <code class="inline">add_tag</code>, <code class="inline">add_to_list</code></td></tr>
+              <tr><td>Appointment Scheduling</td><td>Round-robin, class, collective, personal calendar types. Google Calendar + Calendly integrations.</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 3: ARCHITECTURE ============================= -->
+    <section class="section" id="architecture">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title-block">
+          <div class="section-title">Architecture</div>
+          <div class="section-subtitle">System diagram, database schemas, and external service integrations</div>
+        </div>
+      </div>
+
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-layer-label">Frontend (React / Next.js — not in this repo)</div>
+          <div class="arch-boxes">
+            <div class="arch-box arch-box-blue">🖥 Web Interface</div>
+            <div class="arch-box arch-box-blue">📱 Mobile (PWA)</div>
+            <div class="arch-box arch-box-blue">💡 HTTPS + JWT Auth</div>
+          </div>
+        </div>
+        <div class="arch-connector">↕</div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Supabase Platform</div>
+          <div class="arch-boxes">
+            <div class="arch-box arch-box-green">🔐 Auth Layer (Custom)</div>
+            <div class="arch-box arch-box-green">🗄 PostgreSQL 15 (3 schemas)</div>
+            <div class="arch-box arch-box-green">🗂 Storage (Buckets)</div>
+          </div>
+        </div>
+        <div class="arch-connector">↕</div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Deno Edge Functions</div>
+          <div class="arch-boxes">
+            <div class="arch-box arch-box-cyan">⚡ ai-strategy-assistant (v1–v4)</div>
+            <div class="arch-box arch-box-cyan">🔄 strategic-planner-sync (v1–v2)</div>
+            <div class="arch-box arch-box-cyan">📧 email-notifications (v1–v7)</div>
+            <div class="arch-box arch-box-cyan">☁ cloud-sync (v1)</div>
+          </div>
+        </div>
+        <div class="arch-connector">↕</div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">External Services</div>
+          <div class="arch-boxes">
+            <div class="arch-box arch-box-purple">🤖 AI Gateway (LLM)</div>
+            <div class="arch-box arch-box-purple">✉ Resend (Email)</div>
+            <div class="arch-box arch-box-yellow">📅 Google Calendar API</div>
+            <div class="arch-box arch-box-yellow">🗓 Calendly API</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="coll-card open" style="margin-top:20px;">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🗃</div>
+          <div class="coll-header-text"><div class="coll-header-title">Database Schemas</div><div class="coll-header-sub">Three schema architecture with purpose separation</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Schema</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline">prj_w80v7pKpQ8s2</code></td><td>Main application — all planning and CRM tables</td></tr>
+              <tr><td><code class="inline">prj_w80v7pKpQ8s2_auth</code></td><td>Custom auth layer — users and OAuth identities</td></tr>
+              <tr><td><code class="inline">prj_w80v7pKpQ8s2_storage</code></td><td>File storage — buckets and objects</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 4: DATABASE SCHEMA ============================= -->
+    <section class="section" id="database">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title-block">
+          <div class="section-title">Database Schema</div>
+          <div class="section-subtitle">Entity relationships, core tables, and schema reference</div>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">📄</div>
+        <div class="callout-body">
+          <div class="callout-title">Full Schema SQL</div>
+          <div class="callout-text">The complete schema SQL is available in <code class="inline">strategy_ai_planner_schema.sql</code>. Apply it via the Supabase CLI or paste into the SQL Editor.</div>
+        </div>
+      </div>
+
+      <div class="coll-card open">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🔗</div>
+          <div class="coll-header-text"><div class="coll-header-title">Entity Relationship Overview</div><div class="coll-header-sub">High-level tree of all table relationships</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="er-tree" style="margin-top:8px;"><span class="er-root">auth.users</span>
+  └── <span class="er-child">user_profiles</span>
+  └── <span class="er-child">strategic_plans</span>
+        ├── <span class="er-leaf">swot_items</span>
+        ├── <span class="er-leaf">strategic_options</span>
+        ├── <span class="er-leaf">bsc_objectives</span>
+        │     └── <span class="er-leaf">kpis</span>
+        │           └── <span class="er-leaf">mel_logs</span>
+        ├── <span class="er-leaf">paps ──────────── mel_logs</span>
+        ├── <span class="er-leaf">plan_shares</span>
+        ├── <span class="er-leaf">plan_comments</span> <span class="er-note">(self-referencing, threaded)</span>
+        └── <span class="er-leaf">activity_log</span>
+
+<span class="er-root">organizations</span>
+  └── <span class="er-child">organization_members</span>
+  └── <span class="er-child">plan_shares</span>
+
+<span class="er-root">plan_templates</span> ── <span class="er-leaf">template_ratings</span>
+
+<span class="er-root">crm_contacts</span>
+  ├── <span class="er-child">crm_contact_lists</span> ── <span class="er-child">crm_lists</span> ── <span class="er-child">crm_campaigns</span> ── <span class="er-child">crm_events</span>
+  └── <span class="er-leaf">crm_flow_logs</span>
+
+<span class="er-root">crm_flows</span>
+  └── <span class="er-child">crm_flow_steps</span>
+  └── <span class="er-child">crm_flow_logs</span>
+
+<span class="er-root">crm_calendars</span>
+  ├── <span class="er-child">crm_calendar_members</span>
+  ├── <span class="er-child">crm_availability</span>
+  ├── <span class="er-child">crm_appointments</span> ── <span class="er-leaf">crm_contacts</span>
+  └── <span class="er-child">crm_calendly_connections</span></div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📐</div>
+          <div class="coll-header-text"><div class="coll-header-title">Strategic Planning Tables</div><div class="coll-header-sub">Root entity and all planning child records</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Table</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline">strategic_plans</code></td><td>Root entity. Owns all planning child records.</td></tr>
+              <tr><td><code class="inline">swot_items</code></td><td>SWOT items scored by impact (1–5) and likelihood (1–5).</td></tr>
+              <tr><td><code class="inline">strategic_options</code></td><td>SO / ST / WO / WT strategies derived from SWOT.</td></tr>
+              <tr><td><code class="inline">bsc_objectives</code></td><td>BSC objectives by perspective with weighting.</td></tr>
+              <tr><td><code class="inline">kpis</code></td><td>KPIs with baseline, target, and current values.</td></tr>
+              <tr><td><code class="inline">paps</code></td><td>Programs, Activities & Projects with budget and progress %.</td></tr>
+              <tr><td><code class="inline">mel_logs</code></td><td>Monitoring, Evaluation & Learning entries.</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🤝</div>
+          <div class="coll-header-text"><div class="coll-header-title">Collaboration & Template Tables</div><div class="coll-header-sub">Organizations, permissions, comments, audit, templates</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Table</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline">organizations</code></td><td>Teams / agencies.</td></tr>
+              <tr><td><code class="inline">organization_members</code></td><td>Role-based org membership: <code class="inline">viewer</code>, <code class="inline">editor</code>, <code class="inline">admin</code>, <code class="inline">owner</code></td></tr>
+              <tr><td><code class="inline">plan_shares</code></td><td>Grants access to a plan for a user or org. <span class="badge badge-yellow">⚠ VARCHAR(255) — see Known Issues</span></td></tr>
+              <tr><td><code class="inline">plan_comments</code></td><td>Threaded comments on any plan item (self-referencing).</td></tr>
+              <tr><td><code class="inline">activity_log</code></td><td>Immutable audit trail of plan actions.</td></tr>
+              <tr><td><code class="inline">user_presence</code></td><td>Real-time active viewer/editor tracking.</td></tr>
+              <tr><td><code class="inline">plan_templates</code></td><td>Reusable templates: <code class="inline">builtin</code>, <code class="inline">user</code>, <code class="inline">shared</code></td></tr>
+              <tr><td><code class="inline">template_ratings</code></td><td>1–5 star ratings; one per user per template.</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📇</div>
+          <div class="coll-header-text"><div class="coll-header-title">CRM Tables</div><div class="coll-header-sub">Contacts, lists, campaigns, flows, calendars, appointments</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Table</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline">crm_contacts</code></td><td>Contact records with email opt-in and e-commerce fields. Source: <code class="inline">form</code>, <code class="inline">ecom</code>, <code class="inline">import</code>, <code class="inline">manual</code>, <code class="inline">auth</code>. GIN-indexed <code class="inline">tags[]</code>.</td></tr>
+              <tr><td><code class="inline">crm_lists</code></td><td>Static or dynamic (filter-query) mailing lists.</td></tr>
+              <tr><td><code class="inline">crm_contact_lists</code></td><td>Many-to-many join of contacts and lists.</td></tr>
+              <tr><td><code class="inline">crm_campaigns</code></td><td>Email campaigns with send/open/click metrics. Status lifecycle: <code class="inline">draft → scheduled → sending → sent/failed</code></td></tr>
+              <tr><td><code class="inline">crm_events</code></td><td>Per-contact engagement events: <code class="inline">sent</code>, <code class="inline">opened</code>, <code class="inline">clicked</code>, <code class="inline">bounced</code>, <code class="inline">unsubscribed</code></td></tr>
+              <tr><td><code class="inline">crm_flows</code></td><td>Automation flows with trigger types.</td></tr>
+              <tr><td><code class="inline">crm_flow_steps</code></td><td>Ordered steps within a flow: <code class="inline">send_email</code>, <code class="inline">add_tag</code>, <code class="inline">add_to_list</code></td></tr>
+              <tr><td><code class="inline">crm_flow_logs</code></td><td>Execution log: <code class="inline">executed</code>, <code class="inline">failed</code>, <code class="inline">skipped</code></td></tr>
+              <tr><td><code class="inline">crm_calendars</code></td><td>Calendar types: <code class="inline">personal</code>, <code class="inline">round_robin</code>, <code class="inline">class</code>, <code class="inline">collective</code>. <span class="badge badge-yellow">⚠ Default TZ: America/New_York</span></td></tr>
+              <tr><td><code class="inline">crm_appointments</code></td><td>Booked appointments with Google/Calendly sync. Sources: <code class="inline">manual</code>, <code class="inline">public_link</code>, <code class="inline">google</code>, <code class="inline">calendly</code></td></tr>
+              <tr><td><code class="inline">crm_calendly_connections</code></td><td>Encrypted Calendly OAuth credentials. <span class="badge badge-red">Service-only — USING (false)</span></td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 5: EDGE FUNCTIONS ============================= -->
+    <section class="section" id="edge-functions">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title-block">
+          <div class="section-title">Edge Functions</div>
+          <div class="section-subtitle">Deno TypeScript functions — AI orchestration, sync, notifications</div>
+        </div>
+      </div>
+
+      <div class="callout callout-success">
+        <div class="callout-icon">🦕</div>
+        <div class="callout-body">
+          <div class="callout-title">Deno Runtime</div>
+          <div class="callout-text">All functions are written in TypeScript and run on the Deno runtime via Supabase Edge Functions. Authentication is validated on every request and all data is scoped to the authenticated user.</div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">ai-strategy-assistant</div>
+          <div class="fn-version">v1–v4 current</div>
+          <div class="fn-endpoint">POST /functions/v1/ai-strategy-assistant</div>
+        </div>
+        <div class="fn-desc">AI orchestration layer. Accepts a POST request with an <code class="inline">action</code> field and routes to the appropriate prompt builder. Every AI response is structured as <strong>JSON only</strong> (no markdown preamble), parsed and rendered directly by the frontend.</div>
+        <div class="fn-actions">
+          <span class="fn-action">generate_swot</span>
+          <span class="fn-action">generate_strategies</span>
+          <span class="fn-action">generate_objectives</span>
+          <span class="fn-action">generate_kpis</span>
+          <span class="fn-action">generate_paps</span>
+          <span class="fn-action">generate_insights</span>
+          <span class="fn-action">analyze_trends</span>
+          <span class="fn-action">suggest_archetypes</span>
+          <span class="fn-action">build_ccd</span>
+          <span class="fn-action">analyze_loops</span>
+          <span class="fn-action">recommend_actions</span>
+        </div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📦</div>
+          <div class="coll-header-text"><div class="coll-header-title">ai-strategy-assistant — Request Schema</div><div class="coll-header-sub">Payload structure and authentication</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="code-block" style="margin-top:8px;">
+            <div class="code-header">
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+              <div class="code-lang">JSON</div>
+              <button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><span class="token-punct">{</span>
+  <span class="token-key">"action"</span><span class="token-punct">:</span> <span class="token-string">"generate_swot"</span><span class="token-punct">,</span>
+  <span class="token-key">"data"</span><span class="token-punct">:</span> <span class="token-punct">{</span>
+    <span class="token-key">"organization"</span><span class="token-punct">:</span> <span class="token-string">"Bureau of Investments - MTIT"</span><span class="token-punct">,</span>
+    <span class="token-key">"industry"</span><span class="token-punct">:</span> <span class="token-string">"Investment Promotion"</span><span class="token-punct">,</span>
+    <span class="token-key">"strategicIntent"</span><span class="token-punct">:</span> <span class="token-string">"Attract FDI in priority sectors"</span><span class="token-punct">,</span>
+    <span class="token-key">"context"</span><span class="token-punct">:</span> <span class="token-string">"Post-pandemic recovery, Islamic finance growth"</span>
+  <span class="token-punct">},</span>
+  <span class="token-key">"plan"</span><span class="token-punct">:</span> <span class="token-punct">{ }</span> <span class="token-comment">// Live plan context injected by client</span>
+<span class="token-punct">}</span></pre>
+          </div>
+          <div class="callout callout-info" style="margin-top:12px;">
+            <div class="callout-icon">🔐</div>
+            <div class="callout-body">
+              <div class="callout-title">Authentication</div>
+              <div class="callout-text">Requires a valid Supabase JWT in the <code class="inline">Authorization</code> header. Required env vars: <code class="inline">GATEWAY_API_KEY</code>, <code class="inline">SUPABASE_URL</code>, <code class="inline">SUPABASE_ANON_KEY</code>.</div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="fn-card" style="margin-top:10px;">
+        <div class="fn-header">
+          <div class="fn-name">strategic-planner-sync</div>
+          <div class="fn-version">v1–v2 current</div>
+          <div class="fn-endpoint">/functions/v1/strategic-planner-sync</div>
+        </div>
+        <div class="fn-desc">Cloud sync for the full strategic planner state. Scopes all data to <code class="inline">session.user.id</code>. References a <code class="inline">strategic_planner_state</code> table — see Known Issues §2.</div>
+        <div class="fn-actions">
+          <span class="fn-action">GET — Load state</span>
+          <span class="fn-action">POST — Save state</span>
+          <span class="fn-action">DELETE — Remove plan</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">email-notifications</div>
+          <div class="fn-version">v1–v7 current</div>
+          <div class="fn-endpoint">via Resend · info@asilvainnovations.com</div>
+        </div>
+        <div class="fn-desc">Transactional emails via Resend. Respects per-user preferences in <code class="inline">notification_preferences</code> on the user profile — returns <code class="inline">200</code> without sending if notification type is disabled. Queries <code class="inline">user_profiles</code> (note: not <code class="inline">profiles</code> — see Known Issues §5).</div>
+        <div class="fn-actions">
+          <span class="fn-action">welcome</span>
+          <span class="fn-action">kpi_alert</span>
+          <span class="fn-action">weekly_digest</span>
+          <span class="fn-action">stale_plan_reminder</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">cloud-sync</div>
+          <div class="fn-version">v1</div>
+          <div class="fn-endpoint">/functions/v1/cloud-sync</div>
+        </div>
+        <div class="fn-desc">General-purpose cloud sync for auxiliary state (non-plan data). Handles CORS and authentication in the same pattern as <code class="inline">strategic-planner-sync</code>.</div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 6: AI ASSISTANT ============================= -->
+    <section class="section" id="ai-assistant">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-title-block">
+          <div class="section-title">AI Strategy Assistant</div>
+          <div class="section-subtitle">Domain expertise, context injection, and structured JSON output</div>
+        </div>
+      </div>
+
+      <div class="callout callout-ai">
+        <div class="callout-icon">✦</div>
+        <div class="callout-body">
+          <div class="callout-title">Grounded Context Injection</div>
+          <div class="callout-text">Every AI response includes the current plan's <strong>live context</strong>: organization, vision, mission, planning period, objectives count, PAP count, and KPI snapshot — ensuring all AI suggestions are grounded in the actual plan state rather than generic output.</div>
+        </div>
+      </div>
+
+      <div class="coll-card open">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🧠</div>
+          <div class="coll-header-text"><div class="coll-header-title">Domain Knowledge Areas</div><div class="coll-header-sub">Specialized training context for investment and development</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="grid-2" style="margin-top:8px; gap:12px;">
+            <div style="padding:12px; background:rgba(37,99,235,0.07); border:1px solid rgba(37,99,235,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🌏 Global Investment Trends</div>
+              <div style="font-size:12px; color:var(--text-secondary);">Capital flows, macroeconomic analysis, FDI patterns across Southeast Asia, East Asia, South Asia</div>
+            </div>
+            <div style="padding:12px; background:rgba(6,182,212,0.07); border:1px solid rgba(6,182,212,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🕌 Islamic Finance</div>
+              <div style="font-size:12px; color:var(--text-secondary);">Sukuk markets, halal investment principles — relevant for Bangsamoro and BARMM planning</div>
+            </div>
+            <div style="padding:12px; background:rgba(99,102,241,0.07); border:1px solid rgba(99,102,241,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🏭 Investment Attraction</div>
+              <div style="font-size:12px; color:var(--text-secondary);">SEZs, PPPs, investment ecosystems, national/regional promotional strategies</div>
+            </div>
+            <div style="padding:12px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.18); border-radius:var(--radius-md);">
+              <div style="font-weight:600; font-size:13px; margin-bottom:4px;">🏦 Development Finance</div>
+              <div style="font-size:12px; color:var(--text-secondary);">ADB, IDB, World Bank frameworks — multi-lateral development bank project planning</div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">⚙️</div>
+          <div class="coll-header-text"><div class="coll-header-title">AI Actions Reference</div><div class="coll-header-sub">All 11 supported actions with input/output description</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Action</th><th>Input</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline">generate_swot</code></td><td>Org context, industry, strategic intent, additional context</td><td>Scored SWOT items for all 4 quadrants</td></tr>
+              <tr><td><code class="inline">generate_strategies</code></td><td>Existing SWOT items</td><td>SO / ST / WO / WT strategic options</td></tr>
+              <tr><td><code class="inline">generate_objectives</code></td><td>BSC perspective, strategic goal</td><td>Suggested BSC objectives</td></tr>
+              <tr><td><code class="inline">generate_kpis</code></td><td>BSC objective text</td><td>Relevant, measurable KPI suggestions</td></tr>
+              <tr><td><code class="inline">generate_paps</code></td><td>Strategic objectives</td><td>Programs, Activities & Projects</td></tr>
+              <tr><td><code class="inline">generate_insights</code></td><td>Current performance data</td><td>MEL insights and observations</td></tr>
+              <tr><td><code class="inline">analyze_trends</code></td><td>Sector, region parameters</td><td>Investment & sector trend analysis</td></tr>
+              <tr><td><code class="inline">suggest_archetypes</code></td><td>Org dynamics description</td><td>Systems thinking archetypes with confidence</td></tr>
+              <tr><td><code class="inline">build_ccd</code></td><td>SWOT items + objectives</td><td>Causal loop diagram nodes and links</td></tr>
+              <tr><td><code class="inline">analyze_loops</code></td><td>CLD structure</td><td>Reinforcing and balancing loop analysis</td></tr>
+              <tr><td><code class="inline">recommend_actions</code></td><td>MEL insights</td><td>Prioritized action recommendations</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 7: CRM ============================= -->
+    <section class="section" id="crm">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div class="section-title-block">
+          <div class="section-title">CRM Module</div>
+          <div class="section-subtitle">Contact management, campaigns, automation flows, and scheduling</div>
+        </div>
+      </div>
+
+      <div class="coll-card open">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📇</div>
+          <div class="coll-header-text"><div class="coll-header-title">Contact Management</div><div class="coll-header-sub">Unique contacts, GIN-indexed tags, e-commerce linkage</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="prose" style="margin-top:8px;"><ul>
+            <li><strong>Unique contacts by email address</strong> — deduplication enforced at DB level</li>
+            <li><strong>Source tracking:</strong> <code class="inline">form</code>, <code class="inline">ecom</code>, <code class="inline">import</code>, <code class="inline">manual</code>, <code class="inline">auth</code></li>
+            <li><strong>GIN-indexed <code class="inline">tags[]</code> array</strong> for fast tag-based filtering</li>
+            <li><strong>E-commerce linkage:</strong> <code class="inline">ecom_customer_id</code>, <code class="inline">total_orders</code>, <code class="inline">total_spent</code></li>
+          </ul></div>
+          <div class="callout callout-danger" style="margin-top:8px;">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-body">
+              <div class="callout-title">CRM RLS Gap — High Priority</div>
+              <div class="callout-text">All CRM tables currently use <code class="inline">USING (true)</code> — any authenticated user can read/write all CRM data. Scope to <code class="inline">owner_user_id</code> before multi-tenant production deployment. See Known Issues §1 for the fix SQL.</div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📧</div>
+          <div class="coll-header-text"><div class="coll-header-title">Email Campaigns & Automation Flows</div><div class="coll-header-sub">Campaign lifecycle and trigger-based automation</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="grid-2" style="margin-top:8px; gap:12px;">
+            <div>
+              <div style="font-family:var(--font-data);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:8px;">Campaign Lifecycle</div>
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-family:var(--font-mono); font-size:11.5px;">
+                <span style="color:var(--text-secondary);background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:var(--radius-full);border:1px solid rgba(255,255,255,0.1);">draft</span>
+                <span style="color:var(--text-tertiary);">→</span>
+                <span style="color:var(--yellow-400);background:rgba(245,158,11,0.1);padding:4px 10px;border-radius:var(--radius-full);border:1px solid rgba(245,158,11,0.2);">scheduled</span>
+                <span style="color:var(--text-tertiary);">→</span>
+                <span style="color:var(--blue-300);background:rgba(37,99,235,0.1);padding:4px 10px;border-radius:var(--radius-full);border:1px solid rgba(37,99,235,0.2);">sending</span>
+                <span style="color:var(--text-tertiary);">→</span>
+                <span style="color:var(--green-400);background:rgba(16,185,129,0.1);padding:4px 10px;border-radius:var(--radius-full);border:1px solid rgba(16,185,129,0.2);">sent</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-data);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:8px;">Automation Triggers</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <code class="inline" style="display:block;width:fit-content;">contact.subscribed</code>
+                <code class="inline" style="display:block;width:fit-content;">order.placed</code>
+                <code class="inline" style="display:block;width:fit-content;">contact.tagged</code>
+                <code class="inline" style="display:block;width:fit-content;">user.registered</code>
+                <code class="inline" style="display:block;width:fit-content;">appointment.booked</code>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📅</div>
+          <div class="coll-header-text"><div class="coll-header-title">Appointment Scheduling</div><div class="coll-header-sub">Calendar types, availability, Google Calendar, Calendly</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <table class="data-table" style="margin-top:8px;">
+            <thead><tr><th>Feature</th><th>Detail</th></tr></thead>
+            <tbody>
+              <tr><td>Calendar Types</td><td><code class="inline">personal</code>, <code class="inline">round_robin</code>, <code class="inline">class</code>, <code class="inline">collective</code></td></tr>
+              <tr><td>Slot Configuration</td><td>Configurable slot duration, buffer times, max bookings per day, minimum notice</td></tr>
+              <tr><td>Availability</td><td>Weekly windows per calendar (0=Sunday … 6=Saturday)</td></tr>
+              <tr><td>Appointment Sources</td><td><code class="inline">manual</code>, <code class="inline">public_link</code>, <code class="inline">google</code>, <code class="inline">calendly</code></td></tr>
+              <tr><td>Google Sync</td><td>Via <code class="inline">google_refresh_token</code> on <code class="inline">crm_calendars</code></td></tr>
+              <tr><td>Calendly Integration</td><td>Encrypted OAuth tokens in <code class="inline">crm_calendly_connections</code> — service-role only access</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 8: SECURITY ============================= -->
+    <section class="section" id="security">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div class="section-title-block">
+          <div class="section-title">Security & Row Level Security</div>
+          <div class="section-subtitle">RLS policy tiers, JWT scoping, and service-only locks</div>
+        </div>
+      </div>
+
+      <div class="coll-card open">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🛡</div>
+          <div class="coll-header-text"><div class="coll-header-title">Strategic Planning — User-Scoped (strict)</div><div class="coll-header-sub">JWT sub claim scoping on all planning tables</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="prose" style="margin-top:8px;"><p>All core planning tables are scoped to the authenticated user's <code class="inline">user_id</code> via JWT claim:</p></div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+              <div class="code-lang">SQL — strategic_plans RLS</div>
+              <button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><span class="token-comment">-- Example: strategic_plans</span>
+<span class="token-keyword">USING</span> <span class="token-punct">((</span><span class="token-func">current_setting</span><span class="token-punct">(</span><span class="token-string">'request.jwt.claim.sub'</span><span class="token-punct">,</span> <span class="token-keyword">true</span><span class="token-punct">)</span><span class="token-punct">)::</span><span class="token-keyword">uuid</span> <span class="token-punct">=</span> user_id<span class="token-punct">)</span></pre>
+          </div>
+          <div class="prose"><p>Child tables (<code class="inline">bsc_objectives</code>, <code class="inline">kpis</code>, <code class="inline">paps</code>, <code class="inline">mel_logs</code>, <code class="inline">swot_items</code>) use <strong>subquery policies</strong> that verify ownership via the parent <code class="inline">strategic_plans</code> record.</p></div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">⚠️</div>
+          <div class="coll-header-text"><div class="coll-header-title">CRM — Open Access (review required)</div><div class="coll-header-sub">USING (true) policies — acceptable single-tenant only</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="callout callout-warning" style="margin-top:8px;">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-body">
+              <div class="callout-title">Multi-Tenant Risk</div>
+              <div class="callout-text">All CRM tables use <code class="inline">USING (true)</code>. Acceptable for single-tenant deployment but <strong>must be scoped to <code class="inline">owner_user_id</code></strong> before multi-tenant production use.</div>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+              <div class="code-lang">SQL — Recommended CRM Fix</div>
+              <button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><span class="token-comment">-- Recommended fix example for crm_contacts</span>
+<span class="token-keyword">CREATE POLICY</span> <span class="token-string">"Users access own contacts"</span>
+  <span class="token-keyword">ON</span> crm_contacts <span class="token-keyword">FOR ALL</span>
+  <span class="token-keyword">USING</span> <span class="token-punct">(</span>owner_user_id <span class="token-punct">=</span> <span class="token-punct">(</span><span class="token-func">current_setting</span><span class="token-punct">(</span><span class="token-string">'request.jwt.claim.sub'</span><span class="token-punct">,</span> <span class="token-keyword">true</span><span class="token-punct">)</span><span class="token-punct">)::</span><span class="token-keyword">uuid</span><span class="token-punct">)</span><span class="token-punct">;</span></pre>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🔒</div>
+          <div class="coll-header-text"><div class="coll-header-title">Calendly Connections — Service Only (locked)</div><div class="coll-header-sub">USING (false) — no client access whatsoever</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="code-block" style="margin-top:8px;">
+            <div class="code-header">
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+              <div class="code-lang">SQL — crm_calendly_connections RLS</div>
+              <button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><span class="token-comment">-- Blocks all client-side access</span>
+<span class="token-keyword">USING</span> <span class="token-punct">(</span><span class="token-keyword">false</span><span class="token-punct">)</span> <span class="token-keyword">WITH CHECK</span> <span class="token-punct">(</span><span class="token-keyword">false</span><span class="token-punct">)</span></pre>
+          </div>
+          <div class="prose"><p>Calendly OAuth tokens are only accessible via the <strong>service role key</strong> in Edge Functions. Tokens are stored as <code class="inline">encrypted_access_token</code> and <code class="inline">signing_key</code> — must be encrypted at the application layer before insert.</p></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 9: ENV VARS ============================= -->
+    <section class="section" id="env-vars">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div class="section-title-block">
+          <div class="section-title">Environment Variables</div>
+          <div class="section-subtitle">Required secrets for all Edge Functions</div>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">⚙️</div>
+        <div class="callout-body">
+          <div class="callout-title">Setting Secrets</div>
+          <div class="callout-text">Configure all secrets in the Supabase dashboard under <strong>Settings → Edge Functions → Secrets</strong>, or via the Supabase CLI using <code class="inline">supabase secrets set KEY=value</code>.</div>
+        </div>
+      </div>
+
+      <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-xl); overflow:hidden; margin:16px 0;">
+        <div style="padding:10px 14px; background:rgba(15,41,82,0.7); border-bottom:1px solid var(--glass-border); display:flex; gap:20px;">
+          <div style="font-family:var(--font-data);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue-300);min-width:220px;">Variable</div>
+          <div style="font-family:var(--font-data);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue-300);min-width:160px;">Used By</div>
+          <div style="font-family:var(--font-data);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue-300);">Description</div>
+        </div>
+        <div class="env-row">
+          <div class="env-key">SUPABASE_URL</div>
+          <div class="env-used-by">All functions</div>
+          <div class="env-desc">Your Supabase project URL</div>
+        </div>
+        <div class="env-row">
+          <div class="env-key">SUPABASE_ANON_KEY</div>
+          <div class="env-used-by">planner-sync, ai-assistant</div>
+          <div class="env-desc">Supabase anon key (client-facing)</div>
+        </div>
+        <div class="env-row">
+          <div class="env-key">SUPABASE_SERVICE_ROLE_KEY</div>
+          <div class="env-used-by">email-notifications</div>
+          <div class="env-desc">Service role key — bypasses RLS. Handle with care.</div>
+        </div>
+        <div class="env-row">
+          <div class="env-key">GATEWAY_API_KEY</div>
+          <div class="env-used-by">ai-strategy-assistant</div>
+          <div class="env-desc">API key for your AI gateway / LLM provider</div>
+        </div>
+        <div class="env-row">
+          <div class="env-key">RESEND_API_KEY</div>
+          <div class="env-used-by">email-notifications</div>
+          <div class="env-desc">Resend transactional email API key</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 10: GETTING STARTED ============================= -->
+    <section class="section" id="getting-started">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-title-block">
+          <div class="section-title">Getting Started</div>
+          <div class="section-subtitle">Prerequisites, schema deployment, Edge Functions, secrets, storage, and frontend config</div>
+        </div>
+      </div>
+
+      <div class="coll-card open">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">📋</div>
+          <div class="coll-header-text"><div class="coll-header-title">Prerequisites</div><div class="coll-header-sub">Required tools before deployment</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="prose" style="margin-top:8px;"><ul>
+            <li><strong>Supabase CLI</strong> installed — <a href="https://supabase.com/docs/guides/cli" style="color:var(--blue-300);">supabase.com/docs/guides/cli</a></li>
+            <li><strong>Deno v1.40+</strong> installed — <a href="https://deno.land/" style="color:var(--blue-300);">deno.land</a></li>
+            <li><strong>Supabase project</strong> created at <a href="https://supabase.com" style="color:var(--blue-300);">supabase.com</a></li>
+          </ul></div>
+        </div></div>
+      </div>
+
+      <div class="coll-card">
+        <div class="coll-header" onclick="toggleColl(this.parentElement)">
+          <div class="coll-header-icon">🚀</div>
+          <div class="coll-header-text"><div class="coll-header-title">Deployment Steps</div><div class="coll-header-sub">Schema → Functions → Secrets → Storage → Frontend</div></div>
+          <div class="coll-chevron">▾</div>
+        </div>
+        <div class="coll-body"><div class="coll-body-inner">
+          <div class="flow-steps" style="margin-top:8px;">
+            <div class="flow-step">
+              <div class="flow-step-num">1</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Apply the Database Schema</div>
+                <div class="flow-step-desc">Via CLI or paste <code class="inline">strategy_ai_planner_schema.sql</code> into the Supabase SQL Editor.</div>
+                <div class="code-block" style="margin-top:8px;">
+                  <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><div class="code-lang">bash</div><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                  <pre><span class="token-func">supabase</span> db push --db-url <span class="token-string">"postgresql://postgres:[PASSWORD]@[HOST]:5432/postgres"</span> \
+  < strategy_ai_planner_schema.sql</pre>
+                </div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">2</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Deploy Edge Functions</div>
+                <div class="code-block" style="margin-top:8px;">
+                  <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><div class="code-lang">bash</div><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                  <pre><span class="token-func">supabase</span> functions deploy ai-strategy-assistant
+<span class="token-func">supabase</span> functions deploy strategic-planner-sync
+<span class="token-func">supabase</span> functions deploy email-notifications
+<span class="token-func">supabase</span> functions deploy cloud-sync</pre>
+                </div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">3</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Set Environment Secrets</div>
+                <div class="code-block" style="margin-top:8px;">
+                  <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><div class="code-lang">bash</div><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                  <pre><span class="token-func">supabase</span> secrets set GATEWAY_API_KEY=your_key_here
+<span class="token-func">supabase</span> secrets set RESEND_API_KEY=your_key_here
+<span class="token-func">supabase</span> secrets set SUPABASE_SERVICE_ROLE_KEY=your_key_here</pre>
+                </div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">4</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Create Storage Buckets</div>
+                <div class="flow-step-desc">In the Supabase dashboard under <strong>Storage</strong>, create a public bucket named <code class="inline">pending-tasks</code> for app assets.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">5</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Configure the Frontend</div>
+                <div class="code-block" style="margin-top:8px;">
+                  <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><div class="code-lang">.env.local</div><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                  <pre><span class="token-key">NEXT_PUBLIC_SUPABASE_URL</span>=https://your-project.supabase.co
+<span class="token-key">NEXT_PUBLIC_SUPABASE_ANON_KEY</span>=your-anon-key</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 11: KNOWN ISSUES ============================= -->
+    <section class="section" id="known-issues">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <div class="section-title-block">
+          <div class="section-title">Known Issues & Recommendations</div>
+          <div class="section-subtitle">Active technical debt — prioritized for resolution</div>
+        </div>
+      </div>
+
+      <div class="issue-card issue-high">
+        <div class="issue-title">
+          <span>🔴</span>
+          <span>#1 — CRM RLS Gap</span>
+          <span class="issue-priority">High Priority</span>
+        </div>
+        <div class="issue-body">
+          All CRM tables use <code class="inline">USING (true)</code>. Any authenticated user can access all CRM data. If multiple organizations share this Supabase project, add an <code class="inline">owner_user_id</code> column and scope all CRM policies to it.
+        </div>
+        <div class="code-block" style="margin-top:10px;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><div class="code-lang">SQL — Fix</div><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="token-keyword">CREATE POLICY</span> <span class="token-string">"Users access own contacts"</span>
+  <span class="token-keyword">ON</span> crm_contacts <span class="token-keyword">FOR ALL</span>
+  <span class="token-keyword">USING</span> <span class="token-punct">(</span>owner_user_id <span class="token-punct">=</span> <span class="token-punct">(</span><span class="token-func">current_setting</span><span class="token-punct">(</span><span class="token-string">'request.jwt.claim.sub'</span><span class="token-punct">,</span> <span class="token-keyword">true</span><span class="token-punct">)</span><span class="token-punct">)::</span><span class="token-keyword">uuid</span><span class="token-punct">)</span><span class="token-punct">;</span></pre>
+        </div>
+      </div>
+
+      <div class="issue-card issue-high">
+        <div class="issue-title">
+          <span>🔴</span>
+          <span>#2 — Missing <code style="font-size:12px;">strategic_planner_state</code> Table</span>
+          <span class="issue-priority">High Priority</span>
+        </div>
+        <div class="issue-body">
+          The <code class="inline">strategic-planner-sync</code> function references a <code class="inline">strategic_planner_state</code> table for caching full plan snapshots, but this table is absent from the current schema dump.
+        </div>
+        <div class="code-block" style="margin-top:10px;">
+          <div class="code-header"><div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><div class="code-lang">SQL — Create Table</div><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="token-keyword">CREATE TABLE</span> strategic_planner_state <span class="token-punct">(</span>
+  id         <span class="token-keyword">uuid</span> <span class="token-keyword">DEFAULT</span> <span class="token-func">gen_random_uuid</span><span class="token-punct">()</span> <span class="token-keyword">PRIMARY KEY</span><span class="token-punct">,</span>
+  user_id    <span class="token-keyword">uuid</span> <span class="token-keyword">NOT NULL REFERENCES</span> auth.users<span class="token-punct">(</span>id<span class="token-punct">)</span> <span class="token-keyword">ON DELETE CASCADE</span><span class="token-punct">,</span>
+  state      <span class="token-keyword">jsonb</span> <span class="token-keyword">NOT NULL DEFAULT</span> <span class="token-string">'{}'</span><span class="token-punct">,</span>
+  updated_at <span class="token-keyword">timestamp with time zone</span> <span class="token-keyword">DEFAULT</span> <span class="token-func">now</span><span class="token-punct">()</span>
+<span class="token-punct">)</span><span class="token-punct">;</span></pre>
+        </div>
+      </div>
+
+      <div class="issue-card issue-med">
+        <div class="issue-title">
+          <span>🟡</span>
+          <span>#3 — Encrypted Token Storage</span>
+          <span class="issue-priority">Medium Priority</span>
+        </div>
+        <div class="issue-body">
+          <code class="inline">crm_calendly_connections</code> stores <code class="inline">encrypted_access_token</code> and <code class="inline">signing_key</code> as plain text columns. Ensure tokens are <strong>encrypted at the application layer</strong> before insert — do not rely solely on Supabase's at-rest encryption.
+        </div>
+      </div>
+
+      <div class="issue-card issue-med">
+        <div class="issue-title">
+          <span>🟡</span>
+          <span>#4 — Default Timezone</span>
+          <span class="issue-priority">Medium Priority</span>
+        </div>
+        <div class="issue-body">
+          <code class="inline">crm_calendars</code> defaults to <code class="inline">America/New_York</code>. Since this platform targets Philippine agencies, change the default to <code class="inline">Asia/Manila</code>.
+        </div>
+      </div>
+
+      <div class="issue-card issue-low">
+        <div class="issue-title">
+          <span>🔵</span>
+          <span>#5 — Email Notification Profile Reference</span>
+          <span class="issue-priority">Low Priority</span>
+        </div>
+        <div class="issue-body">
+          <code class="inline">email-notifications</code> queries a <code class="inline">profiles</code> table which does not exist in the schema — <code class="inline">user_profiles</code> is the correct table name. Verify the function references the right table name after any migrations.
+        </div>
+      </div>
+
+      <div class="issue-card issue-low">
+        <div class="issue-title">
+          <span>🔵</span>
+          <span>#6 — <code style="font-size:12px;">plan_shares</code> & <code style="font-size:12px;">plan_comments</code> — UUID vs VARCHAR</span>
+          <span class="issue-priority">Low Priority</span>
+        </div>
+        <div class="issue-body">
+          <code class="inline">plan_id</code> on <code class="inline">plan_shares</code>, <code class="inline">plan_comments</code>, <code class="inline">activity_log</code>, and <code class="inline">user_presence</code> is typed as <code class="inline">VARCHAR(255)</code> rather than <code class="inline">UUID</code>, while <code class="inline">strategic_plans.id</code> is a proper <code class="inline">UUID</code>. Align these types and add foreign key constraints for referential integrity.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 12: PROJECT STRUCTURE ============================= -->
+    <section class="section" id="project-structure">
+      <div class="section-header">
+        <div class="section-num">12</div>
+        <div class="section-title-block">
+          <div class="section-title">Project Structure</div>
+          <div class="section-subtitle">Archive layout — database, functions, and storage</div>
+        </div>
+      </div>
+
+      <div class="file-tree">
+<span class="ft-dir">strategy-ai-planner/</span>
+├── <span class="ft-file">database.sql</span>                          <span class="ft-comment"># Full PostgreSQL schema + seed data</span>
+├── <span class="ft-dir">functions/</span>
+│   ├── <span class="ft-dir">ai-strategy-assistant/</span>
+│   │   ├── <span class="ft-file">v1/bundle.js</span>
+│   │   ├── <span class="ft-file">v2/bundle.js</span>
+│   │   ├── <span class="ft-file">v3/bundle.js</span>
+│   │   └── <span class="ft-current">v4/bundle.js</span>                 <span class="ft-comment"># Current version</span>
+│   ├── <span class="ft-dir">strategic-planner-sync/</span>
+│   │   ├── <span class="ft-file">v1/bundle.js</span>
+│   │   └── <span class="ft-current">v2/bundle.js</span>                 <span class="ft-comment"># Current version</span>
+│   ├── <span class="ft-dir">email-notifications/</span>
+│   │   ├── <span class="ft-file">v1/ … v6/bundle.js</span>
+│   │   └── <span class="ft-current">v7/bundle.js</span>                 <span class="ft-comment"># Current version</span>
+│   └── <span class="ft-dir">cloud-sync/</span>
+│       └── <span class="ft-current">v1/bundle.js</span>
+└── <span class="ft-dir">storage/</span>
+    └── <span class="ft-dir">pending-tasks/public/</span>
+        ├── <span class="ft-img">Strat Planner Pro logo.png</span>
+        ├── <span class="ft-img">DashboardPanel.png</span>
+        ├── <span class="ft-img">SWOTAnalysisPage.jpeg</span>
+        ├── <span class="ft-img">SWOTAnalysisPanel.png</span>
+        ├── <span class="ft-img">TeamCollabPanel.png</span>
+        ├── <span class="ft-img">SigninForm.png</span>
+        ├── <span class="ft-img">Dashboard Screenshot.png</span>
+        ├── <span class="ft-img">Strat-Planner-Pro.png</span>
+        ├── <span class="ft-img">Investment ecosystem.png</span>
+        └── <span class="ft-img">Bangsamoro Economic and Investment Ecosystem.png</span>
+      </div>
+    </section>
+
+    <!-- ============================= SECTION 13: TECH STACK ============================= -->
+    <section class="section" id="tech-stack">
+      <div class="section-header">
+        <div class="section-num">13</div>
+        <div class="section-title-block">
+          <div class="section-title">Tech Stack</div>
+          <div class="section-subtitle">All technologies and external services used in production</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,#3ECF8E,#06B6D4)">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(62,207,142,0.15);">🔧</div>Backend Platform</div>
+          <div class="tech-grid">
+            <div class="tech-badge"><span class="tb-icon">⚡</span>Supabase<span class="tb-version">Latest</span></div>
+            <div class="tech-badge"><span class="tb-icon">🗄</span>PostgreSQL<span class="tb-version">15</span></div>
+            <div class="tech-badge"><span class="tb-icon">🦕</span>Deno<span class="tb-version">1.40+</span></div>
+          </div>
+        </div>
+        <div class="glass-card accent-top" style="--card-accent:linear-gradient(90deg,#6366F1,#3B82F6)">
+          <div class="card-h3"><div class="ch-icon" style="background:rgba(99,102,241,0.15);">🌐</div>External Services</div>
+          <div class="tech-grid">
+            <div class="tech-badge"><span class="tb-icon">✉</span>Resend</div>
+            <div class="tech-badge"><span class="tb-icon">📅</span>Google Calendar API</div>
+            <div class="tech-badge"><span class="tb-icon">🗓</span>Calendly API</div>
+            <div class="tech-badge"><span class="tb-icon">🤖</span>AI Gateway (LLM)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-ai" style="margin-top:8px;">
+        <div class="callout-icon">📮</div>
+        <div class="callout-body">
+          <div class="callout-title">Maintained By</div>
+          <div class="callout-text">Maintained by <strong>A. Silva Innovations</strong> — <a href="mailto:admin@asilvainnovations.com" style="color:var(--indigo-400);">admin@asilvainnovations.com</a> · Support: <a href="mailto:support@deploypad.app" style="color:var(--indigo-400);">support@deploypad.app</a> (Mon–Fri 9AM–6PM GMT+8, ~4hr response)</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-col-title">Support</div>
+      <a href="mailto:admin@asilvainnovations.com">admin@asilvainnovations.com</a>
+      <a href="mailto:support@deploypad.app">support@deploypad.app</a>
+      <p>Monday – Friday · 9AM–6PM GMT+8</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">References</div>
+      <a href="https://strategy-ai-planner.deploypad.app/" target="_blank">Live Application</a>
+      <a href="https://supabase.com/docs" target="_blank">Supabase Docs</a>
+      <a href="https://deno.land/manual" target="_blank">Deno Manual</a>
+      <a href="https://resend.com/docs" target="_blank">Resend API Docs</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Document</div>
+      <p>Docs Version: 1.0.0</p>
+      <p>Last Updated: April 2026</p>
+      <p>App Version: 1.0.0</p>
+      <p>Platform: Supabase · Deno · PostgreSQL 15</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-brand">Strat Planner Pro</div>
+    <div class="footer-copy">© 2026 ASilva Innovations, Inc. · Developer Documentation · Proprietary</div>
+  </div>
+</footer>
+
+<script>
+// ── Collapsible cards ──────────────────────────────────────────────
+function toggleColl(card) { card.classList.toggle('open'); }
+
+// ── TOC active link ────────────────────────────────────────────────
+function setActive(link) {
+  document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+  link.classList.add('active');
+}
+
+// ── Copy code ──────────────────────────────────────────────────────
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Scroll-driven behaviors ────────────────────────────────────────
+const scrollProgress  = document.getElementById('scrollProgress');
+const sidebarProgress = document.getElementById('sidebarProgress');
+const progressPct     = document.getElementById('progressPct');
+const backTop         = document.getElementById('backTop');
+const sections        = document.querySelectorAll('.section');
+const tocLinks        = document.querySelectorAll('.toc-link');
+
+function onScroll() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct       = Math.min(100, Math.round((scrollTop / docHeight) * 100));
+  scrollProgress.style.transform = `scaleX(${pct / 100})`;
+  sidebarProgress.style.width = pct + '%';
+  progressPct.textContent = pct + '%';
+  backTop.classList.toggle('visible', scrollTop > 400);
+  let currentId = '';
+  sections.forEach(sec => { if (window.scrollY >= sec.offsetTop - 100) currentId = sec.id; });
+  tocLinks.forEach(link => { link.classList.toggle('active', link.getAttribute('href') === '#' + currentId); });
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+// ── Smooth anchor scroll ───────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+    document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+    if (a.classList.contains('toc-link')) a.classList.add('active');
+  });
+});
+
+// ── Section entrance observer ──────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.style.animationPlayState = 'running';
+  });
+}, { threshold: 0.06 });
+sections.forEach(sec => { sec.style.animationPlayState = 'paused'; observer.observe(sec); });
+
+// ── Staggered card entrance ────────────────────────────────────────
+const cardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const cards = entry.target.querySelectorAll('.coll-card, .fn-card, .issue-card, .glass-card');
+      cards.forEach((card, i) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(12px)';
+        card.style.transition = `opacity 0.4s ease ${i * 0.07}s, transform 0.4s ease ${i * 0.07}s`;
+        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 40 + i * 70);
+      });
+    }
+  });
+}, { threshold: 0.05 });
+sections.forEach(sec => cardObserver.observe(sec));
+</script>
+</body>
+</html>
