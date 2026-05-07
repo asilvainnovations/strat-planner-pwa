@@ -433,6 +433,7 @@ body { background: white; color: #1a1a2e; }
 .coll-body-inner { padding: 0 20px 20px !important; overflow: visible !important; }
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 <div class="app-bg">
@@ -931,7 +932,7 @@ body { background: white; color: #1a1a2e; }
 </div></div>
 </div>
 </section>
-<!-- ============================= SECTION 6: SYSTEMS THINKING (UPDATED) ============================= -->
+<!-- ============================= SECTION 6: SYSTEMS THINKING ============================= -->
 <section class="section" id="systems-thinking">
 <div class="section-header">
 <div class="section-num">6</div>
@@ -955,7 +956,7 @@ body { background: white; color: #1a1a2e; }
 <div class="coll-header-icon">📐</div>
 <div class="coll-header-text">
 <div class="coll-header-title">Three Module Views</div>
-<div class="coll-header-sub">Matrix, Impact, and CLD</div>
+<div class="coll-header-sub">Matrix, Impact, and CLD — switch via tab bar</div>
 </div>
 <div class="coll-chevron">▾</div>
 </div>
@@ -963,54 +964,159 @@ body { background: white; color: #1a1a2e; }
 <table class="data-table" style="margin-top:8px;">
 <thead><tr><th>View</th><th>Icon</th><th>Purpose</th><th>When to Use</th></tr></thead>
 <tbody>
-<tr><td>📋 <strong>Matrix</strong></td><td>📋</td><td>Review all four SWOT quadrants in a 2×2 grid</td><td>Reviewing and scoring all factors at once</td></tr>
-<tr><td>⚠ <strong>Impact</strong></td><td>⚠️</td><td>See factors ranked by priority score</td><td>Identifying what needs immediate attention</td></tr>
-<tr><td>🔗 <strong>CLD</strong></td><td>🔗</td><td>Build <span class="tip" data-tip="Causal Loop Diagrams reveal how variables influence each other through feedback loops, surfacing hidden leverage points">Causal Loop Diagrams</span></td><td>Mapping how factors influence each other</td></tr>
+<tr><td>📋 <strong>Matrix</strong></td><td>📋</td><td>Review all four SWOT quadrants in a 2×2 grid with scoring</td><td>Reviewing and scoring all factors at once</td></tr>
+<tr><td>⚠ <strong>Impact</strong></td><td>⚠️</td><td>See factors ranked by priority score (Impact × Likelihood)</td><td>Identifying what needs immediate attention</td></tr>
+<tr><td>🔗 <strong>CLD</strong></td><td>🔗</td><td>Build <span class="tip" data-tip="Causal Loop Diagrams reveal how variables influence each other through feedback loops, surfacing hidden leverage points">Causal Loop Diagrams</span>, apply archetypes, and generate leverage points</td><td>Mapping causal relationships and finding high-leverage interventions</td></tr>
 </tbody>
 </table>
 <div class="example-box">
-<strong>Navigation:</strong> Access Systems Thinking from the left sidebar of your plan workspace under <em>Diagnostics → Systems Thinking</em>. Switch between views using the three-tab bar at the top of the module.
+<strong>Navigation:</strong> Access Systems Thinking from the left sidebar under <em>Diagnostics → Systems Thinking</em>. Switch between views using the three-tab bar at the top of the module. Each view maintains your data — changes in Matrix are reflected in Impact and CLD automatically.
 </div>
 </div></div>
 </div>
 
-<!-- Collapsible: Building CLDs -->
+<!-- Collapsible: Matrix View -->
 <div class="coll-card">
 <div class="coll-header" onclick="toggleColl(this.parentElement)">
-<div class="coll-header-icon">🪄</div>
+<div class="coll-header-icon">📋</div>
 <div class="coll-header-text">
-<div class="coll-header-title">Building Causal Loop Diagrams (CLDs)</div>
-<div class="coll-header-sub">Nodes, links, polarity, and loop analysis</div>
+<div class="coll-header-title">Matrix View — Scoring SWOT Factors</div>
+<div class="coll-header-sub">Review, score, and add factors to your causal diagram</div>
+</div>
+<div class="coll-chevron">▾</div>
+</div>
+<div class="coll-body"><div class="coll-body-inner">
+<div class="prose" style="margin-top:8px;">
+<p>The Matrix View displays all four SWOT quadrants in a 2×2 grid. Each quadrant is collapsible via the chevron arrow in the header. This is your primary workspace for scoring factors before building causal maps.</p>
+</div>
+<div class="grid-2" style="gap:12px; margin-top:14px;">
+<div style="padding:12px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.2); border-radius:var(--radius-md);">
+<div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#34D399; margin-bottom:6px;">Impact Score (1–5)</div>
+<div style="font-size:12px; color:var(--text-secondary); line-height:1.6;">How much will this factor affect our ability to reach strategic goals? Click the numbered circles to set. For <strong>Strengths/Opportunities</strong>, higher = more valuable. For <strong>Weaknesses/Threats</strong>, higher = more harmful.</div>
+</div>
+<div style="padding:12px; background:rgba(6,182,212,0.07); border:1px solid rgba(6,182,212,0.2); border-radius:var(--radius-md);">
+<div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#67e8f9; margin-bottom:6px;">Likelihood Score (1–5)</div>
+<div style="font-size:12px; color:var(--text-secondary); line-height:1.6;">How probable is this factor during the planning period? 1=Rare (&lt;20%) · 3=Possible · 5=Almost certain (&gt;80%). Click the numbered circles to set.</div>
+</div>
+</div>
+<table class="data-table" style="margin-top:14px;">
+<thead><tr><th>Priority Score</th><th>Badge Level</th><th>Action Required</th></tr></thead>
+<tbody>
+<tr><td>21–25</td><td><span class="status-badge badge-red" style="font-size:10px;padding:2px 8px;">Critical</span></td><td>Address immediately — allocate resources now</td></tr>
+<tr><td>16–20</td><td><span class="status-badge badge-yellow" style="font-size:10px;padding:2px 8px;">High</span></td><td>Prepare action plans and monitor closely</td></tr>
+<tr><td>10–15</td><td><span class="status-badge badge-blue" style="font-size:10px;padding:2px 8px;">Medium</span></td><td>Track regularly, prepare contingencies</td></tr>
+<tr><td>1–9</td><td><span class="status-badge" style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.06);color:var(--text-tertiary);border:1px solid rgba(255,255,255,0.15);">Low</span></td><td>Monitor occasionally — no urgent action</td></tr>
+</tbody>
+</table>
+<div class="prose" style="margin-top:14px;"><h4>Matrix View Actions</h4>
+<ol>
+<li><strong>Expand/collapse quadrants</strong> — Click the chevron arrow on any quadrant header to show or hide items</li>
+<li><strong>Score factors</strong> — Click numbered circles (1–5) for Impact and Likelihood on each card</li>
+<li><strong>Add to CLD</strong> — Click the <strong>+ icon</strong> on any SWOT card to instantly add it as a node in the Causal Loop Diagram</li>
+<li><strong>View scoring guide</strong> — Click <strong>"Show Scoring Guide"</strong> below the tabs for reference</li>
+</ol></div>
+<div class="callout callout-info" style="margin-top:12px;">
+<div class="callout-icon">ℹ️</div>
+<div class="callout-body"><div class="callout-title">Balance Check</div><div class="callout-text">Aim for 3–5 items per quadrant. Too many Strengths but few Weaknesses may signal overconfidence. High Threats but low Opportunities suggests you may need to explore more external advantages.</div></div>
+</div>
+</div></div>
+</div>
+
+<!-- Collapsible: Impact View -->
+<div class="coll-card">
+<div class="coll-header" onclick="toggleColl(this.parentElement)">
+<div class="coll-header-icon">⚠️</div>
+<div class="coll-header-text">
+<div class="coll-header-title">Impact View — Priority Ranking</div>
+<div class="coll-header-sub">Identify what needs immediate attention</div>
+</div>
+<div class="coll-chevron">▾</div>
+</div>
+<div class="coll-body"><div class="coll-body-inner">
+<div class="prose" style="margin-top:8px;">
+<p>The Impact View ranks all SWOT factors by their <strong>Priority Score</strong> (Impact × Likelihood), from highest to lowest. This gives you a single prioritized list of what demands attention first.</p>
+</div>
+<div class="flow-steps" style="margin-top:12px;">
+<div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-body"><div class="flow-step-title">Switch to the Impact tab</div><div class="flow-step-desc">All scored SWOT items appear in ranked order with rank numbers (#1, #2, etc.).</div></div></div>
+<div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-body"><div class="flow-step-title">Review the top-ranked items</div><div class="flow-step-desc">Critical (21–25) and High (16–20) priority items appear at the top. Note their category and description.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-body"><div class="flow-step-title">Adjust scores directly</div><div class="flow-step-desc">Click any numbered circle to change Impact or Likelihood. Changes sync back to Matrix view instantly.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-body"><div class="flow-step-title">Note top 3–5 priorities</div><div class="flow-step-desc">These will drive your CLD building and Strategy Matrix formulation in later phases.</div></div></div>
+</div>
+</div></div>
+</div>
+
+<!-- Collapsible: CLD View Overview -->
+<div class="coll-card">
+<div class="coll-header" onclick="toggleColl(this.parentElement)">
+<div class="coll-header-icon">🔗</div>
+<div class="coll-header-text">
+<div class="coll-header-title">CLD View — Causal Loop Diagrams</div>
+<div class="coll-header-sub">Build, analyze, and find leverage points</div>
 </div>
 <div class="coll-chevron">▾</div>
 </div>
 <div class="coll-body"><div class="coll-body-inner">
 <div style="margin-top:8px;">
-<div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-tertiary); margin-bottom:10px;">Getting Started</div>
+<div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-tertiary); margin-bottom:10px;">Getting Started — Three Methods</div>
 <table class="data-table">
 <thead><tr><th>Method</th><th>Button</th><th>What It Does</th></tr></thead>
 <tbody>
-<tr><td>Build from SWOT</td><td>🪄 Wand icon</td><td>Auto-generates nodes and links from scored SWOT items</td></tr>
-<tr><td>Apply Archetype</td><td>Template list</td><td>Loads a pre-built systems archetype template</td></tr>
-<tr><td>Add Node manually</td><td>+ icon</td><td>Creates a blank node for custom variable mapping</td></tr>
+<tr><td>Build from SWOT</td><td>🪄 Wand icon</td><td>Auto-generates nodes and causal links from your scored SWOT items</td></tr>
+<tr><td>Apply Archetype</td><td>Template list below canvas</td><td>Loads a pre-built systems archetype template with nodes and links</td></tr>
+<tr><td>Add Node manually</td><td>+ Add Node (bottom-right of canvas)</td><td>Creates a blank node for custom variable mapping</td></tr>
 </tbody>
 </table>
 </div>
 <div class="grid-2" style="gap:12px; margin-top:14px;">
 <div style="padding:12px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.2); border-radius:var(--radius-md);">
 <div style="font-weight:600; font-size:13px; color:#34D399; margin-bottom:6px;">✅ + Reinforcing Links (Green)</div>
-<div style="font-size:12px; color:var(--text-secondary);">Both variables move in the <strong>same direction</strong>. If A increases, B increases. Creates virtuous or vicious cycles.</div>
+<div style="font-size:12px; color:var(--text-secondary);">Both variables move in the <strong>same direction</strong>. If A increases, B increases. Creates virtuous or vicious cycles. Shown as <strong>green arrows</strong> with "+" badge.</div>
 </div>
 <div style="padding:12px; background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.2); border-radius:var(--radius-md);">
 <div style="font-weight:600; font-size:13px; color:#FC8181; margin-bottom:6px;">🔴 − Balancing Links (Red)</div>
-<div style="font-size:12px; color:var(--text-secondary);">Variables move in <strong>opposite directions</strong>. If A increases, B decreases. Creates stabilizing or dampening forces.</div>
+<div style="font-size:12px; color:var(--text-secondary);">Variables move in <strong>opposite directions</strong>. If A increases, B decreases. Creates stabilizing or dampening forces. Shown as <strong>red arrows</strong> with "−" badge.</div>
 </div>
 </div>
-<div class="prose" style="margin-top:12px;"><h4>Creating a Link</h4></div>
-<div class="flow-steps">
-<div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-body"><div class="flow-step-title">Hover over a source node</div><div class="flow-step-desc">A blue link icon appears on hover.</div></div></div>
-<div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-body"><div class="flow-step-title">Click the link icon — a dialog opens</div><div class="flow-step-desc">Select the target node and polarity (+ Reinforcing or − Balancing).</div></div></div>
-<div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-body"><div class="flow-step-title">Click "Add Link"</div><div class="flow-step-desc">To delete a link, hover over the arrow and click the polarity badge (+ or − circle on the line).</div></div></div>
+<div class="prose" style="margin-top:14px;"><h4>Working with the CLD Canvas</h4>
+<ol>
+<li><strong>Build from SWOT</strong> — Click the 🪄 <strong>"Build from SWOT"</strong> button to auto-populate the canvas with nodes from your scored items and suggested causal links</li>
+<li><strong>Add nodes manually</strong> — Click <strong>"+ Add Node"</strong> (bottom-right) to create blank nodes. Click any node to edit its label</li>
+<li><strong>Create links</strong> — Hover over a source node → click the <strong>blue link icon</strong> → select target node, polarity (+ or −), and strength (1–5) → click <strong>"Add Link"</strong></li>
+<li><strong>Toggle polarity</strong> — Click the <strong>polarity badge</strong> (+ or − circle) on any link arrow to switch between reinforcing and balancing</li>
+<li><strong>Delete links</strong> — <strong>Double-click</strong> the polarity badge on the line</li>
+<li><strong>Delete nodes</strong> — Hover over a node → click the <strong>red X icon</strong></li>
+<li><strong>Get help</strong> — Click <strong>"How it works"</strong> (top-left of canvas) for an interactive tutorial overlay</li>
+</ol></div>
+<div class="callout callout-success" style="margin-top:12px;">
+<div class="callout-icon">✓</div>
+<div class="callout-body"><div class="callout-title">CLD Canvas Legend</div><div class="callout-text"><ul>
+<li><strong>Green circles</strong> = Strengths · <strong>Red circles</strong> = Weaknesses · <strong>Blue circles</strong> = Opportunities · <strong>Amber circles</strong> = Threats</li>
+<li><strong>Green arrows (+)</strong> = Reinforcing links · <strong>Red arrows (−)</strong> = Balancing links</li>
+<li><strong>Violet highlight ring</strong> = Leverage point target nodes (click a leverage card to activate)</li>
+</ul></div></div>
+</div>
+</div></div>
+</div>
+
+<!-- Collapsible: Snapshots -->
+<div class="coll-card">
+<div class="coll-header" onclick="toggleColl(this.parentElement)">
+<div class="coll-header-icon">💾</div>
+<div class="coll-header-text">
+<div class="coll-header-title">CLD Snapshots — Save & Load States</div>
+<div class="coll-header-sub">Preserve and restore diagram versions</div>
+</div>
+<div class="coll-chevron">▾</div>
+</div>
+<div class="coll-body"><div class="coll-body-inner">
+<div class="prose" style="margin-top:8px;"><p>Snapshots let you save the current state of your Causal Loop Diagram at any point, then restore it later. This is essential for experimenting with different archetypes or tracking evolution.</p></div>
+<div class="flow-steps" style="margin-top:12px;">
+<div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-body"><div class="flow-step-title">Save a Snapshot</div><div class="flow-step-desc">Click <strong>"Save Snapshot"</strong> (Save icon) → enter a descriptive name → click <strong>"Save"</strong>. The snapshot is stored with your plan.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-body"><div class="flow-step-title">Load a Snapshot</div><div class="flow-step-desc">Select from the <strong>"Load Snapshot"</strong> dropdown. The canvas restores instantly to that saved state.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-body"><div class="flow-step-title">Rename or Delete</div><div class="flow-step-desc">In the snapshot list, click the <strong>file icon</strong> to rename or the <strong>trash icon</strong> to delete. The active (currently loaded) snapshot cannot be deleted.</div></div></div>
+</div>
+<div class="example-box" style="margin-top:12px;">
+<strong>Tip:</strong> Save a snapshot before applying a new archetype or making major changes. This lets you compare different systemic interpretations of your strategy.
 </div>
 </div></div>
 </div>
@@ -1045,13 +1151,23 @@ body { background: white; color: #1a1a2e; }
 <div class="callout-icon">✦</div>
 <div class="callout-body">
 <div class="callout-title">AI Archetype Suggestions</div>
-<div class="callout-text">The system analyzes your SWOT data and <strong>automatically suggests relevant archetypes</strong> at the top of the CLD view, showing match confidence (High / Medium / Low) and the reason it applies to your situation.</div>
+<div class="callout-text">The system analyzes your SWOT data and <strong>automatically suggests relevant archetypes</strong> at the top of the CLD view, showing match confidence (High / Medium / Low) and the reason it applies to your situation. Click <strong>"Apply"</strong> to load the archetype template into your CLD canvas.</div>
 </div>
 </div>
+<div class="prose" style="margin-top:14px;"><h4>Applying an Archetype</h4>
+<ol>
+<li>Review the <strong>AI Suggested Archetypes</strong> card at the top of the CLD view</li>
+<li>Read the <strong>rationale</strong> for each recommendation and check the <strong>match confidence</strong></li>
+<li>Click <strong>"Apply"</strong> on the most relevant archetype — or scroll down to the full archetypes library and click any template card</li>
+<li>The template loads with pre-built nodes and causal links on your canvas</li>
+<li><strong>Rename nodes</strong> to match your actual strategic variables (click any node to edit)</li>
+<li>Adjust <strong>link strengths</strong> to reflect real causal intensity</li>
+<li>Click <strong>"Apply Template to CLD"</strong> (Wand2 icon) to load, or <strong>"Leverage"</strong> (Target icon) to load and jump to Leverage Points</li>
+</ol></div>
 </div></div>
 </div>
 
-<!-- Collapsible: Meadows Leverage Points -->
+<!-- Collapsible: Leverage Points -->
 <div class="coll-card">
 <div class="coll-header" onclick="toggleColl(this.parentElement)">
 <div class="coll-header-icon">⚡</div>
@@ -1062,32 +1178,90 @@ body { background: white; color: #1a1a2e; }
 <div class="coll-chevron">▾</div>
 </div>
 <div class="coll-body"><div class="coll-body-inner">
-<div class="highlight-box" style="background:rgba(99,102,241,0.08); border-color:rgba(99,102,241,0.3); padding:16px 20px; border-radius:var(--radius-lg);">
+<div class="highlight-box" style="background:rgba(99,102,241,0.08); border-color:rgba(99,102,241,0.3); padding:16px 20px; border-radius:var(--radius-lg); margin-top:8px;">
 <strong>Key Concept:</strong> Not all interventions are equal. Changing a parameter (a number) has little leverage. Changing information flows has more. Changing system goals or paradigms can transform everything.
 </div>
 <div class="grid-3" style="margin-top:16px; gap:12px;">
 <div style="padding:14px; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:var(--radius-md); text-align:center;">
-<div style="font-family:var(--font-data); font-size:11px; font-weight:700; color:#a5b4fc; margin-bottom:4px;">L1–3</div>
+<div style="font-family:var(--font-data); font-size:11px; font-weight:700; color:#a5b4fc; margin-bottom:4px;">L1–L3</div>
 <div style="font-size:13px; font-weight:600; color:var(--text-primary);">Paradigm & Goals</div>
 <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">Highest leverage | Transformative</div>
 </div>
 <div style="padding:14px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:var(--radius-md); text-align:center;">
-<div style="font-family:var(--font-data); font-size:11px; font-weight:700; color:#FC8181; margin-bottom:4px;">L4–6</div>
+<div style="font-family:var(--font-data); font-size:11px; font-weight:700; color:#FC8181; margin-bottom:4px;">L4–L6</div>
 <div style="font-size:13px; font-weight:600; color:var(--text-primary);">Information & Rules</div>
 <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">Medium-High leverage | Systemic</div>
 </div>
 <div style="padding:14px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:var(--radius-md); text-align:center;">
-<div style="font-family:var(--font-data); font-size:11px; font-weight:700; color:#FBBF24; margin-bottom:4px;">L7–12</div>
+<div style="font-family:var(--font-data); font-size:11px; font-weight:700; color:#FBBF24; margin-bottom:4px;">L7–L12</div>
 <div style="font-size:13px; font-weight:600; color:var(--text-primary);">Feedback & Parameters</div>
 <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">Lower leverage | Incremental</div>
 </div>
 </div>
+<div class="prose" style="margin-top:16px;"><h4>Using the Leverage Points Panel</h4>
+<ol>
+<li>Switch to the <strong>Leverage Points</strong> sub-tab within CLD View (next to "CLD Diagram")</li>
+<li>Review the <strong>Meadows scale legend</strong> at the top — color-coded by leverage tier</li>
+<li>Review interventions grouped by source:
+   <ul>
+   <li><strong>Archetype Interventions</strong> — generated from your selected systems archetype</li>
+   <li><strong>CLD-Derived Points</strong> — algorithmically detected from your diagram's feedback loops</li>
+   </ul>
+</li>
+<li>Each leverage card shows: <strong>Meadows Level (L1–L12)</strong>, <strong>intervention description</strong>, <strong>expected impact</strong> (high/medium/low), and <strong>time horizon</strong> (short/medium/long)</li>
+<li><strong>Click any leverage card</strong> to <strong>highlight target nodes in violet</strong> on the CLD canvas — the card shows "✓ highlighted" when active</li>
+<li>Prioritize <strong>L1–L6</strong> interventions for your Strategy Matrix — these have the highest systemic leverage</li>
+</ol></div>
+<table class="data-table" style="margin-top:14px;">
+<thead><tr><th>Level</th><th>Meadows Name</th><th>Leverage Type</th><th>Example Intervention</th></tr></thead>
+<tbody>
+<tr><td>L1</td><td>Transcend Paradigms</td><td>Transformative</td><td>Redefine the organization's core purpose</td></tr>
+<tr><td>L2</td><td>Mindset / Paradigm</td><td>Transformative</td><td>Shift from competition to collaboration mindset</td></tr>
+<tr><td>L3</td><td>Goals</td><td>Transformative</td><td>Change success metrics to include sustainability</td></tr>
+<tr><td>L4</td><td>Self-Organization</td><td>Systemic</td><td>Enable teams to restructure around customer needs</td></tr>
+<tr><td>L5</td><td>Rules</td><td>Systemic</td><td>Change incentive structures to reward long-term thinking</td></tr>
+<tr><td>L6</td><td>Information Flows</td><td>Systemic</td><td>Make performance gaps transparent to all stakeholders</td></tr>
+<tr><td>L7</td><td>Positive Feedback Gain</td><td>Structural</td><td>Accelerate virtuous cycles or dampen vicious ones</td></tr>
+<tr><td>L8</td><td>Negative Feedback</td><td>Structural</td><td>Strengthen balancing loops that stabilize the system</td></tr>
+<tr><td>L9</td><td>Delay Lengths</td><td>Structural</td><td>Reduce time lags between action and consequence</td></tr>
+<tr><td>L10</td><td>Stock-Flow Structure</td><td>Incremental</td><td>Rearrange physical or organizational capacity</td></tr>
+<tr><td>L11</td><td>Buffer Sizes</td><td>Incremental</td><td>Increase inventory, reserves, or slack capacity</td></tr>
+<tr><td>L12</td><td>Constants & Parameters</td><td>Incremental</td><td>Adjust budgets, subsidies, or numerical targets</td></tr>
+</tbody>
+</table>
 <div class="callout callout-info" style="margin-top:16px;">
 <div class="callout-icon">ℹ️</div>
 <div class="callout-body">
 <div class="callout-title">Attribution</div>
 <div class="callout-text">This framework is based on Donella H. Meadows, <em>Thinking in Systems: A Primer</em> (Chelsea Green Publishing, 2008). The leverage point interventions are generated algorithmically from your diagram structure and selected archetype — they are starting points for strategic dialogue, not prescriptions.</div>
 </div>
+</div>
+</div></div>
+</div>
+
+<!-- Collapsible: AI Analysis -->
+<div class="coll-card">
+<div class="coll-header" onclick="toggleColl(this.parentElement)">
+<div class="coll-header-icon">🤖</div>
+<div class="coll-header-text">
+<div class="coll-header-title">AI Analysis Side Panel</div>
+<div class="coll-header-sub">Automated loop detection, archetype matching, and strategic recommendations</div>
+</div>
+<div class="coll-chevron">▾</div>
+</div>
+<div class="coll-body"><div class="coll-body-inner">
+<div class="prose" style="margin-top:8px;"><p>The AI Analysis panel provides automated intelligence on your Causal Loop Diagram, detecting feedback loops, matching archetypes, and suggesting leverage-based interventions.</p></div>
+<div class="flow-steps" style="margin-top:12px;">
+<div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-body"><div class="flow-step-title">Open the AI Panel</div><div class="flow-step-desc">Click <strong>"Analyze Loops"</strong> (Bot icon, top-right of CLD view). The panel slides in from the right.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-body"><div class="flow-step-title">Run the Analysis</div><div class="flow-step-desc">Click <strong>"Analyze Loops"</strong> inside the panel. The system analyzes your nodes and links (requires minimum 2 nodes).</div></div></div>
+<div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-body"><div class="flow-step-title">Review Detected Loops</div><div class="flow-step-desc">See <strong>Reinforcing (R)</strong> and <strong>Balancing (B)</strong> loops with strength ratings (1–5) and node counts. High-strength reinforcing loops may indicate runaway dynamics.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-body"><div class="flow-step-title">Review Dominant Archetypes</div><div class="flow-step-desc">AI-confirmed pattern matches with <strong>confidence percentages</strong> and matched node counts. Compare with your manual archetype selection.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">5</div><div class="flow-step-body"><div class="flow-step-title">Review Ranked Leverage Points</div><div class="flow-step-desc">Top 5 AI-ranked interventions with Meadows levels. Use these alongside the full Leverage Points panel for comprehensive coverage.</div></div></div>
+<div class="flow-step"><div class="flow-step-num">6</div><div class="flow-step-body"><div class="flow-step-title">Read AI Recommendations</div><div class="flow-step-desc">Strategic suggestions based on your diagram structure. These connect loop dynamics to actionable strategy advice.</div></div></div>
+</div>
+<div class="callout callout-warning" style="margin-top:12px;">
+<div class="callout-icon">⚠️</div>
+<div class="callout-body"><div class="callout-title">Analysis Requirements</div><div class="callout-text">The AI Analysis requires at least <strong>2 nodes</strong> on your CLD canvas. If analysis fails, check your internet connection and ensure your diagram has sufficient structure. Click <strong>"Try Again"</strong> to retry after resolving issues.</div></div>
 </div>
 </div></div>
 </div>
@@ -1103,48 +1277,80 @@ body { background: white; color: #1a1a2e; }
 <div class="coll-chevron">▾</div>
 </div>
 <div class="coll-body"><div class="coll-body-inner">
-<div class="flow-diagram" style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px; margin:16px 0; padding:20px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-lg);">
-<div style="padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(37,99,235,0.15); color:var(--text-primary);">Score SWOT Factors</div>
+<div style="margin-top:8px; padding:16px; background:rgba(37,99,235,0.06); border:1px solid rgba(37,99,235,0.15); border-radius:var(--radius-lg);">
+<div style="font-family:var(--font-data); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--blue-300); margin-bottom:10px;">Primary Workflow: SWOT → CLD → Leverage → Strategy</div>
+<div style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:6px;">
+<div style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(37,99,235,0.2); color:var(--text-primary);">1. Score SWOT</div>
 <div style="color:var(--blue-300); font-weight:700;">→</div>
-<div style="padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(245,158,11,0.15); color:var(--text-primary);">Review Impact View</div>
+<div style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(245,158,11,0.2); color:var(--text-primary);">2. Review Impact</div>
 <div style="color:var(--blue-300); font-weight:700;">→</div>
-<div style="padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(99,102,241,0.15); color:var(--text-primary);">Check AI Archetype Suggestions</div>
+<div style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(99,102,241,0.2); color:var(--text-primary);">3. Build CLD</div>
 <div style="color:var(--blue-300); font-weight:700;">→</div>
-<div style="padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(16,185,129,0.15); color:var(--text-primary);">Apply Archetype</div>
+<div style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(16,185,129,0.2); color:var(--text-primary);">4. Apply Archetype</div>
 <div style="color:var(--blue-300); font-weight:700;">→</div>
-<div style="padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(239,68,68,0.15); color:var(--text-primary);">View Leverage Points</div>
+<div style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(239,68,68,0.2); color:var(--text-primary);">5. View Leverage</div>
 <div style="color:var(--blue-300); font-weight:700;">→</div>
-<div style="padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(37,99,235,0.15); color:var(--text-primary);">Feed into Strategy Matrix</div>
+<div style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(37,99,235,0.2); color:var(--text-primary);">6. Strategy Matrix</div>
 </div>
-<div class="prose"><ol>
-<li><strong>Score all SWOT factors</strong> in the Matrix View. Aim for at least 3 items per quadrant with scores assigned.</li>
+</div>
+<div class="prose" style="margin-top:16px;"><ol>
+<li><strong>Score all SWOT factors</strong> in the Matrix View. Aim for at least 3 items per quadrant with both Impact and Likelihood scores assigned.</li>
 <li><strong>Review the Impact ranking</strong> in Impact View. Note Critical (21–25) and High (16–20) priorities.</li>
-<li><strong>Check AI Archetype Suggestions</strong> in CLD View. Read the rationale for each recommendation.</li>
-<li><strong>Apply the most fitting archetype</strong>. Rename nodes to match your actual variables and adjust link strengths.</li>
-<li><strong>Open Leverage Points</strong>. Review interventions from highest leverage (lowest level number) downward.</li>
-<li><strong>Carry insights to the Strategy Matrix</strong>. Use high-leverage interventions as the basis for SO, ST, WO, and WT strategies.</li>
+<li><strong>Build your CLD</strong> — Click "Build from SWOT" to auto-generate, or add nodes manually. Create causal links between related factors.</li>
+<li><strong>Check AI Archetype Suggestions</strong> in CLD View. Read the rationale for each recommendation. Apply the most fitting archetype.</li>
+<li><strong>Rename nodes</strong> to match your actual strategic variables and <strong>adjust link strengths</strong> to reflect real causal intensity.</li>
+<li><strong>Save a CLD Snapshot</strong> to preserve your work.</li>
+<li><strong>Open Leverage Points</strong>. Review interventions from highest leverage (lowest level number) downward. Click cards to highlight target nodes.</li>
+<li><strong>Run AI Analysis</strong> for additional loop detection and recommendations.</li>
+<li><strong>Carry insights to the Strategy Matrix</strong>. Use high-leverage interventions (L1–L6) as the basis for SO, ST, WO, and WT strategies.</li>
 </ol></div>
 <div class="callout callout-success" style="margin-top:16px;">
 <div class="callout-icon">✓</div>
 <div class="callout-body">
-<div class="callout-title">Completion Checklist</div>
+<div class="callout-title">Systems Thinking Completion Checklist</div>
 <div class="callout-text"><ul>
 <li>All SWOT factors have Impact and Likelihood scores assigned</li>
-<li>At least one Critical or High factor identified</li>
-<li>AI Archetype Suggestions reviewed</li>
-<li>A Systems Archetype template applied OR a custom CLD built (minimum 4 nodes, 3 links)</li>
+<li>At least one Critical or High priority factor identified in Impact View</li>
+<li>CLD canvas has minimum 4 nodes and 3 causal links (or archetype applied)</li>
+<li>AI Archetype Suggestions reviewed and one archetype applied</li>
 <li>Node labels renamed to match actual strategic variables</li>
-<li>Link strengths set to reflect real causal intensity</li>
+<li>Link strengths set to reflect real causal intensity (1–5 scale)</li>
+<li>At least one CLD Snapshot saved</li>
 <li>Leverage Points panel opened and 2–3 interventions discussed with team</li>
 <li>High-leverage (L1–L6) interventions noted for Strategy Matrix use</li>
+<li>AI Analysis panel run and recommendations reviewed</li>
 </ul></div>
 </div>
 </div>
 </div></div>
 </div>
 
-</section>
+<!-- Collapsible: Educational Resources -->
+<div class="coll-card">
+<div class="coll-header" onclick="toggleColl(this.parentElement)">
+<div class="coll-header-icon">🎓</div>
+<div class="coll-header-text">
+<div class="coll-header-title">Educational Resources</div>
+<div class="coll-header-sub">Learn systems thinking concepts while you work</div>
+</div>
+<div class="coll-chevron">▾</div>
+</div>
+<div class="coll-body"><div class="coll-body-inner">
+<div class="prose" style="margin-top:8px;"><p>The Systems Thinking module includes embedded learning materials to help you understand causal loop diagrams, feedback loops, and systems archetypes as you build them.</p></div>
+<div class="grid-2" style="gap:12px; margin-top:14px;">
+<div style="padding:14px; background:rgba(37,99,235,0.07); border:1px solid rgba(37,99,235,0.18); border-radius:var(--radius-lg);">
+<div style="font-weight:600; font-size:13px; color:var(--text-primary); margin-bottom:6px;">📺 Video Tutorials</div>
+<div style="font-size:12px; color:var(--text-secondary); line-height:1.6;">Embedded YouTube player for <strong>"Systems Mapping"</strong> fundamentals. Additional links to <strong>Causal Loop Diagrams</strong> and <strong>Systems Archetypes</strong> tutorials open in new tabs.</div>
+</div>
+<div style="padding:14px; background:rgba(6,182,212,0.07); border:1px solid rgba(6,182,212,0.18); border-radius:var(--radius-lg);">
+<div style="font-weight:600; font-size:13px; color:var(--text-primary); margin-bottom:6px;">📖 Interactive Help</div>
+<div style="font-size:12px; color:var(--text-secondary); line-height:1.6;">Click <strong>"How it works"</strong> on the CLD canvas for an overlay guide covering: adding nodes, creating links, understanding polarity, deleting elements, and reading the leverage points panel.</div>
+</div>
+</div>
+</div></div>
+</div>
 
+</section>
 <!-- ============================= SECTION 7: STRATEGY MATRIX ============================= -->
 <section class="section" id="strategy-formulation">
 <div class="section-header">
