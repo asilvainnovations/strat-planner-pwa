@@ -3,30 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI-powered strategic planning for organisations that demand precision and results. SWOT, systems thinking, balanced scorecard, KPIs, and print-ready reports — online or offline.">
+  <meta name="description" content="Strat Planner Pro is the AI-powered strategic planning platform that takes your organisation from SWOT analysis to full execution in one guided flow. Balanced scorecards, KPI tracking, systems thinking maps, and print-ready reports — online or offline.">
+  <meta name="keywords" content="strategic planning software, AI strategy tool, SWOT analysis tool, balanced scorecard software, KPI tracking, strategic management platform, systems thinking, MEL dashboard, offline PWA strategy app">
 
   <!-- Open Graph / social sharing -->
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="https://stratplannerpro.app/">
-  <meta property="og:title"       content="Strat Planner Pro — AI-Powered Strategic Planning">
-  <meta property="og:description" content="Turn strategy into execution excellence. SWOT, systems thinking, balanced scorecard, and AI-generated strategies — works offline as a PWA.">
+  <meta property="og:title"       content="Strat Planner Pro — AI-Powered Strategic Planning Platform">
+  <meta property="og:description" content="Go from SWOT to full execution in one guided flow. AI-generated strategies, balanced scorecards, KPI tracking, and professional reports — works fully offline as a PWA.">
   <meta property="og:image"       content="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png">
   <meta name="twitter:card"       content="summary_large_image">
-  <meta name="twitter:title"      content="Strat Planner Pro — AI-Powered Strategic Planning">
-  <meta name="twitter:description" content="Turn strategy into execution excellence.">
+  <meta name="twitter:title"      content="Strat Planner Pro — AI-Powered Strategic Planning Platform">
+  <meta name="twitter:description" content="Turn strategic complexity into execution clarity. AI-driven SWOT, balanced scorecard, and real-time MEL dashboard.">
 
   <link rel="canonical"   href="https://stratplannerpro.app/">
   <link rel="icon"        href="/icons/icon-192.png" type="image/png">
   <link rel="manifest"    href="/manifest.json">
 
-  <title>Strat Planner Pro | AI-Powered Strategic Planning</title>
+  <title>Strat Planner Pro | AI-Powered Strategic Planning — SWOT to Execution</title>
+
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Strat Planner Pro",
+    "applicationCategory": "BusinessApplication",
+    "description": "AI-powered strategic planning platform covering SWOT analysis, systems thinking, balanced scorecard, KPI tracking, MEL dashboard, and print-ready reports.",
+    "url": "https://stratplannerpro.app/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free trial available — no credit card required"
+    },
+    "featureList": [
+      "AI SWOT Generation",
+      "Systems Thinking Mapping",
+      "Balanced Scorecard",
+      "KPI Tracking",
+      "MEL Dashboard",
+      "Offline PWA",
+      "Print-Ready Reports",
+      "PAPs Management"
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    /* ── Shared design tokens (match app + login) ── */
     :root {
       --bg:             #0A1628;
       --bg-surface:     #0D1F3C;
@@ -62,15 +90,12 @@
       overflow-x: hidden;
     }
 
-    /* ── Typography ── */
     .font-display { font-family: var(--font-display); }
     h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; }
 
-    /* ── Layout helpers ── */
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
 
-    /* ── Animated background ── */
     .hero-bg {
       background:
         radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37,99,235,0.14) 0%, transparent 55%),
@@ -102,7 +127,6 @@
       pointer-events: none;
     }
 
-    /* ── Navigation ── */
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       background: rgba(10,22,40,0.88);
@@ -167,7 +191,6 @@
       color: var(--text-primary); padding: 6px;
     }
 
-    /* ── Hero ── */
     .hero {
       position: relative; min-height: 100svh;
       display: flex; align-items: center; padding-top: 64px; overflow: hidden;
@@ -194,7 +217,6 @@
     .trust-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-tertiary); }
     .trust-item svg { color: var(--emerald-400); flex-shrink: 0; }
 
-    /* ── Mock dashboard card ── */
     .dashboard-preview {
       border-radius: var(--radius-xl); padding: 1px;
       background: linear-gradient(135deg, rgba(52,211,153,0.18), rgba(129,140,248,0.18));
@@ -224,7 +246,6 @@
     .systems-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 14px; }
     .systems-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 10px; }
 
-    /* Floating badge */
     .float-badge {
       position: absolute; background: #1F2937;
       border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px;
@@ -238,7 +259,6 @@
     .float-left  { left: -20px; bottom: 22%; animation: bob 4s ease-in-out infinite; animation-delay: -1.2s; }
     @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-    /* ── Section shared ── */
     section { padding: 88px 0; }
     .section-tag {
       display: inline-flex; align-items: center; gap: 8px;
@@ -254,11 +274,9 @@
     .text-center { text-align: center; }
     .mx-auto { margin-left: auto; margin-right: auto; }
 
-    /* Scroll reveal */
     .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .reveal.visible { opacity: 1; transform: none; }
 
-    /* ── Feature cards ── */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 20px; margin-top: 48px; }
     .feature-card {
       background: linear-gradient(135deg, rgba(19,31,52,0.85), rgba(19,31,52,0.45));
@@ -273,9 +291,7 @@
     .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; transition: color 0.2s; }
     .feature-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
-    /* ── Steps ── */
     .steps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 24px; margin-top: 48px; position: relative; }
-    .steps-connector { display: none; }
     .step-card { background: linear-gradient(135deg, rgba(19,31,52,0.8),rgba(19,31,52,0.4)); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl); padding: 28px; text-align: center; }
     .step-num {
       width: 46px; height: 46px; border-radius: 50%;
@@ -287,7 +303,6 @@
     .step-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
     .step-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
-    /* ── Audience cards ── */
     .audience-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 18px; margin-top: 48px; }
     .audience-card { background: linear-gradient(135deg,rgba(19,31,52,0.85),rgba(19,31,52,0.4)); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl); padding: 28px; cursor: pointer; transition: all 0.3s ease; }
     .audience-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.16); }
@@ -296,7 +311,6 @@
     .audience-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
     .audience-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
 
-    /* ── Benefits ── */
     .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
     .benefit-list { display: flex; flex-direction: column; gap: 22px; }
     .benefit-item { display: flex; align-items: flex-start; gap: 16px; }
@@ -312,7 +326,6 @@
     }
     .stat-card p { font-size: 13px; color: var(--text-secondary); }
 
-    /* ── CTA section ── */
     .cta-box {
       background: linear-gradient(135deg, rgba(52,211,153,0.06), rgba(129,140,248,0.06));
       border: 1px solid rgba(255,255,255,0.09); border-radius: 32px;
@@ -331,7 +344,6 @@
     .cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
     .cta-note { font-size: 12px; color: var(--text-tertiary); }
 
-    /* ── Footer ── */
     footer { padding: 40px 0 32px; border-top: 1px solid rgba(255,255,255,0.08); }
     .footer-inner { display: flex; flex-direction: column; gap: 28px; }
     .footer-top { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.07); }
@@ -349,7 +361,6 @@
     .footer-links a:hover { color: var(--text-primary); }
     .footer-copy { font-size: 12px; color: var(--text-tertiary); }
 
-    /* ── Mobile nav overlay ── */
     .mobile-overlay {
       display: none; position: fixed; inset: 0; z-index: 200;
       background: rgba(10,22,40,0.97); backdrop-filter: blur(20px);
@@ -359,17 +370,14 @@
     .mobile-overlay a { font-size: 22px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
     .mobile-close { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 28px; line-height: 1; }
 
-    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 3px; }
 
-    /* ── Reduced motion ── */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
-    /* ── Responsive ── */
     @media (max-width: 900px) {
       .hero-grid    { grid-template-columns: 1fr; gap: 48px; padding: 60px 0 48px; }
       .benefits-grid { grid-template-columns: 1fr; }
@@ -394,23 +402,23 @@
 </head>
 <body>
 
-<!-- ── Mobile nav overlay ── -->
+<!-- Mobile nav overlay -->
 <div class="mobile-overlay" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
   <button class="mobile-close" onclick="closeMobileNav()" aria-label="Close menu">✕</button>
-  <a href="#features"    onclick="closeMobileNav()">Features</a>
+  <a href="#features"     onclick="closeMobileNav()">Features</a>
   <a href="#how-it-works" onclick="closeMobileNav()">How It Works</a>
-  <a href="#benefits"    onclick="closeMobileNav()">Benefits</a>
+  <a href="#benefits"     onclick="closeMobileNav()">Benefits</a>
   <a href="https://asilvainnovations.github.io/strat-planner-pwa/public/pricing.html">Pricing</a>
   <a href="https://asilvainnovations.github.io/website/policies.html">Policies</a>
   <a href="https://asilvainnovations.github.io/website/contact.html">Contact</a>
-  <a href="https://asilvainnovations.github.io/strat-planner-pwa/public/login.html" class="btn-primary btn-primary-lg" style="margin-top:10px">Sign In</a>
+  <a href="https://strategy-ai-planner.deploypad.app/mel-dashboard" class="btn-primary btn-primary-lg" style="margin-top:10px">Start Free — No Card Needed</a>
 </div>
 
-<!-- ── Navigation ── -->
+<!-- Navigation -->
 <nav class="nav" aria-label="Main navigation">
   <div class="container nav-inner">
-    <a class="nav-logo" href="https://asilvainnovations.github.io/strat-planner-pwa/public/index.html" aria-label="Strat Planner Pro">
-      <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="" onerror="this.style.display='none'">
+    <a class="nav-logo" href="https://asilvainnovations.github.io/strat-planner-pwa/public/index.html" aria-label="Strat Planner Pro home">
+      <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="Strat Planner Pro logo" onerror="this.style.display='none'">
       <span class="nav-logo-name">Strat Planner Pro</span>
       <span class="nav-badge">PRO</span>
     </a>
@@ -422,10 +430,9 @@
       <a href="https://asilvainnovations.github.io/website/policies.html">Policies</a>
       <a href="https://asilvainnovations.github.io/website/contact.html">Contact</a>
     </div>
-  
     <div class="nav-actions">
-      <a href="https://strategy-ai-planner.deploypad.app/" class="btn-ghost">Proceed to Sign In</a>
-      <a href="https://strategy-ai-planner.deploypad.app/" class="btn-primary">Get Started Free</a>
+      <a href="https://strategy-ai-planner.deploypad.app/" class="btn-ghost">Sign In</a>
+      <a href="https://strategy-ai-planner.deploypad.app/mel-dashboard" class="btn-primary">Start Free Trial</a>
       <button class="hamburger" onclick="openMobileNav()" aria-label="Open navigation menu" aria-expanded="false" id="hamburger-btn">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <path d="M3 6h16M3 11h16M3 16h16"/>
@@ -435,7 +442,7 @@
   </div>
 </nav>
 
-<!-- ── Hero ── -->
+<!-- Hero -->
 <section class="hero hero-bg">
   <div class="orb orb-1" aria-hidden="true"></div>
   <div class="orb orb-2" aria-hidden="true"></div>
@@ -444,23 +451,21 @@
 
   <div class="container" style="position:relative; z-index:1; width:100%">
     <div class="hero-grid">
-
-      <!-- Left: copy -->
       <div>
         <div class="badge-pill">
           <span class="pulse-dot" aria-hidden="true"></span>
-          AI-Powered Strategic Planning
+          AI-Powered Strategic Planning Platform
         </div>
         <h1 class="hero-title">
-          Turn Strategy Into
-          <span class="gradient-text">Execution and Excellence</span>
+          Stop Planning in Circles.
+          <span class="gradient-text">Start Executing With Clarity.</span>
         </h1>
         <p class="hero-subtitle">
-          Drive your institutional roadmap with systems-based intelligence — from environmental diagnosis to real-time tracking..
+          Strat Planner Pro takes your organisation from raw SWOT inputs to a fully executed strategic plan — with AI-generated strategies, real-time KPI tracking, and professional reports ready in hours, not weeks.
         </p>
         <div class="hero-ctas">
-          <a href="https://strategy-ai-planner.deploypad.app/" class="btn-primary btn-primary-lg">
-            Get Started for Free
+          <a href="https://strategy-ai-planner.deploypad.app/mel-dashboard" class="btn-primary btn-primary-lg">
+            Start for Free — No Card Needed
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
           </a>
           <a href="https://contact-planning-consult.deploypad.app/#contact" class="btn-secondary">
@@ -468,17 +473,17 @@
               <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
               <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            Schedule a Demo
+            Book a Live Demo
           </a>
         </div>
         <div class="trust-badges" role="list">
           <div class="trust-item" role="listitem">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            No credit card required
+            14-day free trial
           </div>
           <div class="trust-item" role="listitem">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            Works offline (PWA)
+            Works offline as a PWA
           </div>
           <div class="trust-item" role="listitem">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
@@ -489,7 +494,7 @@
 
       <!-- Right: dashboard mockup -->
       <div style="position:relative">
-        <div class="dashboard-preview" role="img" aria-label="Strat Planner Pro dashboard preview">
+        <div class="dashboard-preview" role="img" aria-label="Strat Planner Pro MEL dashboard preview">
           <div class="dashboard-inner">
             <div class="db-topbar">
               <div class="db-dot" style="background:#FF5F57" aria-hidden="true"></div>
@@ -497,7 +502,7 @@
               <div class="db-dot" style="background:#28C840" aria-hidden="true"></div>
               <div class="db-urlbar">
                 <svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12l-2-2m0 0l2-2m-2 2h8m-4-8a8 8 0 100 16" stroke-linecap="round"/></svg>
-                Strat Planner Pro
+                strategy-ai-planner.deploypad.app
               </div>
             </div>
             <div class="db-body">
@@ -551,14 +556,13 @@
             </div>
           </div>
         </div>
-        <!-- Floating badges -->
         <div class="float-badge float-right" aria-hidden="true">
           <div class="float-badge-icon" style="background:rgba(52,211,153,0.15)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
           <div>
             <div class="float-badge-title">AI Generated</div>
-            <div class="float-badge-sub">12 strategies</div>
+            <div class="float-badge-sub">12 strategies ready</div>
           </div>
         </div>
         <div class="float-badge float-left" aria-hidden="true">
@@ -567,159 +571,157 @@
           </div>
           <div>
             <div class="float-badge-title">Offline Ready</div>
-            <div class="float-badge-sub">PWA enabled</div>
+            <div class="float-badge-sub">Install as PWA</div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- Scroll indicator -->
   <div style="position:absolute; bottom:28px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px;" aria-hidden="true">
-    <span style="font-size:11px; color:var(--text-tertiary)">Scroll to explore</span>
+    <span style="font-size:11px; color:var(--text-tertiary)">Discover what's possible</span>
     <div style="width:22px; height:36px; border-radius:11px; border:1.5px solid rgba(255,255,255,0.18); display:flex; justify-content:center; padding-top:6px;">
       <div style="width:4px; height:10px; border-radius:2px; background:var(--emerald-400); animation:bob 1.6s ease-in-out infinite;"></div>
     </div>
   </div>
 </section>
 
-<!-- ── Value props ── -->
+<!-- Value props -->
 <section style="padding:72px 0; background:linear-gradient(to bottom, transparent, rgba(13,31,60,0.4), transparent)">
   <div class="container">
     <div class="text-center reveal">
-      <h2 class="section-title">From Complexity to Clarity</h2>
-      <p class="section-sub mx-auto">Four pillars that transform how strategy leaders diagnose, plan, and execute.</p>
+      <h2 class="section-title">Strategy That Actually Gets Done</h2>
+      <p class="section-sub mx-auto">Most strategic plans die in a spreadsheet. Strat Planner Pro closes the gap between ambitious intentions and real-world results — across four integrated pillars.</p>
     </div>
     <div class="cards-grid reveal" style="transition-delay:0.15s; grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
       <div class="feature-card">
         <div class="feature-icon" style="background:rgba(52,211,153,0.12); border:1px solid rgba(52,211,153,0.25)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
-        <h3>Diagnose Deeply</h3>
-        <p>Reveal systemic patterns, non-linear dynamics, and root causes—not just symptoms.</p>
+        <h3>Diagnose the Real Problem</h3>
+        <p>Surface systemic patterns, hidden dependencies, and root causes your competitors overlook — before you commit a single resource.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:rgba(129,140,248,0.12); border:1px solid rgba(129,140,248,0.25)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
-        <h3>Plan with Precision</h3>
-        <p>Move from SWOT to strategy to scorecards and KPIs in a single guided flow.</p>
+        <h3>Plan Without the Gaps</h3>
+        <p>Go from SWOT to strategy to balanced scorecard and KPIs in one seamless AI-guided workflow — no more disconnected tools or lost context.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.25)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
-        <h3>Execute Confidently</h3>
-        <p>Track PAPs, budgets, and performance with a centralised real-time dashboard.</p>
+        <h3>Execute With Confidence</h3>
+        <p>Track every programme, activity, and project with clear ownership, live progress indicators, and a centralised MEL dashboard that never lets things slip.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.28)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-        <h3>Own Your Data</h3>
-        <p>Works offline as a PWA with local persistence—fast, secure, and always available.</p>
+        <h3>Your Data, Your Control</h3>
+        <p>Installs as a Progressive Web App with full offline capability — no cloud dependency, no vendor lock-in, always accessible wherever you work.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Features ── -->
+<!-- Features -->
 <section id="features">
   <div class="container">
     <div class="text-center reveal">
       <div class="section-tag indigo">Powerful Features</div>
-      <h2 class="section-title">Everything You Need to Strategize</h2>
-      <p class="section-sub mx-auto">A comprehensive toolkit for strategy leaders who demand precision and results.</p>
+      <h2 class="section-title">One Platform. Every Tool You Need.</h2>
+      <p class="section-sub mx-auto">Strat Planner Pro replaces the fragmented stack of spreadsheets, documents, and disconnected tools that slow strategy teams down — from environmental diagnosis all the way to print-ready reporting.</p>
     </div>
     <div class="cards-grid reveal" style="transition-delay:0.15s">
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><h3>MEL Dashboard</h3><p>Monitor, evaluate, and learn in one place with live status, progress, and insights.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div><h3>Structured Diagnostics</h3><p>Guided forms ensure complete, consistent SWOT analysis across all teams.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div><h3>AI SWOT Generation</h3><p>Transform raw inputs into clear, actionable SWOT statements—fast and bias-aware.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 10h6v10H4zM14 10h6v10h-6z"/></svg></div><h3>Systems Thinking</h3><p>Visualise non-linear relationships across SWOT elements to surface leverage points.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><h3>AI Strategy Generator</h3><p>Auto-derive SO, ST, WO, and WT strategic options aligned to your context.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(6,182,212,0.10);border:1px solid rgba(6,182,212,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg></div><h3>Balanced Scorecard</h3><p>Smart categorisation across four BSC perspectives with automated KPI suggestions.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,0.10);border:1px solid rgba(52,211,153,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></div><h3>PAPs Management</h3><p>Track Programs, Activities, and Projects with automated budget totalling.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(129,140,248,0.10);border:1px solid rgba(129,140,248,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><h3>Plan Generator</h3><p>Produce print-ready, professional reports for official documentation.</p></div>
-      <div class="feature-card"><div class="feature-icon" style="background:rgba(139,92,246,0.10);border:1px solid rgba(139,92,246,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div><h3>Offline PWA</h3><p>Install on desktop or mobile, work offline, and sync when connected.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><h3>MEL Dashboard</h3><p>Monitor, evaluate, and learn in real time. Live status indicators, budget burn rates, and performance insights — all in one authoritative view.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div><h3>Structured SWOT Diagnostics</h3><p>Guided intake forms ensure complete, consistent SWOT analysis every time — eliminating the half-finished assessments that derail planning cycles.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div><h3>AI SWOT Generation</h3><p>Transform fragmented inputs into sharp, bias-checked SWOT statements. What used to take days of workshops now takes minutes — without losing rigour.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 10h6v10H4zM14 10h6v10h-6z"/></svg></div><h3>Systems Thinking Maps</h3><p>Visualise non-linear relationships and feedback loops across your SWOT elements to pinpoint the highest-leverage intervention points before you act.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><h3>AI Strategy Generator</h3><p>Auto-derive SO, ST, WO, and WT strategic options that are contextually aligned to your organisation — then refine and prioritise with your leadership team.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(6,182,212,0.10);border:1px solid rgba(6,182,212,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg></div><h3>Balanced Scorecard</h3><p>Smart auto-categorisation across all four BSC perspectives, with AI-suggested KPIs that connect every strategic objective to a measurable outcome.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,0.10);border:1px solid rgba(52,211,153,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></div><h3>PAPs Management</h3><p>Create and track Programmes, Activities, and Projects with automatic budget aggregation and milestone tracking — accountability built in from day one.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(129,140,248,0.10);border:1px solid rgba(129,140,248,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><h3>Print-Ready Plan Generator</h3><p>Export boardroom-quality strategic plans at the click of a button — no manual formatting, no last-minute scrambles, no version control nightmares.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(139,92,246,0.10);border:1px solid rgba(139,92,246,0.22)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div><h3>Offline-First PWA</h3><p>Install on desktop or mobile and keep working through power outages, remote fieldwork, or unreliable connectivity. Your data is always with you.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ── How it works ── -->
+<!-- How it works -->
 <section id="how-it-works" style="background:linear-gradient(to bottom,transparent,rgba(13,31,60,0.35),transparent)">
   <div class="container">
     <div class="text-center reveal">
       <div class="section-tag emerald">Simple Process</div>
-      <h2 class="section-title">From Input to Impact in 6 Steps</h2>
-      <p class="section-sub mx-auto">A guided journey from strategic context to actionable execution.</p>
+      <h2 class="section-title">From Strategic Inputs to Execution-Ready Plan in 6 Steps</h2>
+      <p class="section-sub mx-auto">A structured, AI-assisted workflow that guides your team from diagnosis all the way to measurable impact — with nothing falling through the cracks.</p>
     </div>
     <div class="steps-grid reveal" style="transition-delay:0.15s">
-      <div class="step-card">     <div class="step-num">1</div>     <h3>Capture Context</h3>     <p>Input SWOT and strategic intent using structured forms designed for completeness.</p></div>
-      <div class="step-card step-alt"><div class="step-num">2</div><h3>Map Dynamics</h3>     <p>Use systems thinking to connect drivers, constraints, and feedback loops.</p></div>
-      <div class="step-card">     <div class="step-num">3</div>     <h3>Generate Strategy</h3>  <p>Let AI propose SO/ST/WO/WT options—then refine and prioritise.</p></div>
-      <div class="step-card step-alt"><div class="step-num">4</div><h3>Align with BSC</h3>    <p>Auto-categorise objectives and receive KPI suggestions for each perspective.</p></div>
-      <div class="step-card">     <div class="step-num">5</div>     <h3>Operationalise</h3>   <p>Create PAPs, assign owners, set budgets, and track execution progress.</p></div>
-      <div class="step-card step-alt"><div class="step-num">6</div><h3>Report &amp; Learn</h3><p>Export professional strategic plans and monitor via MEL dashboard.</p></div>
+      <div class="step-card">     <div class="step-num">1</div><h3>Capture Your Context</h3><p>Input your organisation's environment, challenges, and ambitions through structured forms built for completeness — not guesswork or blank-page anxiety.</p></div>
+      <div class="step-card step-alt"><div class="step-num">2</div><h3>Map the System</h3><p>Use interactive systems thinking tools to connect SWOT elements, expose feedback loops, and reveal where interventions will deliver the most impact.</p></div>
+      <div class="step-card">     <div class="step-num">3</div><h3>Generate Your Strategy</h3><p>Let AI propose SO, ST, WO, and WT strategic options aligned to your specific context — then refine and prioritise together with your leadership team.</p></div>
+      <div class="step-card step-alt"><div class="step-num">4</div><h3>Build the Scorecard</h3><p>Auto-categorise strategic objectives across all four BSC perspectives and receive AI-suggested KPIs tied directly to real performance outcomes.</p></div>
+      <div class="step-card">     <div class="step-num">5</div><h3>Operationalise Everything</h3><p>Create PAPs, assign accountable owners, set budgets, and establish milestones — turning your strategy into a live, trackable execution plan.</p></div>
+      <div class="step-card step-alt"><div class="step-num">6</div><h3>Report, Review &amp; Improve</h3><p>Export professional plans for governance reporting and monitor performance through the MEL dashboard — so you continuously learn and adapt.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ── Audience ── -->
+<!-- Audience -->
 <section>
   <div class="container">
     <div class="text-center reveal">
       <div class="section-tag" style="background:rgba(139,92,246,0.10);border:1px solid rgba(139,92,246,0.20);color:#A78BFA">Built For You</div>
-      <h2 class="section-title">Who Uses Strat Planner Pro</h2>
-      <p class="section-sub mx-auto">Trusted by strategy leaders across sectors who demand clarity and results.</p>
+      <h2 class="section-title">Trusted by Strategy Leaders Across Every Sector</h2>
+      <p class="section-sub mx-auto">Whether you're driving policy outcomes for a government agency or scaling a consultancy's client delivery, Strat Planner Pro adapts to your workflow.</p>
     </div>
     <div class="audience-grid reveal" style="transition-delay:0.15s">
-      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div><h3>Government &amp; Public Sector</h3><p>Strategy offices, MEL units, and programme teams driving policy outcomes.</p></div>
-      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><h3>Enterprises &amp; SMEs</h3><p>PMOs, transformation leaders, and business unit heads scaling operations.</p></div>
-      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div><h3>Education &amp; Nonprofits</h3><p>Strategy, accreditation, and impact measurement teams driving missions.</p></div>
-      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div><h3>Consultants</h3><p>Repeatable, client-ready workflows with print-ready outputs.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div><h3>Government &amp; Public Sector</h3><p>Strategy offices, MEL units, and programme teams who need standardised, auditable plans that stand up to scrutiny and deliver measurable public value.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><h3>Enterprises &amp; SMEs</h3><p>PMOs, transformation leads, and business unit heads who need to align cross-functional teams on a single, executable strategic direction — fast.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div><h3>Education &amp; Nonprofits</h3><p>Institutional strategy, accreditation, and impact measurement teams who need to demonstrate measurable progress against mission-critical goals to funders and boards.</p></div>
+      <div class="audience-card"><div class="audience-icon-wrap" style="background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.22)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div><h3>Strategy Consultants</h3><p>Repeatable, client-ready workflows that let you deliver consistent, print-ready strategic plans for every engagement — without starting from scratch each time.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ── Benefits ── -->
+<!-- Benefits -->
 <section id="benefits" style="background:linear-gradient(to bottom,transparent,rgba(13,31,60,0.35),transparent)">
   <div class="container">
     <div class="benefits-grid">
       <div class="reveal">
-        <div class="section-tag emerald">Why Choose Us</div>
-        <h2 class="section-title">Results That Speak for Themselves</h2>
-        <p style="font-size:16px;color:var(--text-secondary);margin-bottom:32px;line-height:1.65">Strat Planner Pro delivers measurable improvements in how organisations plan and execute strategy.</p>
+        <div class="section-tag emerald">Why It Works</div>
+        <h2 class="section-title">Built for the Way Strategy Actually Gets Done</h2>
+        <p style="font-size:16px;color:var(--text-secondary);margin-bottom:32px;line-height:1.65">Strat Planner Pro isn't just another planning tool — it's the end-to-end system that permanently closes the gap between strategic ambition and operational reality.</p>
         <div class="benefit-list">
-          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(52,211,153,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></div><div><h3>Consistency at Scale</h3><p>Standardised frameworks reduce ambiguity and rework across teams.</p></div></div>
-          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(129,140,248,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><div><h3>Speed to Insight</h3><p>AI accelerates analysis without sacrificing rigour or depth.</p></div></div>
-          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(139,92,246,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div><div><h3>Execution Discipline</h3><p>Clear ownership, budgets, and KPIs keep plans moving forward.</p></div></div>
-          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(251,191,36,0.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><div><h3>Evidence-Based Decisions</h3><p>Systems maps and MEL dashboards reveal what's working—and why.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(52,211,153,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></div><div><h3>Consistency at Scale</h3><p>Standardised frameworks, guided inputs, and AI-generated outputs eliminate ambiguity and costly rework across teams and planning cycles.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(129,140,248,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><div><h3>Speed Without Sacrificing Rigour</h3><p>AI accelerates every stage of analysis — from SWOT generation to KPI suggestions — without ever cutting corners on strategic depth.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(139,92,246,0.14)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div><div><h3>Execution That Sticks</h3><p>Clear ownership, defined budgets, and tracked KPIs ensure plans keep moving — and that leadership always knows exactly where things stand.</p></div></div>
+          <div class="benefit-item"><div class="benefit-icon-wrap" style="background:rgba(251,191,36,0.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><div><h3>Decisions Grounded in Evidence</h3><p>Systems maps and the live MEL dashboard reveal exactly what's working, what isn't, and why — so you course-correct before problems become crises.</p></div></div>
         </div>
       </div>
       <div class="reveal" style="transition-delay:0.2s">
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-value">3×</div><p>Faster planning cycles</p></div>
-          <div class="stat-card"><div class="stat-value">85%</div><p>Less document rework</p></div>
-          <div class="stat-card"><div class="stat-value">100%</div><p>Offline capability</p></div>
-          <div class="stat-card"><div class="stat-value">∞</div><p>Print-ready exports</p></div>
+          <div class="stat-card"><div class="stat-value">3×</div><p>Faster strategic planning cycles</p></div>
+          <div class="stat-card"><div class="stat-value">85%</div><p>Reduction in document rework</p></div>
+          <div class="stat-card"><div class="stat-value">100%</div><p>Offline capability via PWA</p></div>
+          <div class="stat-card"><div class="stat-value">∞</div><p>Print-ready exports, no limits</p></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── CTA ── -->
+<!-- CTA -->
 <section style="padding:72px 0 88px">
   <div class="container">
     <div class="cta-box reveal">
-      <h2>Ready to Transform Your Strategy Process?</h2>
-      <p>Join strategy leaders across government, enterprise, and education who've moved from complexity to clarity.</p>
+      <h2>Your Next Strategic Plan Starts Here.</h2>
+      <p>Join strategy leaders across government, enterprise, education, and consulting who've stopped wrestling with complexity — and started delivering results that stick.</p>
       <div class="cta-btns">
-        <a href="public/pricing.html" class="btn-primary btn-primary-lg">
-          Get Started for Free!
+        <a href="https://strategy-ai-planner.deploypad.app/mel-dashboard" class="btn-primary btn-primary-lg">
+          Start for Free — No Card Needed
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
         </a>
-        <a href="https://preview-a8aolz15--strategy-ai-planner.deploypad.app/" class="btn-secondary">Explore Dashboard</a>
+        <a href="https://preview-a8aolz15--strategy-ai-planner.deploypad.app/" class="btn-secondary">Explore the Dashboard</a>
       </div>
-      <p class="cta-note">No credit card required &nbsp;·&nbsp; 14-day free trial &nbsp;·&nbsp; Cancel anytime</p>
+      <p class="cta-note">14-day free trial &nbsp;·&nbsp; No credit card required &nbsp;·&nbsp; Cancel any time</p>
     </div>
   </div>
 </section>
 
-<!-- ── Footer ── -->
+<!-- Footer -->
 <footer>
   <div class="container footer-inner">
     <div class="footer-top">
@@ -728,7 +730,7 @@
           <img src="https://appimize.app/assets/apps/user_1097/images/46fe704cc227_595_1097.png" alt="Strat Planner Pro logo" onerror="this.style.display='none'">
           <span class="footer-logo-name">Strat Planner Pro</span>
         </a>
-        <p class="footer-tagline">AI-powered strategic planning for organisations that demand excellence in execution.</p>
+        <p class="footer-tagline">The AI-powered strategic planning platform for organisations that demand precision, accountability, and results.</p>
       </div>
       <div class="footer-powered">
         <span>Powered by</span>
@@ -737,12 +739,12 @@
     </div>
     <div class="footer-bottom">
       <nav class="footer-links" aria-label="Footer links">
-        <a href="https://asilvainnovations.github.io/website/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy</a>
-        <a href="https://asilvainnovations.github.io/website/terms.html"          target="_blank" rel="noopener noreferrer">Terms of Services</a>
+        <a href="https://asilvainnovations.github.io/website/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        <a href="https://asilvainnovations.github.io/website/terms.html"          target="_blank" rel="noopener noreferrer">Terms of Service</a>
         <a href="https://contact-planning-consult.deploypad.app/#solutions"        target="_blank" rel="noopener noreferrer">Contact</a>
         <a href="https://contact-planning-consult.deploypad.app/solutions/strategic-planner-pro#pricing">Pricing</a>
         <a href="https://asilvainnovations.github.io/strat-planner-pwa/user-manual.html" target="_blank" rel="noopener noreferrer">User Manual</a>
-        <a href="https://asilvainnovations.github.io/strat-planner-pwa/developer-doc.html" target="_blank" rel="noopener noreferrer">Developer Documentation</a>
+        <a href="https://asilvainnovations.github.io/strat-planner-pwa/developer-doc.html" target="_blank" rel="noopener noreferrer">Developer Docs</a>
       </nav>
       <p class="footer-copy">© 2026 ASilva Innovations. All rights reserved.</p>
     </div>
@@ -750,13 +752,11 @@
 </footer>
 
 <script>
-  /* ── Scroll reveal ── */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  /* ── Smooth anchor scroll ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const target = document.querySelector(a.getAttribute('href'));
@@ -764,7 +764,6 @@
     });
   });
 
-  /* ── Mobile nav ── */
   function openMobileNav() {
     document.getElementById('mobileNav').classList.add('open');
     document.getElementById('hamburger-btn').setAttribute('aria-expanded', 'true');
